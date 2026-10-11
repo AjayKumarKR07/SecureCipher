@@ -1,14 +1,14 @@
 import os
 import sys
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import pool
 from alembic import context
 
 # Ensure backend root is on sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.core.config import settings
-from app.db.session import Base
+from app.db.session import Base, get_engine
 import app.models  # Ensure models are imported for metadata reflection
 
 # this is the Alembic Config object, which provides
@@ -19,16 +19,16 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Set database URL dynamically from app settings
+# Set database URL dynamically from app settings (escape % for ConfigParser interpolation)
 if settings.DATABASE_URL:
-    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL.replace("%", "%%"))
 
 target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
-    url = config.get_main_option("sqlalchemy.url")
+    url = settings.DATABASE_URL or config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -41,12 +41,10 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    """Run migrations in 'online' mode using the shared SQLAlchemy engine."""
+    connectable = get_engine()
+    if connectable is None:
+        raise RuntimeError("DATABASE_URL is not configured or engine could not be created.")
 
     with connectable.connect() as connection:
         context.configure(
