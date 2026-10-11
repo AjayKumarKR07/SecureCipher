@@ -25,7 +25,7 @@ ALGORITHMS_REGISTRY: List[AlgorithmInfo] = [
         purpose="Public-key encryption, secure key transport, and digital signatures",
         description="Trapdoor one-way permutation based on the computational difficulty of factoring the product of two large prime numbers.",
         key_size_info="2048, 3072, or 4096 bits",
-        status="Foundation Layout Ready (Pending Crypto Implementation)",
+        status="Active (RSA-OAEP-SHA256 Implemented)",
         features=[
             "Public and private key pairs",
             "OAEP padding for secure encryption",

@@ -240,6 +240,9 @@ All API routes are mounted under the `/api` prefix:
 | `GET` | `/api/history` | Returns recent operation metadata audit log | `200 OK` |
 | `POST` | `/api/aes/encrypt` | Encrypts UTF-8 text using AES-256-GCM and Scrypt KDF | `200 OK` / `400 Bad Request` |
 | `POST` | `/api/aes/decrypt` | Authenticates and decrypts AES-256-GCM ciphertext payload | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/rsa/generate-keys` | Generates RSA-2048 or RSA-3072 keypair in PEM PKCS#8 & SPKI | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/rsa/encrypt` | Encrypts UTF-8 payload with RSA public key using OAEP-SHA256 | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/rsa/decrypt` | Decrypts RSA ciphertext with private key and verifies OAEP-SHA256 | `200 OK` / `400 Bad Request` |
 
 
 ---

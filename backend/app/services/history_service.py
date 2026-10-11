@@ -48,3 +48,38 @@ def get_recent_history(
             False,
             "Database query could not be completed. Check database tables and status.",
         )
+
+
+def record_audit_operation(
+    db: Optional[Session],
+    algorithm_name: str,
+    operation_type: str,
+    status: str,
+    duration_ms: float,
+) -> None:
+    """
+    Persists safe operational execution metadata to PostgreSQL history.
+    
+    SECURITY GUARANTEE:
+    Plaintext, private keys, public keys, passphrases, derived keys, and ciphertexts
+    are NEVER stored or logged.
+    """
+    if db is None:
+        return
+
+    try:
+        audit_entry = OperationHistory(
+            algorithm_name=algorithm_name,
+            operation_type=operation_type,
+            status=status,
+            execution_duration_ms=round(duration_ms, 2),
+        )
+        db.add(audit_entry)
+        db.commit()
+    except Exception as e:
+        logger.warning("Could not persist audit record to database: %s", str(e))
+        try:
+            db.rollback()
+        except Exception:
+            pass
+

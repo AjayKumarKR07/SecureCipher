@@ -198,3 +198,64 @@ export async function decryptAES({ passphrase, nonce, salt, ciphertext, tag }) {
   return data;
 }
 
+/**
+ * Generate RSA Public/Private Keypair
+ */
+export async function generateRSAKeys(keySize = 2048) {
+  const response = await fetch(`${API_BASE_URL}/rsa/generate-keys`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ key_size: parseInt(keySize, 10) }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA key generation failed');
+  }
+  return data;
+}
+
+/**
+ * Encrypt text with RSA Public Key and OAEP-SHA256
+ */
+export async function encryptRSA(plaintext, publicKeyPem) {
+  const response = await fetch(`${API_BASE_URL}/rsa/encrypt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      plaintext,
+      public_key_pem: publicKeyPem,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA encryption failed');
+  }
+  return data;
+}
+
+/**
+ * Decrypt ciphertext with RSA Private Key and OAEP-SHA256
+ */
+export async function decryptRSA(ciphertext, privateKeyPem) {
+  const response = await fetch(`${API_BASE_URL}/rsa/decrypt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ciphertext,
+      private_key_pem: privateKeyPem,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA decryption failed');
+  }
+  return data;
+}
+
+

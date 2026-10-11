@@ -9,6 +9,14 @@ from app.schemas.aes import (
     AESDecryptResponse,
     KDFParameters,
 )
+from app.schemas.rsa import (
+    RSAKeyGenRequest,
+    RSAKeyGenResponse,
+    RSAEncryptRequest,
+    RSAEncryptResponse,
+    RSADecryptRequest,
+    RSADecryptResponse,
+)
 
 __all__ = [
     "HealthResponse",
@@ -22,5 +30,12 @@ __all__ = [
     "AESDecryptRequest",
     "AESDecryptResponse",
     "KDFParameters",
+    "RSAKeyGenRequest",
+    "RSAKeyGenResponse",
+    "RSAEncryptRequest",
+    "RSAEncryptResponse",
+    "RSADecryptRequest",
+    "RSADecryptResponse",
 ]
+
 
