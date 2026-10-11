@@ -10,7 +10,7 @@ ALGORITHMS_REGISTRY: List[AlgorithmInfo] = [
         purpose="Confidential bulk data encryption and secure file protection",
         description="Rijndael block cipher standardized by NIST in 2001. Operates on 128-bit blocks using 128, 192, or 256-bit keys with modes like CBC and GCM.",
         key_size_info="128, 192, or 256 bits",
-        status="Foundation Layout Ready (Pending Crypto Implementation)",
+        status="Active (AES-256-GCM Implemented)",
         features=[
             "128-bit block size",
             "Hardware accelerated on modern CPUs (AES-NI)",

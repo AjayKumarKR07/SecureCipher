@@ -238,6 +238,9 @@ All API routes are mounted under the `/api` prefix:
 | `GET` | `/api/algorithms` | Returns the 6 registered algorithms and metadata | `200 OK` |
 | `GET` | `/api/algorithms/{id}` | Specification details for a single cipher | `200 OK` / `404 Not Found` |
 | `GET` | `/api/history` | Returns recent operation metadata audit log | `200 OK` |
+| `POST` | `/api/aes/encrypt` | Encrypts UTF-8 text using AES-256-GCM and Scrypt KDF | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/aes/decrypt` | Authenticates and decrypts AES-256-GCM ciphertext payload | `200 OK` / `400 Bad Request` |
+
 
 ---
 

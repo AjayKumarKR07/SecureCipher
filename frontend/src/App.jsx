@@ -59,7 +59,7 @@ export default function App() {
               />
             }
           />
-          <Route path="/algorithm/aes" element={<AESPage />} />
+          <Route path="/algorithm/aes" element={<AESPage onOperationSuccess={checkTelemetry} />} />
           <Route path="/algorithm/rsa" element={<RSAPage />} />
           <Route path="/algorithm/diffie-hellman" element={<DiffieHellmanPage />} />
           <Route path="/algorithm/sha-256" element={<SHA256Page />} />

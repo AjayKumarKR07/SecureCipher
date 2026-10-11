@@ -52,8 +52,16 @@ export default function AlgorithmCard({ algorithm }) {
           </div>
           <div className="text-[11px] text-slate-400 flex items-center justify-between">
             <span className="text-slate-400">Spec Status:</span>
-            <span className="text-blue-400 font-medium">Layout Ready</span>
+            {algorithm.id === 'aes' ? (
+              <span className="text-emerald-400 font-medium font-mono flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
+                Active (GCM)
+              </span>
+            ) : (
+              <span className="text-blue-400 font-medium">Layout Ready</span>
+            )}
           </div>
+
         </div>
 
         <ul className="space-y-1 mb-4">

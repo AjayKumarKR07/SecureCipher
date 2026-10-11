@@ -161,3 +161,40 @@ export async function fetchHistory(limit = 20) {
     };
   }
 }
+
+/**
+ * Real AES-256-GCM Text Encryption
+ */
+export async function encryptAES(plaintext, passphrase) {
+  const response = await fetch(`${API_BASE_URL}/aes/encrypt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ plaintext, passphrase }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Encryption failed');
+  }
+  return data;
+}
+
+/**
+ * Real AES-256-GCM Text Decryption & Authentication
+ */
+export async function decryptAES({ passphrase, nonce, salt, ciphertext, tag }) {
+  const response = await fetch(`${API_BASE_URL}/aes/decrypt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ passphrase, nonce, salt, ciphertext, tag }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Decryption failed');
+  }
+  return data;
+}
+
