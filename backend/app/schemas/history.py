@@ -1,0 +1,23 @@
+from typing import List, Optional
+from datetime import datetime
+from pydantic import BaseModel, ConfigDict
+
+
+class OperationHistoryItem(BaseModel):
+    id: int
+    algorithm_name: str
+    operation_type: str
+    status: str
+    execution_duration_ms: float
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class OperationHistoryResponse(BaseModel):
+    items: List[OperationHistoryItem]
+    total: int
+    database_connected: bool
+    message: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
