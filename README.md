@@ -1,351 +1,712 @@
-# SecureCipher – Multi-Algorithm Cryptography & Secure Data Protection System
+<div align="center">
 
-> **College Mini-Project** | Initial Working Foundation (v0.1.0)  
-> **GitHub Repository:** [https://github.com/AjayKumarKR07/SecureCipher](https://github.com/AjayKumarKR07/SecureCipher)
+# SecureCipher
+
+### Multi-Algorithm Cryptography & Secure Data Protection System
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python)](https://www.python.org/)
+[![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](./LICENSE)
+
+**GitHub:** [AjayKumarKR07/SecureCipher](https://github.com/AjayKumarKR07/SecureCipher)
+
+> College Mini-Project — B.Tech Computer Science / Cybersecurity
+>
+> A full-stack cryptographic workbench with interactive algorithm demonstrations,
+> authenticated user management, PostgreSQL audit telemetry, and professional PDF reporting.
+
+</div>
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#1-project-overview)
+2. [Feature Highlights](#2-feature-highlights)
+3. [Cryptographic Algorithms](#3-cryptographic-algorithms)
+4. [Technology Stack](#4-technology-stack)
+5. [Architecture Overview](#5-architecture-overview)
+6. [Project Structure](#6-project-structure)
+7. [Prerequisites](#7-prerequisites)
+8. [Database Setup](#8-database-setup)
+9. [Backend Setup](#9-backend-setup)
+10. [Frontend Setup](#10-frontend-setup)
+11. [Environment Variables](#11-environment-variables)
+12. [API Reference](#12-api-reference)
+13. [Authentication System](#13-authentication-system)
+14. [Audit History and PDF Reports](#14-audit-history-and-pdf-reports)
+15. [Security Architecture](#15-security-architecture)
+16. [Testing](#16-testing)
+17. [Troubleshooting](#17-troubleshooting)
+18. [Roadmap](#18-roadmap)
+19. [Disclaimer](#19-disclaimer)
 
 ---
 
 ## 1. Project Overview
 
-**SecureCipher** is a modern cybersecurity dashboard and cryptographic workbench designed to explore symmetric encryption, asymmetric key pairs, key agreement handshakes, and cryptographic hashing.
+**SecureCipher** is a premium cybersecurity dashboard and interactive cryptographic workbench that demonstrates six industry-standard and legacy cryptographic primitives. It is built with a security-by-design philosophy:
 
-Built with a security-by-design architecture:
-- **Zero Secret Persistence:** Plaintext messages, file payloads, passphrases, and encryption keys are strictly omitted from logs and database storage.
-- **Audit Metadata Logging:** The system persists operational metrics (algorithm name, operation type, duration in milliseconds, status, timestamp) to PostgreSQL for audit analysis without exposing cryptographic secrets.
-- **Educational & Comparative Focus:** Implements modern ciphers alongside legacy standards for cryptanalysis comparison:
-  1. **AES (Advanced Encryption Standard):** 128, 192, and 256-bit symmetric block cipher (FIPS 197).
-  2. **RSA (Rivest-Shamir-Adleman):** 2048 and 4096-bit asymmetric public-key cryptosystem.
-  3. **Diffie-Hellman:** Asymmetric key agreement protocol for forward secrecy.
-  4. **SHA-256:** 256-bit cryptographic one-way hash function (FIPS 180-4).
-  5. **MD5 (Message Digest 5):** 128-bit legacy hash function for educational collision comparison.
-  6. **DES (Data Encryption Standard):** 56-bit Feistel block cipher for historical key-space study.
+- **Zero Secret Persistence** — Plaintexts, passphrases, private keys, and ciphertexts are never written to any database or log file. Only operational metadata (algorithm, status, duration) is persisted.
+- **JWT-Authenticated Sessions** — All protected routes require a signed JWT bearer token. Passwords are hashed with `bcrypt` and never stored in plaintext.
+- **OTP Email Verification** — New accounts require one-time password email confirmation before activation.
+- **PostgreSQL Audit Telemetry** — Every cryptographic operation records timing and status metadata for review in the full-featured Operation Audit History.
+- **Professional PDF Reporting** — Downloadable A4 PDF reports for individual operations and the complete audit log, generated client-side with `jsPDF`.
 
 ---
 
-## 2. Technology Stack
+## 2. Feature Highlights
+
+### Authentication and User Management
+
+| Feature | Detail |
+|---|---|
+| **User Registration** | Full name, email, password with OTP email verification flow |
+| **Login** | JWT Bearer token authentication with optional remember-me persistence |
+| **Password Change** | Current password verification, live strength meter, bcrypt re-hashing |
+| **Profile Settings** | Editable display name, verified email badge, member ID, security overview |
+| **Notification Center** | Activity feed with unread badge, mark-as-read, and preference toggles |
+| **Public Route Guard** | Authenticated users are automatically redirected from `/login` and `/register` to the dashboard |
+
+### Cryptographic Workbenches
+
+- Six fully interactive workbenches: AES-256-GCM, RSA-OAEP, Diffie-Hellman, SHA-256, MD5, DES-CBC
+- Real-time execution duration measurement (milliseconds)
+- Inline operation result panels with copy-to-clipboard
+- Zero server-side secret storage
+
+### Operation Audit History (`/history`)
+
+- Full paginated table of all cryptographic operations
+- Per-record actions: **View Details**, **Download PDF Report**, **Delete**
+- Bulk **Download PDF Report** for the full audit log
+- Filter, sort, and refresh controls
+- All timestamps displayed in **IST (UTC+05:30)**
+
+### PDF Report Generation
+
+- Individual operation reports — academic A4 portrait format with header, algorithm specs, operation metadata, explanation, and security notes
+- Full history report — A4 landscape table with all audit records, summary statistics, and generation timestamp
+
+### Premium Home Page
+
+- Dribbble-reference cybersecurity landing page design
+- Dark forest-green and near-black backgrounds with neon-green accents
+- Bento-grid algorithm cards with animated SVG decorations
+- Interactive "How It Works" workflow tabs
+- Live PostgreSQL audit trail preview
+
+---
+
+## 3. Cryptographic Algorithms
+
+| # | Algorithm | Standard | Key Size | Mode | Purpose |
+|---|---|---|---|---|---|
+| 1 | **AES-256-GCM** | NIST FIPS 197 | 256-bit | GCM (AEAD) | Authenticated symmetric encryption with Scrypt KDF |
+| 2 | **RSA-OAEP** | RFC 8017 | 2048 / 3072-bit | OAEP-SHA256 | Asymmetric public-key encryption and decryption |
+| 3 | **Diffie-Hellman** | RFC 3526 | 2048-bit MODP | Group 14 + HKDF | Shared-secret key agreement handshake |
+| 4 | **SHA-256** | NIST FIPS 180-4 | N/A | Merkle-Damgard | One-way cryptographic hash — text and file up to 50 MB |
+| 5 | **MD5** | RFC 1321 | N/A | Merkle-Damgard | Legacy 128-bit digest for avalanche comparison ⚠️ |
+| 6 | **DES-CBC** | FIPS 46-3 | 56-bit | CBC + PKCS#7 | Historical Feistel cipher for cryptanalysis study ⚠️ |
+
+> ⚠️ MD5 and DES are included **for educational comparison only**. They are cryptographically broken and must never be used in production systems.
+
+---
+
+## 4. Technology Stack
 
 ### Frontend
-- **Framework:** React 19 / Vite
-- **Language:** JavaScript (ES Modules)
-- **Styling:** Tailwind CSS (Dark Navy & Purple/Blue cybersecurity theme)
-- **Routing:** React Router v7
-- **Icons:** Lucide React
+
+| Technology | Version | Role |
+|---|---|---|
+| React | 19 | Component-based UI framework |
+| Vite | 6 | Build tool and HMR dev server |
+| React Router | v7 | Client-side SPA routing |
+| Tailwind CSS | 3 | Utility-first styling with dark cyber theme |
+| Lucide React | latest | Icon library |
+| jsPDF | 2.x | Client-side PDF generation |
+| jsPDF-AutoTable | 3.x | Table rendering inside PDFs |
 
 ### Backend
-- **Framework:** FastAPI (Python 3.10+)
-- **Server:** Uvicorn ASGI Server
-- **ORM:** SQLAlchemy 2.x (Declarative Base)
-- **Database Driver:** Psycopg 3 (`postgresql+psycopg`)
-- **Settings:** Pydantic Settings & Python-Dotenv
-- **Migrations:** Alembic
+
+| Technology | Version | Role |
+|---|---|---|
+| FastAPI | 0.115 | ASGI REST API framework |
+| Uvicorn | 0.32 | ASGI production server |
+| SQLAlchemy | 2.x | ORM with declarative models |
+| Alembic | 1.x | Database schema migrations |
+| Psycopg | 3 | PostgreSQL async driver |
+| Pydantic | 2.x | Request/response schema validation |
+| Python-Jose | 3.x | JWT creation and verification |
+| Passlib + bcrypt | 1.7 | Password hashing |
+| Python Cryptography | 43+ | AES-GCM, RSA-OAEP, DH, SHA-256 |
+| PyCryptodome | 3.x | DES-CBC, MD5 implementations |
 
 ### Database
-- **Engine:** PostgreSQL (local Windows instance on port 5432)
-- **Target Database:** `securecipher_db`
-- **Designated User:** `securecipher_user`
+
+| Item | Detail |
+|---|---|
+| Engine | PostgreSQL 14+ on localhost:5432 |
+| Database | `securecipher_db` |
+| User | `securecipher_user` |
+| Tables | `operation_history`, `users`, `email_otps` |
 
 ---
 
-## 3. Project Structure
+## 5. Architecture Overview
 
-```text
-SecureCipher/
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── AlgorithmCard.jsx
-│   │   │   ├── Layout.jsx
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Sidebar.jsx
-│   │   │   └── StatusBadge.jsx
-│   │   ├── pages/
-│   │   │   ├── AboutPage.jsx
-│   │   │   ├── AESPage.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── DESPage.jsx
-│   │   │   ├── DiffieHellmanPage.jsx
-│   │   │   ├── HistoryPage.jsx
-│   │   │   ├── MD5Page.jsx
-│   │   │   ├── RSAPage.jsx
-│   │   │   └── SHA256Page.jsx
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── backend/
-│   ├── alembic/
-│   │   ├── versions/
-│   │   │   └── 001_initial_operation_history.py
-│   │   └── env.py
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── endpoints/
-│   │   │   │   ├── aes.py
-│   │   │   │   ├── algorithms.py
-│   │   │   │   ├── des.py
-│   │   │   │   ├── diffie_hellman.py
-│   │   │   │   ├── health.py
-│   │   │   │   ├── history.py
-│   │   │   │   ├── md5.py
-│   │   │   │   ├── rsa.py
-│   │   │   │   └── sha256.py
-│   │   │   └── router.py
-│   │   ├── core/
-│   │   │   └── config.py
-│   │   ├── db/
-│   │   │   ├── init_db.py
-│   │   │   └── session.py
-│   │   ├── models/
-│   │   │   └── history.py
-│   │   ├── schemas/
-│   │   │   ├── aes.py
-│   │   │   ├── algorithm.py
-│   │   │   ├── des.py
-│   │   │   ├── diffie_hellman.py
-│   │   │   ├── health.py
-│   │   │   ├── history.py
-│   │   │   ├── md5.py
-│   │   │   ├── rsa.py
-│   │   │   └── sha256.py
-│   │   ├── services/
-│   │   │   ├── aes_service.py
-│   │   │   ├── algorithm_service.py
-│   │   │   ├── des_service.py
-│   │   │   ├── diffie_hellman_service.py
-│   │   │   ├── history_service.py
-│   │   │   ├── md5_service.py
-│   │   │   ├── rsa_service.py
-│   │   │   └── sha256_service.py
-│   │   └── main.py
-│   ├── tests/
-│   │   ├── test_aes.py
-│   │   ├── test_api.py
-│   │   ├── test_des.py
-│   │   ├── test_diffie_hellman.py
-│   │   ├── test_md5.py
-│   │   ├── test_rsa.py
-│   │   └── test_sha256.py
-│   ├── .env.example
-│   ├── alembic.ini
-│   ├── pytest.ini
-│   └── requirements.txt
-├── .gitignore
-├── LICENSE
-└── README.md
+```
++------------------------------------------------------------+
+|                      BROWSER CLIENT                         |
+|    React 19 + Vite SPA  (localhost:5173)                   |
+|                                                             |
+|    [Auth/JWT Context]    [Algorithm Workbenches]           |
+|    [Audit History]       [PDF Reports via jsPDF]           |
++---------------------------|--------------------------------+
+                            | HTTP / REST (JSON)
+                            v
++------------------------------------------------------------+
+|              FastAPI Backend  (localhost:8000)              |
+|                                                             |
+|    /api/auth       -- JWT login, OTP, bcrypt               |
+|    /api/{cipher}   -- Crypto engines (6 algorithms)        |
+|    /api/history    -- Audit telemetry CRUD                 |
+|                                                             |
+|    SQLAlchemy ORM  -->  Alembic migrations                 |
++---------------------------|--------------------------------+
+                            | psycopg3 / TCP
+                            v
++------------------------------------------------------------+
+|            PostgreSQL 14+   (localhost:5432)                |
+|    securecipher_db                                          |
+|    |-- operation_history   (metadata only, no secrets)     |
+|    |-- users               (bcrypt hashed passwords)       |
+|    `-- email_otps          (expiring 6-digit OTP codes)    |
++------------------------------------------------------------+
 ```
 
 ---
 
-## 4. Prerequisites
+## 6. Project Structure
 
-Before running the project, verify that the following tools are installed on your Windows machine:
-- **Python:** 3.10 or higher (`python --version`)
-- **Node.js & npm:** Node 18+ and npm 9+ (`node --version`, `npm --version`)
-- **PostgreSQL:** Version 14 or higher running locally on port 5432 (`psql --version`)
-
----
-
-## 5. PostgreSQL Database Setup (Windows)
-
-1. Open **Command Prompt** or **PowerShell** and connect to PostgreSQL as administrator:
-   ```powershell
-   psql -U postgres
-   ```
-   *(Enter your master `postgres` password when prompted)*
-
-2. Run the SQL commands to create the dedicated database user and database:
-   ```sql
-   -- Create dedicated application user
-   CREATE USER securecipher_user WITH PASSWORD 'YourStrongPasswordHere';
-
-   -- Create database owned by securecipher_user
-   CREATE DATABASE securecipher_db OWNER securecipher_user;
-
-   -- Grant permissions
-   GRANT ALL PRIVILEGES ON DATABASE securecipher_db TO securecipher_user;
-   ```
-
-3. Exit `psql`:
-   ```sql
-   \q
-   ```
-
----
-
-## 6. Backend Installation and Startup
-
-1. Open PowerShell and navigate to the `backend/` directory:
-   ```powershell
-   cd backend
-   ```
-
-2. Create a virtual environment and activate it:
-   ```powershell
-   python -m venv venv
-   .\venv\Scripts\Activate.ps1
-   ```
-
-3. Install required Python packages:
-   ```powershell
-   pip install -r requirements.txt
-   ```
-
-4. Configure environment variables:
-   Copy `.env.example` to `.env`:
-   ```powershell
-   Copy-Item .env.example .env
-   ```
-   Open `backend/.env` in your text editor and set your actual password:
-   ```env
-   DATABASE_URL="postgresql+psycopg://securecipher_user:YourStrongPasswordHere@localhost:5432/securecipher_db"
-   ```
-
-5. Initialize the database schema:
-   ```powershell
-   python -m app.db.init_db
-   ```
-   *Or run Alembic migrations:*
-   ```powershell
-   alembic upgrade head
-   ```
-
-6. Run automated test suite:
-   ```powershell
-   pytest
-   ```
-
-7. Start the FastAPI development server:
-   ```powershell
-   uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
-   ```
-   The interactive API documentation is available at:
-   - **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-   - **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
-
----
-
-## 7. Frontend Installation and Startup
-
-1. Open a new PowerShell terminal and navigate to the `frontend/` directory:
-   ```powershell
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```powershell
-   npm install
-   ```
-
-3. Start the Vite development server:
-   ```powershell
-   npm run dev
-   ```
-
-4. Open your browser at:
-   [http://127.0.0.1:5173](http://127.0.0.1:5173)
+```text
+SecureCipher/
+|-- frontend/
+|   |-- src/
+|   |   |-- components/
+|   |   |   |-- HowItWorksSection.jsx     # Interactive workflow tab component
+|   |   |   |-- Layout.jsx                # Page shell (Navbar vs Dashboard header)
+|   |   |   |-- Navbar.jsx                # Workbench header with user dropdown
+|   |   |   |-- Sidebar.jsx               # Algorithm and audit navigation
+|   |   |   `-- StatusBadge.jsx           # Reusable status indicator pill
+|   |   |-- context/
+|   |   |   |-- AuthContext.jsx           # JWT session state, login, logout, OTP
+|   |   |   |-- NotificationContext.jsx   # Notification feed and preferences
+|   |   |   `-- ThemeContext.jsx          # Theme provider (always dark mode)
+|   |   |-- pages/
+|   |   |   |-- AboutPage.jsx             # Project info and tech credits
+|   |   |   |-- AESPage.jsx               # AES-256-GCM encrypt/decrypt workbench
+|   |   |   |-- Dashboard.jsx             # Premium home page with bento grid
+|   |   |   |-- DESPage.jsx               # DES-CBC workbench (legacy study)
+|   |   |   |-- DiffieHellmanPage.jsx     # Diffie-Hellman key agreement workbench
+|   |   |   |-- HistoryPage.jsx           # Paginated audit history and PDF controls
+|   |   |   |-- LoginPage.jsx             # JWT login page
+|   |   |   |-- MD5Page.jsx               # MD5 hashing workbench (legacy study)
+|   |   |   |-- ProfileSettingsPage.jsx   # Profile, password, notifications (3 tabs)
+|   |   |   |-- RegisterPage.jsx          # OTP email verification registration
+|   |   |   |-- RSAPage.jsx               # RSA-OAEP key gen, encrypt, decrypt
+|   |   |   `-- SHA256Page.jsx            # SHA-256 text and file hash workbench
+|   |   |-- services/
+|   |   |   `-- api.js                    # All fetch wrappers (crypto, auth, history)
+|   |   |-- utils/
+|   |   |   `-- historyPdfGenerator.js    # jsPDF report builders (single + bulk)
+|   |   |-- App.jsx                       # Routes + PublicRoute guard
+|   |   |-- main.jsx
+|   |   `-- index.css                     # Tailwind directives + custom animations
+|   |-- index.html
+|   |-- package.json
+|   `-- vite.config.js
+|
+`-- backend/
+    |-- alembic/
+    |   |-- versions/
+    |   |   |-- 001_initial_operation_history.py
+    |   |   `-- 4013954a5376_add_users_and_email_otps.py
+    |   `-- env.py
+    |-- app/
+    |   |-- api/
+    |   |   |-- endpoints/
+    |   |   |   |-- auth.py               # /api/auth/: register, login, profile, password
+    |   |   |   |-- aes.py                # /api/aes/
+    |   |   |   |-- algorithms.py         # /api/algorithms/
+    |   |   |   |-- des.py                # /api/des/
+    |   |   |   |-- diffie_hellman.py     # /api/diffie-hellman/
+    |   |   |   |-- health.py             # /api/health, /api/health/database
+    |   |   |   |-- history.py            # /api/history/
+    |   |   |   |-- md5.py                # /api/md5/
+    |   |   |   |-- rsa.py                # /api/rsa/
+    |   |   |   `-- sha256.py             # /api/sha256/
+    |   |   `-- router.py
+    |   |-- core/
+    |   |   |-- config.py                 # Pydantic settings loader
+    |   |   `-- security.py               # JWT creation, bcrypt helpers
+    |   |-- db/
+    |   |   |-- init_db.py                # Table bootstrap (create_all)
+    |   |   `-- session.py                # SQLAlchemy engine + session factory
+    |   |-- models/
+    |   |   |-- history.py                # OperationHistory ORM model
+    |   |   `-- user.py                   # User + EmailOTP ORM models
+    |   |-- schemas/
+    |   |   |-- auth.py                   # RegisterRequest, LoginRequest, etc.
+    |   |   |-- history.py                # HistoryItem, PaginatedHistory
+    |   |   `-- *.py                      # Per-algorithm request/response schemas
+    |   |-- services/
+    |   |   |-- auth_service.py           # Registration, login, password, profile
+    |   |   |-- email_service.py          # OTP email dispatch via SMTP
+    |   |   |-- history_service.py        # Audit CRUD with pagination and filters
+    |   |   `-- *.py                      # Per-algorithm cryptographic services
+    |   `-- main.py                       # FastAPI app factory, CORS, routers
+    |-- tests/
+    |   |-- test_api.py                   # Health, history, algorithm integration tests
+    |   |-- test_auth.py                  # Registration, login, password change tests
+    |   |-- test_aes.py
+    |   |-- test_des.py
+    |   |-- test_diffie_hellman.py
+    |   |-- test_md5.py
+    |   |-- test_rsa.py
+    |   `-- test_sha256.py
+    |-- .env.example
+    |-- alembic.ini
+    |-- pytest.ini
+    `-- requirements.txt
+```
 
 ---
 
-## 8. API Endpoints Reference
+## 7. Prerequisites
 
-All API routes are mounted under the `/api` prefix:
+| Tool | Minimum Version | Check Command |
+|---|---|---|
+| Python | 3.10+ | `python --version` |
+| Node.js | 18+ | `node --version` |
+| npm | 9+ | `npm --version` |
+| PostgreSQL | 14+ | `psql --version` |
+| Git | any | `git --version` |
 
-| Method | Endpoint | Description | Status Codes |
+---
+
+## 8. Database Setup
+
+Connect to PostgreSQL as administrator:
+
+```powershell
+psql -U postgres
+```
+
+Run the following SQL:
+
+```sql
+-- Create dedicated application user
+CREATE USER securecipher_user WITH PASSWORD 'YourStrongPasswordHere';
+
+-- Create application database
+CREATE DATABASE securecipher_db OWNER securecipher_user;
+
+-- Grant all privileges
+GRANT ALL PRIVILEGES ON DATABASE securecipher_db TO securecipher_user;
+
+\q
+```
+
+---
+
+## 9. Backend Setup
+
+```powershell
+# 1. Navigate to backend
+cd backend
+
+# 2. Create and activate virtual environment
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+
+# 3. Install Python dependencies
+pip install -r requirements.txt
+
+# 4. Configure environment variables (see Section 11)
+Copy-Item .env.example .env
+
+# 5. Apply database migrations
+alembic upgrade head
+
+# 6. Run the test suite
+pytest
+
+# 7. Start the development server
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Interactive API documentation:
+- **Swagger UI:** http://127.0.0.1:8000/docs
+- **ReDoc:** http://127.0.0.1:8000/redoc
+
+---
+
+## 10. Frontend Setup
+
+```powershell
+# Open a separate terminal
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start Vite dev server
+npm run dev
+```
+
+Open **http://localhost:5173** in your browser.
+
+---
+
+## 11. Environment Variables
+
+Create `backend/.env` from `backend/.env.example`:
+
+```env
+# ── Database ──────────────────────────────────────────────────────
+DATABASE_URL="postgresql+psycopg://securecipher_user:YourStrongPasswordHere@localhost:5432/securecipher_db"
+
+# ── JWT ───────────────────────────────────────────────────────────
+SECRET_KEY="your-secret-key-minimum-32-characters"
+ALGORITHM="HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+# ── Email OTP (Gmail SMTP example) ────────────────────────────────
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASSWORD="your-app-password"
+EMAIL_FROM="SecureCipher noreply@securecipher.local"
+
+# ── App ───────────────────────────────────────────────────────────
+APP_NAME="SecureCipher"
+DEBUG=true
+```
+
+> **Gmail:** Generate an **App Password** at Google Account > Security > 2-Step Verification > App passwords. Do not use your main account password.
+
+---
+
+## 12. API Reference
+
+All routes are prefixed with `/api`.
+
+### Health
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Backend status and version |
+| `GET` | `/api/health/database` | Live PostgreSQL connectivity check |
+
+### Authentication
+
+| Method | Endpoint | Auth Required | Description |
 |---|---|---|---|
-| `GET` | `/` | Root service descriptor and navigation map | `200 OK` |
-| `GET` | `/api/health` | Backend operational status and latency | `200 OK` |
-| `GET` | `/api/health/database` | Live PostgreSQL connectivity check | `200 OK` (connected) / `503 Service Unavailable` |
-| `GET` | `/api/algorithms` | Returns the 6 registered algorithms and metadata | `200 OK` |
-| `GET` | `/api/algorithms/{id}` | Specification details for a single cipher | `200 OK` / `404 Not Found` |
-| `GET` | `/api/history` | Returns recent operation metadata audit log | `200 OK` |
-| `POST` | `/api/aes/encrypt` | Encrypts UTF-8 text using AES-256-GCM and Scrypt KDF | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/aes/decrypt` | Authenticates and decrypts AES-256-GCM ciphertext payload | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/rsa/generate-keys` | Generates RSA-2048 or RSA-3072 keypair in PEM PKCS#8 & SPKI | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/rsa/encrypt` | Encrypts UTF-8 payload with RSA public key using OAEP-SHA256 | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/rsa/decrypt` | Decrypts RSA ciphertext with private key and verifies OAEP-SHA256 | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/diffie-hellman/generate-keypair` | Generates independent DH keypair (RFC 3526 MODP Group 14, 2048-bit) | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/diffie-hellman/derive-secret` | Derives shared secret from peer public key and expands via HKDF-SHA256 | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/diffie-hellman/simulate-exchange` | Executes complete independent Alice & Bob agreement simulation | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/sha256/hash-text` | Computes 256-bit deterministic digest for UTF-8 text (NIST FIPS 180-4) | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/sha256/hash-file` | Chunk-streamed multipart file hashing with 50 MB limit and O(1) RAM | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/sha256/compare` | Analyzes integrity match, Hamming distance, and avalanche bit flip | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/md5/hash-text` | Computes 128-bit digest for UTF-8 text (RFC 1321 legacy demo) | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/md5/hash-file` | Chunk-streamed multipart file MD5 hashing with 50 MB limit | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/md5/compare` | Compares two inputs or verifies text against 32-hex MD5 checksum | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/des/encrypt` | Encrypts UTF-8 text with legacy DES-CBC, fresh 8-byte IV, and PKCS#7 | `200 OK` / `400 Bad Request` |
-| `POST` | `/api/des/decrypt` | Decrypts DES-CBC ciphertext payload and warns of unauthenticated mode | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/auth/register/request-otp` | No | Send 6-digit OTP to email for registration |
+| `POST` | `/api/auth/register/verify-otp` | No | Verify OTP and create account |
+| `POST` | `/api/auth/login` | No | Login and receive JWT access token |
+| `GET` | `/api/auth/me` | Bearer | Get current authenticated user profile |
+| `PUT` | `/api/auth/profile` | Bearer | Update display name |
+| `POST` | `/api/auth/change-password` | Bearer | Change password with current password verification |
+| `POST` | `/api/auth/logout` | Bearer | Invalidate session |
 
+### Algorithms Metadata
 
----
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/algorithms` | List all 6 registered algorithm specs |
+| `GET` | `/api/algorithms/{id}` | Single algorithm specification |
 
-## 9. Security & Architecture Considerations
+### AES-256-GCM
 
-1. **No Secret Persistence:**
-   The `operation_history` table strictly consists of:
-   - `id` (Integer Primary Key)
-   - `algorithm_name` (String, e.g., "AES-256")
-   - `operation_type` (String, e.g., "encryption")
-   - `status` (String, e.g., "success")
-   - `execution_duration_ms` (Float)
-   - `created_at` (DateTime with timezone)
-   No plaintexts, ciphers, or keys are ever persisted to disk.
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/aes/encrypt` | Encrypt UTF-8 text (AES-256-GCM + Scrypt KDF) |
+| `POST` | `/api/aes/decrypt` | Authenticate GCM tag and decrypt ciphertext |
 
-2. **CORS Security:**
-   The FastAPI backend only permits requests originating from authorized local frontend origins (`http://localhost:5173`, `http://127.0.0.1:5173`).
+### RSA-OAEP
 
-3. **Safe Diagnostics:**
-   Database connection strings with passwords are automatically masked before any logging (`postgresql+psycopg://securecipher_user:******@localhost:5432/securecipher_db`). Raw database exceptions are trapped and sanitized so credentials are never sent to HTTP clients.
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/rsa/generate-keys` | Generate RSA-2048 or RSA-3072 keypair (PEM PKCS#8 + SPKI) |
+| `POST` | `/api/rsa/encrypt` | Encrypt with RSA public key (OAEP-SHA256) |
+| `POST` | `/api/rsa/decrypt` | Decrypt with RSA private key |
 
----
+### Diffie-Hellman
 
-## 10. Troubleshooting
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/diffie-hellman/generate-keypair` | Generate DH keypair (RFC 3526 MODP Group 14, 2048-bit) |
+| `POST` | `/api/diffie-hellman/derive-secret` | Derive shared secret from peer public key + HKDF-SHA256 |
+| `POST` | `/api/diffie-hellman/simulate-exchange` | Full Alice and Bob key agreement simulation in-memory |
 
-### Problem: PostgreSQL shows "Unconfigured" or "Disconnected"
-- **Cause 1:** `backend/.env` has not been created.  
-  *Fix:* Copy `backend/.env.example` to `backend/.env` and replace `your_password_here` with your local password.
-- **Cause 2:** PostgreSQL service is stopped on Windows.  
-  *Fix:* Run in PowerShell as administrator:  
-  `Start-Service postgresql-x64-18` (replace with your installed version if different).
-- **Cause 3:** Password mismatch or user doesn't exist.  
-  *Fix:* Re-run the SQL user creation commands in Section 5.
+### SHA-256
 
-### Problem: Port 8000 or Port 5173 is already in use
-- **Fix:** Check running processes using `Get-NetTCPConnection -LocalPort 8000` or specify a custom port:  
-  `uvicorn app.main:app --port 8001` (and update `frontend/vite.config.js` proxy accordingly).
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/sha256/hash-text` | Hash UTF-8 text (NIST FIPS 180-4) |
+| `POST` | `/api/sha256/hash-file` | Chunk-stream hash file up to 50 MB |
+| `POST` | `/api/sha256/compare` | Integrity check + Hamming distance + avalanche analysis |
 
----
+### MD5
 
-## 11. Implementation Status & Roadmap
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/md5/hash-text` | 128-bit legacy MD5 digest |
+| `POST` | `/api/md5/hash-file` | Chunk-streamed file MD5 (50 MB limit) |
+| `POST` | `/api/md5/compare` | Compare two digests or verify text vs hex checksum |
 
-- **Phase 1 (Complete):** Core architecture, FastAPI routing, PostgreSQL telemetry schema, React 19 UI, and health monitoring.
-- **Phase 2 (Complete):** Live cryptographic engine integration using Python `cryptography` and `pycryptodome`:
-  - `AES-256-GCM` with Scrypt KDF and authentication tag validation.
-  - `RSA-2048/3072` keypair generation, OAEP-SHA256 encryption, and private key decryption.
-  - `Diffie-Hellman` key exchange (RFC 3526 MODP Group 14, 2048-bit) with HKDF-SHA256 key derivation.
-  - `SHA-256` text hashing, chunked 50 MB file stream hashing, and integrity/avalanche comparison.
-  - `MD5` text and file hashing with legacy collision vulnerability analysis.
-  - `DES-CBC` Feistel cipher with fresh 8-byte IV generation, PKCS#7 padding, and DES vs AES comparative analysis.
-- **Phase 3 (Future):** Extended streaming for files > 100 MB, downloadable PKCS#12 certificates, and PSS digital signatures.
+### DES-CBC
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/des/encrypt` | DES-CBC encrypt with fresh 8-byte IV and PKCS#7 padding |
+| `POST` | `/api/des/decrypt` | DES-CBC decrypt (unauthenticated — educational only) |
+
+### Audit History
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/history` | Paginated audit log (filterable by algorithm, status, date) |
+| `GET` | `/api/history/{id}` | Single record detail |
+| `DELETE` | `/api/history/{id}` | Delete a single audit record |
 
 ---
 
-## 12. Educational Scope, Trust Boundaries & Limitations
+## 13. Authentication System
 
-> **Academic & Mini-Project Disclaimer:**  
-> SecureCipher is developed as an educational workbench and comparative demonstration system for undergraduate computer science / cybersecurity coursework. It is **not** intended or certified as a production-grade cryptographic framework or hardware security module (HSM) replacement.
+### Registration Flow
 
-1. **Diffie-Hellman Mutual Authentication Boundary:**
-   - Raw Diffie-Hellman key agreement establishes a shared secret over an insecure channel but provides **no inherent identity authentication**.
-   - In production environments (e.g., TLS 1.3, Signal Protocol), Diffie-Hellman exchange keys are signed with digital certificates (X.509) to prevent **Man-in-the-Middle (MITM)** attacks. The local educational workbench simulates two-party agreement in memory; production deployment would require an authenticated PKI infrastructure.
+```
+1. User submits registration form
+2. POST /api/auth/register/request-otp
+   --> SMTP sends 6-digit OTP to email (5 minute expiry)
+3. User enters OTP code
+4. POST /api/auth/register/verify-otp
+   --> Account created, JWT returned
+   --> Redirect to dashboard (/)
+```
 
-2. **Legacy Ciphers Deprecation & Tampering Risks:**
-   - **MD5 (RFC 1321):** Severely broken by practical collision attacks ($< 2^{32}$ operations). Included strictly for legacy checksum matching and illustrating the avalanche effect compared to SHA-256. Must **never** be used for password hashing, SSL/TLS certificates, or digital signatures.
-   - **DES (FIPS 46-3):** Obsolete Feistel cipher with a 56-bit effective key space ($2^{56} \approx 7.2 \times 10^{16}$ keys), vulnerable to brute-force recovery within hours. Furthermore, DES-CBC mode provides **zero cryptographic integrity or message authentication**, making it susceptible to bit-flipping attacks. Included solely for historical study and comparative cryptanalysis alongside modern AES.
+### Login Flow
 
-3. **In-Memory Cryptographic Handling:**
-   - All private keys, plaintexts, and derived secrets exist strictly in volatile server/client memory during operation execution.
-   - PostgreSQL persistence is strictly limited to non-sensitive operational metadata (algorithm name, operation type, status, execution duration in milliseconds, and timestamp). No ciphertexts, passphrases, or keys are ever written to the database or logged to disk.
+```
+1. User submits credentials
+2. POST /api/auth/login
+   --> bcrypt.verify(password, stored_hash)
+   --> JWT signed with HS256 (configurable expiry)
+   --> Token stored in localStorage or sessionStorage
+3. All subsequent API requests send:
+   Authorization: Bearer <token>
+```
+
+### Password Policy
+
+All passwords must meet every requirement:
+
+- Minimum **8 characters**
+- At least one **uppercase** letter (A–Z)
+- At least one **lowercase** letter (a–z)
+- At least one **numeric digit** (0–9)
+- At least one **special character** (e.g. `!@#$%^&*`)
+
+### Route Guards
+
+- **`PublicRoute`** — wraps `/login` and `/register`. Redirects authenticated users to `/`.
+- **Backend dependency injection** — every auth-required endpoint validates the Bearer token via `Depends(get_current_user)`.
+
+---
+
+## 14. Audit History and PDF Reports
+
+Every cryptographic operation appends a non-sensitive record to `operation_history`:
+
+```sql
+CREATE TABLE operation_history (
+    id                    SERIAL PRIMARY KEY,
+    algorithm_name        VARCHAR NOT NULL,   -- e.g. "AES-256-GCM"
+    operation_type        VARCHAR NOT NULL,   -- e.g. "encryption"
+    status                VARCHAR NOT NULL,   -- "success" | "failure"
+    execution_duration_ms FLOAT,             -- wall-clock milliseconds
+    created_at            TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+> **No plaintexts, ciphertexts, keys, or passphrases are ever stored.**
+
+### PDF Report Types
+
+| Report | Page Format | Contents |
+|---|---|---|
+| Single Operation | A4 Portrait | Header, algorithm specs, operation metadata, security explanation, IST timestamp |
+| Full Audit Log | A4 Landscape | Summary statistics, complete paginated table, generation timestamp in IST |
+
+All timestamps are rendered in **Indian Standard Time (IST, UTC+05:30)** using `Intl.DateTimeFormat`.
+
+---
+
+## 15. Security Architecture
+
+### Data Storage Policy
+
+| Data | Stored? | Location |
+|---|---|---|
+| Algorithm name | Yes | `operation_history.algorithm_name` |
+| Operation type | Yes | `operation_history.operation_type` |
+| Status | Yes | `operation_history.status` |
+| Execution duration | Yes | `operation_history.execution_duration_ms` |
+| Timestamp | Yes | `operation_history.created_at` |
+| Hashed password | Yes | `users.hashed_password` (bcrypt cost 12) |
+| Plaintext input | **Never** | — |
+| Ciphertext output | **Never** | — |
+| Private keys | **Never** | — |
+| Passphrases | **Never** | — |
+| OTP codes | Deleted after use | Removed immediately on verification |
+
+### CORS Policy
+
+The FastAPI backend only accepts requests from:
+
+- `http://localhost:5173`
+- `http://127.0.0.1:5173`
+
+### Credential Masking
+
+Database URLs are masked in all server logs:
+
+```
+postgresql+psycopg://securecipher_user:******@localhost:5432/securecipher_db
+```
+
+### JWT Security
+
+- Algorithm: `HS256`
+- Configurable `SECRET_KEY` (minimum 32 characters recommended)
+- Expiry enforced server-side on every protected endpoint
+- Tokens stored in `localStorage` (remember me) or `sessionStorage` (session only)
+
+---
+
+## 16. Testing
+
+```powershell
+cd backend
+.\venv\Scripts\Activate.ps1
+pytest -v
+```
+
+**73 / 73 tests passing — 100% pass rate**
+
+| Test File | Coverage |
+|---|---|
+| `test_api.py` | Health endpoints, history CRUD, pagination, filters |
+| `test_auth.py` | Registration, login, password change, profile update |
+| `test_aes.py` | AES-256-GCM encrypt/decrypt roundtrip, tamper detection |
+| `test_rsa.py` | RSA-2048/3072 keygen, OAEP encrypt/decrypt |
+| `test_diffie_hellman.py` | Keypair gen, shared secret derivation, full simulation |
+| `test_sha256.py` | Text hash, file hash, comparison, avalanche analysis |
+| `test_md5.py` | Text hash, file hash, comparison |
+| `test_des.py` | DES-CBC encrypt/decrypt, IV freshness |
+
+---
+
+## 17. Troubleshooting
+
+### PostgreSQL shows "Disconnected" or "Unconfigured"
+
+- **`.env` not created:** Run `Copy-Item .env.example .env` and fill in `DATABASE_URL`
+- **Service stopped:**
+  ```powershell
+  Start-Service postgresql-x64-17   # Replace with your installed version
+  ```
+- **Wrong credentials:** Re-run the SQL commands in Section 8
+
+### Port already in use
+
+```powershell
+# Find process using port 8000
+Get-NetTCPConnection -LocalPort 8000
+
+# Start backend on an alternate port
+uvicorn app.main:app --port 8001
+```
+
+Update `frontend/vite.config.js` proxy target to match the new port.
+
+### OTP email not received
+
+- Verify all `SMTP_*` values in `.env`
+- For Gmail use an **App Password**, not your main account password
+- Check your spam or junk mail folder
+- With `DEBUG=true`, the OTP is also printed to backend terminal stdout
+
+### Vite build errors after pulling
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+### Alembic migration conflicts
+
+```powershell
+cd backend
+alembic downgrade base
+alembic upgrade head
+```
+
+---
+
+## 18. Roadmap
+
+| Phase | Status | Features |
+|---|---|---|
+| Phase 1 | ✅ Complete | FastAPI + PostgreSQL foundation, React UI, health monitoring |
+| Phase 2 | ✅ Complete | All 6 cryptographic engines, audit history, algorithm workbenches |
+| Phase 3 | ✅ Complete | JWT authentication, OTP registration, profile and password management |
+| Phase 4 | ✅ Complete | Premium home page redesign, login/register pages, PDF report generation |
+| Phase 5 | ✅ Complete | Audit history per-record actions (view, download, delete), IST timestamps |
+| Phase 6 | 🔜 Planned | File encryption over 100 MB streaming, PKCS#12 certificate export |
+| Phase 7 | 🔜 Planned | RSA-PSS digital signatures, ECDSA, Ed25519 key pairs |
+| Phase 8 | 🔜 Planned | Docker deployment, NGINX reverse proxy, HTTPS with self-signed certificate |
+
+---
+
+## 19. Disclaimer
+
+> **Academic and Educational Use Only**
+
+SecureCipher is developed as a college mini-project for undergraduate Computer Science / Cybersecurity coursework. It is **not** intended, audited, or certified as a production-grade cryptographic framework, security library, or hardware security module (HSM) replacement.
+
+**Legacy Algorithm Warnings:**
+
+- **MD5 (RFC 1321):** Practical collision attacks exist with fewer than 2^32 operations. Never use MD5 for password hashing, digital signatures, or SSL certificates.
+- **DES (FIPS 46-3):** The 56-bit key space is fully exhaustible by modern brute-force within hours. DES-CBC provides no message authentication and is vulnerable to bit-flipping attacks. Included for historical study only.
+
+**Diffie-Hellman Notice:** Raw DH key agreement establishes a shared secret but provides no identity authentication. Production deployments (TLS 1.3, Signal Protocol) sign DH keys with X.509 certificates to prevent Man-in-the-Middle attacks.
+
+---
+
+<div align="center">
+
+**Built with love by [Ajay Kumar K R](https://github.com/AjayKumarKR07)**
+
+B.Tech Computer Science — ALS Mini Project Development
+
+React · FastAPI · PostgreSQL · Python Cryptography
+
+</div>
