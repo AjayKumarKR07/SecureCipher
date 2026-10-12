@@ -17,6 +17,14 @@ from app.schemas.rsa import (
     RSADecryptRequest,
     RSADecryptResponse,
 )
+from app.schemas.diffie_hellman import (
+    DHKeyGenRequest,
+    DHKeyGenResponse,
+    DHDeriveSecretRequest,
+    DHDeriveSecretResponse,
+    DHSimulationResponse,
+    DHSimulationPartyInfo,
+)
 
 __all__ = [
     "HealthResponse",
@@ -36,6 +44,12 @@ __all__ = [
     "RSAEncryptResponse",
     "RSADecryptRequest",
     "RSADecryptResponse",
+    "DHKeyGenRequest",
+    "DHKeyGenResponse",
+    "DHDeriveSecretRequest",
+    "DHDeriveSecretResponse",
+    "DHSimulationResponse",
+    "DHSimulationPartyInfo",
 ]
 
 

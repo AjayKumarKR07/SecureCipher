@@ -62,6 +62,11 @@ export default function AlgorithmCard({ algorithm }) {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
                 Active (OAEP)
               </span>
+            ) : algorithm.id === 'diffie-hellman' ? (
+              <span className="text-emerald-400 font-medium font-mono flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
+                Active (MODP)
+              </span>
             ) : (
               <span className="text-blue-400 font-medium">Layout Ready</span>
             )}

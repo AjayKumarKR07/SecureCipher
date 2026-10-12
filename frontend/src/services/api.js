@@ -103,8 +103,8 @@ export async function fetchAlgorithms() {
           category: 'Key Agreement Protocol',
           purpose: 'Secure establishment of shared secret keys over insecure communication channels',
           description: 'Discrete logarithm based handshake deriving identical symmetric session keys.',
-          key_size_info: '2048-bit MODP or ECDH',
-          status: 'Foundation Layout Ready (Pending Crypto Implementation)',
+          key_size_info: '2048-bit MODP Group 14 (RFC 3526)',
+          status: 'Active (RFC 3526 MODP-2048 & HKDF-SHA256 Implemented)',
           features: ['Zero pre-shared secret', 'Forward secrecy', 'Modular arithmetic visualization'],
         },
         {
@@ -257,5 +257,63 @@ export async function decryptRSA(ciphertext, privateKeyPem) {
   }
   return data;
 }
+
+/**
+ * Generate Diffie-Hellman Keypair (RFC 3526 MODP Group 14)
+ */
+export async function generateDHKeypair(partyName = 'Party') {
+  const response = await fetch(`${API_BASE_URL}/diffie-hellman/generate-keypair`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ party_name: partyName }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Diffie-Hellman key generation failed');
+  }
+  return data;
+}
+
+/**
+ * Derive Shared Secret and HKDF-SHA256 Symmetric Key
+ */
+export async function deriveDHSecret(privateKeyPem, peerPublicKeyPem, info = 'SecureCipher Diffie-Hellman KDF') {
+  const response = await fetch(`${API_BASE_URL}/diffie-hellman/derive-secret`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      private_key_pem: privateKeyPem,
+      peer_public_key_pem: peerPublicKeyPem,
+      info,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Diffie-Hellman key derivation failed');
+  }
+  return data;
+}
+
+/**
+ * Simulate Complete Alice <-> Bob Diffie-Hellman Handshake
+ */
+export async function simulateDHExchange() {
+  const response = await fetch(`${API_BASE_URL}/diffie-hellman/simulate-exchange`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Diffie-Hellman handshake simulation failed');
+  }
+  return data;
+}
+
 
 

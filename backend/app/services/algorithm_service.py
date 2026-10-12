@@ -39,8 +39,8 @@ ALGORITHMS_REGISTRY: List[AlgorithmInfo] = [
         category="Key Agreement Protocol",
         purpose="Secure establishment of shared secret keys over insecure communication channels",
         description="First public-key protocol published (1976), relying on the discrete logarithm problem in cyclic groups to derive matching session keys without transmitting secrets.",
-        key_size_info="2048-bit MODP or Elliptic Curve (ECDH)",
-        status="Foundation Layout Ready (Pending Crypto Implementation)",
+        key_size_info="2048-bit MODP Group 14 (RFC 3526)",
+        status="Active (RFC 3526 MODP-2048 & HKDF-SHA256 Implemented)",
         features=[
             "Zero pre-shared key requirement",
             "Forward secrecy enablement",

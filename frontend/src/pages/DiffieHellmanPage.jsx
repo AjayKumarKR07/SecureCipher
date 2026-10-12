@@ -1,35 +1,186 @@
 import React, { useState } from 'react';
-import { Repeat, Key, Shield, ArrowRight, Info, Check, Cpu } from 'lucide-react';
+import {
+  Repeat,
+  Key,
+  Shield,
+  ArrowRight,
+  Info,
+  Check,
+  CheckCircle2,
+  AlertCircle,
+  Cpu,
+  Copy,
+  RefreshCw,
+  Sparkles,
+  ShieldAlert,
+  ShieldCheck,
+  Lock,
+  Unlock,
+  Zap,
+} from 'lucide-react';
+import { generateDHKeypair, deriveDHSecret, simulateDHExchange } from '../services/api';
 
-export default function DiffieHellmanPage() {
-  const [primeP, setPrimeP] = useState('23');
-  const [generatorG, setGeneratorG] = useState('5');
-  const [alicePriv, setAlicePriv] = useState('6');
-  const [bobPriv, setBobPriv] = useState('15');
-  const [simulated, setSimulated] = useState(false);
+export default function DiffieHellmanPage({ onOperationSuccess }) {
+  const [activeMode, setActiveMode] = useState('simulation'); // 'simulation' | 'workbench'
 
-  // Quick mathematical illustrative calculation for educational demonstration
-  const p = parseInt(primeP, 10) || 23;
-  const g = parseInt(generatorG, 10) || 5;
-  const a = parseInt(alicePriv, 10) || 6;
-  const b = parseInt(bobPriv, 10) || 15;
+  // Clipboard copy tracker
+  const [copiedKey, setCopiedKey] = useState(null);
 
-  // Power mod helper for toy example
-  const modPow = (base, exp, mod) => {
-    let res = 1;
-    base = base % mod;
-    while (exp > 0) {
-      if (exp % 2 === 1) res = (res * base) % mod;
-      exp = Math.floor(exp / 2);
-      base = (base * base) % mod;
-    }
-    return res;
+  const handleCopy = (text, key) => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const alicePub = modPow(g, a, p);
-  const bobPub = modPow(g, b, p);
-  const aliceSecret = modPow(bobPub, a, p);
-  const bobSecret = modPow(alicePub, b, p);
+  // --- Mode 1: Automated Handshake Simulation State ---
+  const [simulationLoading, setSimulationLoading] = useState(false);
+  const [simulationResult, setSimulationResult] = useState(null);
+  const [simulationError, setSimulationError] = useState('');
+
+  const handleRunSimulation = async () => {
+    setSimulationError('');
+    setSimulationLoading(true);
+    try {
+      const data = await simulateDHExchange();
+      setSimulationResult(data);
+      if (onOperationSuccess) {
+        onOperationSuccess();
+      }
+    } catch (err) {
+      setSimulationError(err.message || 'Diffie-Hellman handshake simulation failed.');
+    } finally {
+      setSimulationLoading(false);
+    }
+  };
+
+  // --- Mode 2: Manual Dual-Party Workbench State ---
+  // Alice State
+  const [alicePrivKey, setAlicePrivKey] = useState('');
+  const [alicePubKey, setAlicePubKey] = useState('');
+  const [alicePeerPubKey, setAlicePeerPubKey] = useState('');
+  const [aliceDerivedKey, setAliceDerivedKey] = useState(null);
+  const [aliceLoading, setAliceLoading] = useState(false);
+  const [aliceError, setAliceError] = useState('');
+
+  // Bob State
+  const [bobPrivKey, setBobPrivKey] = useState('');
+  const [bobPubKey, setBobPubKey] = useState('');
+  const [bobPeerPubKey, setBobPeerPubKey] = useState('');
+  const [bobDerivedKey, setBobDerivedKey] = useState(null);
+  const [bobLoading, setBobLoading] = useState(false);
+  const [bobError, setBobError] = useState('');
+
+  // Key Derivation Context Info
+  const [kdfInfo, setKdfInfo] = useState('SecureCipher Diffie-Hellman KDF');
+
+  // Alice: Generate Keypair
+  const handleGenerateAlice = async () => {
+    setAliceError('');
+    setAliceLoading(true);
+    try {
+      const data = await generateDHKeypair('Alice');
+      setAlicePrivKey(data.private_key_pem);
+      setAlicePubKey(data.public_key_pem);
+      // Auto-populate Bob's peer public key if empty
+      if (!bobPeerPubKey) {
+        setBobPeerPubKey(data.public_key_pem);
+      }
+      if (onOperationSuccess) {
+        onOperationSuccess();
+      }
+    } catch (err) {
+      setAliceError(err.message || 'Alice key generation failed.');
+    } finally {
+      setAliceLoading(false);
+    }
+  };
+
+  // Bob: Generate Keypair
+  const handleGenerateBob = async () => {
+    setBobError('');
+    setBobLoading(true);
+    try {
+      const data = await generateDHKeypair('Bob');
+      setBobPrivKey(data.private_key_pem);
+      setBobPubKey(data.public_key_pem);
+      // Auto-populate Alice's peer public key if empty
+      if (!alicePeerPubKey) {
+        setAlicePeerPubKey(data.public_key_pem);
+      }
+      if (onOperationSuccess) {
+        onOperationSuccess();
+      }
+    } catch (err) {
+      setBobError(err.message || 'Bob key generation failed.');
+    } finally {
+      setBobLoading(false);
+    }
+  };
+
+  // Alice: Derive Secret
+  const handleDeriveAlice = async (e) => {
+    e.preventDefault();
+    setAliceError('');
+    setAliceDerivedKey(null);
+
+    if (!alicePrivKey.trim()) {
+      setAliceError("Alice's private key is required.");
+      return;
+    }
+    if (!alicePeerPubKey.trim()) {
+      setAliceError("Bob's public key (peer key) is required.");
+      return;
+    }
+
+    setAliceLoading(true);
+    try {
+      const data = await deriveDHSecret(alicePrivKey.trim(), alicePeerPubKey.trim(), kdfInfo.trim());
+      setAliceDerivedKey(data);
+      if (onOperationSuccess) {
+        onOperationSuccess();
+      }
+    } catch (err) {
+      setAliceError(err.message || 'Secret derivation failed.');
+    } finally {
+      setAliceLoading(false);
+    }
+  };
+
+  // Bob: Derive Secret
+  const handleDeriveBob = async (e) => {
+    e.preventDefault();
+    setBobError('');
+    setBobDerivedKey(null);
+
+    if (!bobPrivKey.trim()) {
+      setBobError("Bob's private key is required.");
+      return;
+    }
+    if (!bobPeerPubKey.trim()) {
+      setBobError("Alice's public key (peer key) is required.");
+      return;
+    }
+
+    setBobLoading(true);
+    try {
+      const data = await deriveDHSecret(bobPrivKey.trim(), bobPeerPubKey.trim(), kdfInfo.trim());
+      setBobDerivedKey(data);
+      if (onOperationSuccess) {
+        onOperationSuccess();
+      }
+    } catch (err) {
+      setBobError(err.message || 'Secret derivation failed.');
+    } finally {
+      setBobLoading(false);
+    }
+  };
+
+  // Check agreement in workbench mode
+  const workbenchKeysMatch =
+    aliceDerivedKey &&
+    bobDerivedKey &&
+    aliceDerivedKey.derived_key_b64 === bobDerivedKey.derived_key_b64;
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -45,136 +196,574 @@ export default function DiffieHellmanPage() {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 m-0">
-            Cryptographic key agreement establishing shared secrets over untrusted channels
+            NIST SP 800-56A & RFC 3526 | 2048-bit MODP Group 14 (g=2) | HKDF-SHA256 Derivation
           </p>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
+            Engine Active
+          </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-indigo-950/40 text-indigo-300 border border-indigo-500/30">
-            Key Agreement
+            MODP-2048
           </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-950/40 text-purple-300 border border-purple-500/30">
-            Forward Secrecy
+            HKDF-SHA256
           </span>
         </div>
       </div>
 
-      {/* Educational Notice */}
-      <div className="rounded-xl border border-indigo-500/30 bg-indigo-950/20 p-4 flex items-start gap-3">
-        <Info className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-indigo-200/90 leading-relaxed">
-          <strong className="text-indigo-300">Phase 1 Foundation Layout:</strong> Interactive handshake simulator below displays the step-by-step modular exponentiation theory. Production 2048-bit MODP groups and ECDH curve generation will connect to the backend in Phase 2.
-        </div>
+      {/* Mode Switcher */}
+      <div className="flex rounded-lg bg-slate-900 p-1 border border-slate-800 max-w-md">
+        <button
+          onClick={() => setActiveMode('simulation')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+            activeMode === 'simulation'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Zap className="w-3.5 h-3.5" />
+          <span>Full Protocol Simulation</span>
+        </button>
+        <button
+          onClick={() => setActiveMode('workbench')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+            activeMode === 'workbench'
+              ? 'bg-purple-600 text-white shadow-md'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Key className="w-3.5 h-3.5" />
+          <span>Dual-Party Workbench</span>
+        </button>
       </div>
 
-      {/* Educational Handshake Interactive Visualizer */}
-      <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-6">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <Cpu className="w-4 h-4 text-indigo-400" />
-          <span>Interactive Protocol Handshake Walkthrough</span>
-        </h3>
-
-        {/* Step 1: Public Domain Parameters */}
-        <div className="p-4 rounded-lg bg-slate-900/90 border border-slate-800">
-          <div className="text-xs font-semibold text-purple-300 mb-2 uppercase font-mono">
-            Step 1: Public Domain Parameters (Agreed in the clear)
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[11px] text-slate-400 mb-1">Prime modulus (p)</label>
-              <input
-                type="number"
-                value={primeP}
-                onChange={(e) => setPrimeP(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-white font-mono"
-              />
+      {/* MODE 1: FULL PROTOCOL SIMULATION */}
+      {activeMode === 'simulation' && (
+        <div className="space-y-6">
+          <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Cpu className="w-4 h-4 text-indigo-400" />
+                  <span>Real-Time Alice & Bob Cryptographic Handshake</span>
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Execute standard 2048-bit modular exponentiation (g^a mod p and g^b mod p) and HKDF key extraction via FastAPI backend.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleRunSimulation}
+                disabled={simulationLoading}
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-indigo-950/40 flex items-center gap-2 transition-all self-start sm:self-auto"
+              >
+                {simulationLoading ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Computing 2048-bit Handshake...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Run Protocol Handshake</span>
+                  </>
+                )}
+              </button>
             </div>
-            <div>
-              <label className="block text-[11px] text-slate-400 mb-1">Primitive root generator (g)</label>
-              <input
-                type="number"
-                value={generatorG}
-                onChange={(e) => setGeneratorG(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded p-2 text-xs text-white font-mono"
-              />
+
+            {simulationError && (
+              <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-3 text-xs text-rose-300 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <span>{simulationError}</span>
+              </div>
+            )}
+
+            {/* Protocol Flow Visualization */}
+            <div className="space-y-4 pt-2">
+              {/* Step 1: Public Domain Parameters */}
+              <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                    <Shield className="w-3.5 h-3.5" /> Step 1: Public Domain Parameters (Agreed in RFC 3526)
+                  </span>
+                  <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                    Group 14 (2048-bit MODP)
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-2.5 rounded bg-slate-950 border border-slate-800 font-mono">
+                    <div className="text-[11px] text-slate-400 mb-0.5">Generator (g):</div>
+                    <div className="text-indigo-300 font-bold">2</div>
+                  </div>
+                  <div className="p-2.5 rounded bg-slate-950 border border-slate-800 font-mono">
+                    <div className="text-[11px] text-slate-400 mb-0.5">Prime Modulus (p):</div>
+                    <div className="text-slate-300 truncate text-[11px]">
+                      0xFFFFFFFFFFFFFFFFC90FDAA22168C234... (2048-bit Sophie Germain safe prime)
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 2: Independent Private Secrets & Public Exponents */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Alice Column */}
+                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5" /> Party A (Alice)
+                    </span>
+                    <span className="text-[11px] font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800">
+                      Private Secret (a) Kept Local
+                    </span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div>
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                        <span>Alice Public Key (A = gᵃ mod p):</span>
+                        {simulationResult && (
+                          <button
+                            type="button"
+                            onClick={() => handleCopy(simulationResult.alice.public_key_pem, 'sim-a-pub')}
+                            className="text-purple-400 hover:text-purple-300 text-[11px] flex items-center gap-1"
+                          >
+                            {copiedKey === 'sim-a-pub' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            <span>{copiedKey === 'sim-a-pub' ? 'Copied' : 'Copy'}</span>
+                          </button>
+                        )}
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 font-mono text-[11px] text-purple-200/90 break-all select-all max-h-24 overflow-y-auto">
+                        {simulationResult ? simulationResult.alice.public_key_pem : 'Click "Run Protocol Handshake" above to generate Alice\'s 2048-bit key.'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bob Column */}
+                <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/30 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-blue-300 flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5" /> Party B (Bob)
+                    </span>
+                    <span className="text-[11px] font-mono text-blue-400 bg-blue-950/60 px-2 py-0.5 rounded border border-blue-800">
+                      Private Secret (b) Kept Local
+                    </span>
+                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div>
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                        <span>Bob Public Key (B = gᵇ mod p):</span>
+                        {simulationResult && (
+                          <button
+                            type="button"
+                            onClick={() => handleCopy(simulationResult.bob.public_key_pem, 'sim-b-pub')}
+                            className="text-blue-400 hover:text-blue-300 text-[11px] flex items-center gap-1"
+                          >
+                            {copiedKey === 'sim-b-pub' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                            <span>{copiedKey === 'sim-b-pub' ? 'Copied' : 'Copy'}</span>
+                          </button>
+                        )}
+                      </div>
+                      <div className="p-2 rounded bg-slate-950 border border-slate-800 font-mono text-[11px] text-blue-200/90 break-all select-all max-h-24 overflow-y-auto">
+                        {simulationResult ? simulationResult.bob.public_key_pem : 'Click "Run Protocol Handshake" above to generate Bob\'s 2048-bit key.'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3: Shared Secret Derivation Result */}
+              {simulationResult && (
+                <div className="p-5 rounded-xl bg-slate-900 border border-emerald-500/40 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase font-mono">
+                      <CheckCircle2 className="w-4 h-4" /> Step 3: Shared Secret Agreement & HKDF-SHA256 Derivation
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">
+                      {simulationResult.execution_duration_ms} ms
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Alice computed S_A = B^a mod p and Bob computed S_B = A^b mod p. Since (g^b)^a = (g^a)^b = g^(ab) mod p, both parties computed identical shared secret bytes without ever transmitting their private keys! The shared secret was then passed into <strong>HKDF-SHA256</strong> to extract a uniform 256-bit symmetric session key.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    {/* Alice's derived key */}
+                    <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-1">
+                      <div className="flex items-center justify-between text-[11px] text-purple-300 font-mono">
+                        <span>Alice's Derived Key:</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(simulationResult.alice_derived_key_b64, 'sim-a-key')}
+                          className="text-purple-400 hover:text-purple-300"
+                        >
+                          {copiedKey === 'sim-a-key' ? 'Copied' : 'Copy'}
+                        </button>
+                      </div>
+                      <div className="font-mono text-xs text-emerald-300 break-all select-all font-bold">
+                        {simulationResult.alice_derived_key_b64}
+                      </div>
+                    </div>
+
+                    {/* Bob's derived key */}
+                    <div className="p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-1">
+                      <div className="flex items-center justify-between text-[11px] text-blue-300 font-mono">
+                        <span>Bob's Derived Key:</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(simulationResult.bob_derived_key_b64, 'sim-b-key')}
+                          className="text-blue-400 hover:text-blue-300"
+                        >
+                          {copiedKey === 'sim-b-key' ? 'Copied' : 'Copy'}
+                        </button>
+                      </div>
+                      <div className="font-mono text-xs text-emerald-300 break-all select-all font-bold">
+                        {simulationResult.bob_derived_key_b64}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
+                    <span className="text-xs text-emerald-200 font-medium flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400" />
+                      <span>Mathematical Key Equality: <strong>Identical 256-bit Session Key Derived</strong></span>
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400 truncate max-w-xs">
+                      Fingerprint: {simulationResult.key_fingerprint.substring(0, 16)}...
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
+      )}
 
-        {/* Step 2: Private Secrets & Public Exponents */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Alice's Box */}
-          <div className="p-4 rounded-lg bg-purple-950/20 border border-purple-500/30">
-            <h4 className="text-xs font-bold text-purple-300 mb-2">Party A (Alice)</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Alice Private Secret (a):</label>
-                <input
-                  type="number"
-                  value={alicePriv}
-                  onChange={(e) => setAlicePriv(e.target.value)}
-                  className="w-full bg-slate-900 border border-purple-900 rounded p-2 text-xs text-white font-mono"
-                />
+      {/* MODE 2: DUAL-PARTY WORKBENCH */}
+      {activeMode === 'workbench' && (
+        <div className="space-y-6">
+          {/* Key Derivation Context Info Config */}
+          <div className="glass-panel rounded-xl p-4 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-white mb-0.5">
+                HKDF Context String (`info`)
+              </label>
+              <p className="text-[11px] text-slate-400">
+                Application-specific context bound into the key derivation function (RFC 5869).
+              </p>
+            </div>
+            <input
+              type="text"
+              value={kdfInfo}
+              onChange={(e) => setKdfInfo(e.target.value)}
+              className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white font-mono w-full sm:w-80 focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Alice Workbench */}
+            <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-purple-300 flex items-center gap-1.5">
+                  <Key className="w-4 h-4 text-purple-400" />
+                  <span>Party A (Alice)</span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleGenerateAlice}
+                  disabled={aliceLoading}
+                  className="px-3 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-1 transition-all"
+                >
+                  {aliceLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  <span>Generate Keypair</span>
+                </button>
               </div>
-              <div className="p-2.5 rounded bg-slate-900 border border-slate-800 text-xs font-mono">
-                <div className="text-[11px] text-slate-400">Public Key A = gᵃ mod p:</div>
-                <div className="text-purple-300 font-bold mt-0.5">
-                  {g}^{a} mod {p} = <span className="text-white">{alicePub}</span>
+
+              {aliceError && (
+                <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-2.5 text-xs text-rose-300 flex items-start gap-1.5">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <span>{aliceError}</span>
                 </div>
+              )}
+
+              <form onSubmit={handleDeriveAlice} className="space-y-3">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <label className="text-[11px] text-slate-300 font-medium">Alice Private Key (PKCS#8 PEM)</label>
+                    {alicePrivKey && (
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(alicePrivKey, 'alice-priv')}
+                        className="text-[11px] text-purple-400 hover:underline flex items-center gap-1"
+                      >
+                        {copiedKey === 'alice-priv' ? 'Copied' : 'Copy'}
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={alicePrivKey}
+                    onChange={(e) => setAlicePrivKey(e.target.value)}
+                    placeholder="Alice's private key PEM (kept secret)..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-[11px] text-purple-200 font-mono focus:outline-none focus:border-purple-500"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <label className="text-[11px] text-slate-300 font-medium">Alice Public Key (SPKI PEM)</label>
+                    {alicePubKey && (
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(alicePubKey, 'alice-pub')}
+                        className="text-[11px] text-purple-400 hover:underline flex items-center gap-1"
+                      >
+                        {copiedKey === 'alice-pub' ? 'Copied' : 'Copy'}
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    readOnly
+                    value={alicePubKey}
+                    placeholder="Alice's public key PEM..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-[11px] text-slate-300 font-mono focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <label className="text-[11px] text-slate-300 font-medium">Peer Public Key (Bob's Public PEM)</label>
+                    {bobPubKey && (
+                      <button
+                        type="button"
+                        onClick={() => setAlicePeerPubKey(bobPubKey)}
+                        className="text-[11px] text-blue-400 hover:underline"
+                      >
+                        Paste Bob's Public Key
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={alicePeerPubKey}
+                    onChange={(e) => setAlicePeerPubKey(e.target.value)}
+                    placeholder="Bob's public key PEM..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-[11px] text-blue-200 font-mono focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={aliceLoading}
+                  className="w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                >
+                  <Unlock className="w-3.5 h-3.5" />
+                  <span>Derive Secret as Alice</span>
+                </button>
+              </form>
+
+              {aliceDerivedKey && (
+                <div className="p-3 rounded-lg bg-slate-900 border border-purple-500/40 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-purple-300 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Alice Key Derived</span>
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {aliceDerivedKey.execution_duration_ms} ms
+                    </span>
+                  </div>
+                  <div className="p-2 rounded bg-slate-950 font-mono text-xs text-emerald-300 break-all select-all font-bold">
+                    {aliceDerivedKey.derived_key_b64}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Bob Workbench */}
+            <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-blue-300 flex items-center gap-1.5">
+                  <Key className="w-4 h-4 text-blue-400" />
+                  <span>Party B (Bob)</span>
+                </h3>
+                <button
+                  type="button"
+                  onClick={handleGenerateBob}
+                  disabled={bobLoading}
+                  className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-1 transition-all"
+                >
+                  {bobLoading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                  <span>Generate Keypair</span>
+                </button>
               </div>
+
+              {bobError && (
+                <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-2.5 text-xs text-rose-300 flex items-start gap-1.5">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <span>{bobError}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleDeriveBob} className="space-y-3">
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <label className="text-[11px] text-slate-300 font-medium">Bob Private Key (PKCS#8 PEM)</label>
+                    {bobPrivKey && (
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(bobPrivKey, 'bob-priv')}
+                        className="text-[11px] text-blue-400 hover:underline flex items-center gap-1"
+                      >
+                        {copiedKey === 'bob-priv' ? 'Copied' : 'Copy'}
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={bobPrivKey}
+                    onChange={(e) => setBobPrivKey(e.target.value)}
+                    placeholder="Bob's private key PEM (kept secret)..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-[11px] text-blue-200 font-mono focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <label className="text-[11px] text-slate-300 font-medium">Bob Public Key (SPKI PEM)</label>
+                    {bobPubKey && (
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(bobPubKey, 'bob-pub')}
+                        className="text-[11px] text-blue-400 hover:underline flex items-center gap-1"
+                      >
+                        {copiedKey === 'bob-pub' ? 'Copied' : 'Copy'}
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    readOnly
+                    value={bobPubKey}
+                    placeholder="Bob's public key PEM..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-[11px] text-slate-300 font-mono focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <label className="text-[11px] text-slate-300 font-medium">Peer Public Key (Alice's Public PEM)</label>
+                    {alicePubKey && (
+                      <button
+                        type="button"
+                        onClick={() => setBobPeerPubKey(alicePubKey)}
+                        className="text-[11px] text-purple-400 hover:underline"
+                      >
+                        Paste Alice's Public Key
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={bobPeerPubKey}
+                    onChange={(e) => setBobPeerPubKey(e.target.value)}
+                    placeholder="Alice's public key PEM..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-[11px] text-purple-200 font-mono focus:outline-none focus:border-purple-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={bobLoading}
+                  className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                >
+                  <Unlock className="w-3.5 h-3.5" />
+                  <span>Derive Secret as Bob</span>
+                </button>
+              </form>
+
+              {bobDerivedKey && (
+                <div className="p-3 rounded-lg bg-slate-900 border border-blue-500/40 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-blue-300 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Bob Key Derived</span>
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {bobDerivedKey.execution_duration_ms} ms
+                    </span>
+                  </div>
+                  <div className="p-2 rounded bg-slate-950 font-mono text-xs text-emerald-300 break-all select-all font-bold">
+                    {bobDerivedKey.derived_key_b64}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Bob's Box */}
-          <div className="p-4 rounded-lg bg-blue-950/20 border border-blue-500/30">
-            <h4 className="text-xs font-bold text-blue-300 mb-2">Party B (Bob)</h4>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Bob Private Secret (b):</label>
-                <input
-                  type="number"
-                  value={bobPriv}
-                  onChange={(e) => setBobPriv(e.target.value)}
-                  className="w-full bg-slate-900 border border-blue-900 rounded p-2 text-xs text-white font-mono"
-                />
+          {/* Mutual Agreement Status Banner */}
+          {aliceDerivedKey && bobDerivedKey && (
+            <div
+              className={`p-4 rounded-xl border flex items-center justify-between ${
+                workbenchKeysMatch
+                  ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
+                  : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
+              }`}
+            >
+              <div className="flex items-center gap-2 text-xs">
+                {workbenchKeysMatch ? (
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+                )}
+                <span>
+                  {workbenchKeysMatch
+                    ? 'Agreement Confirmed: Alice and Bob have independently derived the exact same 256-bit symmetric key!'
+                    : 'Key Mismatch: Derived keys do not match. Verify private and peer public key pairings.'}
+                </span>
               </div>
-              <div className="p-2.5 rounded bg-slate-900 border border-slate-800 text-xs font-mono">
-                <div className="text-[11px] text-slate-400">Public Key B = gᵇ mod p:</div>
-                <div className="text-blue-300 font-bold mt-0.5">
-                  {g}^{b} mod {p} = <span className="text-white">{bobPub}</span>
-                </div>
-              </div>
+              <span className="text-[11px] font-mono bg-slate-950 px-2.5 py-1 rounded border border-slate-800">
+                {workbenchKeysMatch ? 'KEY MATCH ✓' : 'KEY MISMATCH ✗'}
+              </span>
             </div>
-          </div>
+          )}
         </div>
+      )}
 
-        {/* Step 3: Shared Secret Derivation */}
-        <div className="p-4 rounded-lg bg-emerald-950/30 border border-emerald-500/40 text-center">
-          <div className="text-xs font-semibold text-emerald-300 mb-1 uppercase font-mono">
-            Step 3: Derived Shared Secret Key (S)
-          </div>
-          <p className="text-xs text-slate-300 mb-3">
-            Alice calculates S = Bᵃ mod p ({bobPub}^{a} mod {p} = {aliceSecret}). Bob calculates S = Aᵇ mod p ({alicePub}^{b} mod {p} = {bobSecret}).
+      {/* Educational & Architectural Panels */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <Cpu className="w-4 h-4 text-indigo-400" />
+            <span>Mathematical Basis</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            Diffie-Hellman relies on the <strong>Computational Diffie-Hellman (CDH)</strong> assumption over cyclic groups (Z_p*, *). Given public generator g, Alice's g^a, and Bob's g^b, computing g^(ab) mod p is computationally infeasible without solving the discrete logarithm problem.
           </p>
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-lg bg-slate-900 border border-emerald-500/50">
-            <span className="text-xs text-slate-400 font-mono">Derived Secret:</span>
-            <span className="text-base font-bold text-emerald-300 font-mono">
-              S = {aliceSecret} ({aliceSecret === bobSecret ? 'Identical Key Derived ✓' : 'Mismatch'})
-            </span>
-          </div>
         </div>
 
-        <button
-          onClick={() => setSimulated(true)}
-          className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-semibold shadow-md transition-all"
-        >
-          Simulate Handshake Telemetry Check
-        </button>
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <ShieldAlert className="w-4 h-4 text-purple-400" />
+            <span>HKDF Key Derivation</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            Raw Diffie-Hellman output g^(ab) is <strong>not uniformly distributed</strong> across its bits. Cryptographic best practices strictly require passing the shared secret through a Key Derivation Function like <strong>HKDF-SHA256</strong> to extract cryptographically strong pseudo-random bits.
+          </p>
+        </div>
 
-        {simulated && (
-          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 font-mono">
-            Handshake telemetry validated. Production backend will perform 2048-bit FIPS 186-4 modular exponentiation and HKDF key derivation.
-          </div>
-        )}
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>Trust & Security Boundaries</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            <strong>Educational Demonstration Boundary:</strong> In production systems (TLS 1.3, Signal), each endpoint retains its own private key and verifies peer identity with digital certificates (preventing Man-in-the-Middle attacks). The backend logs zero secrets.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -243,6 +243,9 @@ All API routes are mounted under the `/api` prefix:
 | `POST` | `/api/rsa/generate-keys` | Generates RSA-2048 or RSA-3072 keypair in PEM PKCS#8 & SPKI | `200 OK` / `400 Bad Request` |
 | `POST` | `/api/rsa/encrypt` | Encrypts UTF-8 payload with RSA public key using OAEP-SHA256 | `200 OK` / `400 Bad Request` |
 | `POST` | `/api/rsa/decrypt` | Decrypts RSA ciphertext with private key and verifies OAEP-SHA256 | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/diffie-hellman/generate-keypair` | Generates independent DH keypair (RFC 3526 MODP Group 14, 2048-bit) | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/diffie-hellman/derive-secret` | Derives shared secret from peer public key and expands via HKDF-SHA256 | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/diffie-hellman/simulate-exchange` | Executes complete independent Alice & Bob agreement simulation | `200 OK` / `400 Bad Request` |
 
 
 ---
