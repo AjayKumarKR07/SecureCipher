@@ -161,10 +161,10 @@ export default function HistoryPage({ dbHealth }) {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-lg bg-indigo-950/60 border border-indigo-500/30 text-indigo-400">
+            <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400">
               <History className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
@@ -185,7 +185,7 @@ export default function HistoryPage({ dbHealth }) {
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm border ${
                 pdfDownloaded
                   ? 'bg-emerald-600/30 border-emerald-500/60 text-emerald-200'
-                  : 'bg-indigo-600 hover:bg-indigo-500 border-indigo-500/80 text-white shadow-indigo-950/40 hover:shadow-indigo-900/50'
+                  : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold border-emerald-500/80 shadow-emerald-950/40 hover:shadow-indigo-900/50'
               } disabled:opacity-50`}
               title="Download formatted A4 audit history report PDF directly to your device"
             >
@@ -212,7 +212,7 @@ export default function HistoryPage({ dbHealth }) {
                 href={lastDownloadedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-900 border border-indigo-500/40 hover:border-indigo-400 text-indigo-300 hover:text-indigo-200 text-xs font-medium transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#040e06] border border-emerald-500/40 hover:border-indigo-400 text-emerald-300 hover:text-emerald-200 text-xs font-medium transition-colors"
                 title="View or print the generated PDF report in a new tab"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -224,9 +224,9 @@ export default function HistoryPage({ dbHealth }) {
               type="button"
               onClick={loadHistory}
               disabled={loading}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/25 text-slate-300 hover:text-white text-xs font-medium transition-colors disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-purple-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
               <span>Refresh Audit Trail</span>
             </button>
           </div>
@@ -276,9 +276,9 @@ export default function HistoryPage({ dbHealth }) {
       </div>
 
       {/* Database Connectivity Status Notice */}
-      <div className="glass-panel rounded-xl p-4 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="glass-panel rounded-xl p-4 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Database className="w-4 h-4 text-purple-400" />
+          <Database className="w-4 h-4 text-emerald-400" />
           <div>
             <div className="text-xs font-semibold text-white">PostgreSQL Backend Connection</div>
             <div className="text-[11px] text-slate-400">
@@ -301,15 +301,15 @@ export default function HistoryPage({ dbHealth }) {
       </div>
 
       {/* Filters & Table */}
-      <div className="glass-panel rounded-xl border border-slate-800 overflow-hidden">
-        <div className="p-4 border-b border-slate-800 bg-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="glass-panel rounded-xl border border-emerald-500/20 overflow-hidden">
+        <div className="p-4 border-b border-emerald-500/20 bg-[#040e06]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-slate-400" />
             <span className="text-xs font-medium text-slate-300">Filter Algorithm:</span>
             <select
               value={filterAlgo}
               onChange={(e) => setFilterAlgo(e.target.value)}
-              className="bg-slate-950 border border-slate-700 rounded px-2.5 py-1 text-xs text-white font-mono focus:outline-none focus:border-purple-500"
+              className="bg-[#030a04] border border-emerald-500/25 rounded px-2.5 py-1 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
             >
               <option value="ALL">All Algorithms</option>
               <option value="AES">AES</option>
@@ -340,7 +340,7 @@ export default function HistoryPage({ dbHealth }) {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/80 text-slate-400 font-mono border-b border-slate-800">
+              <thead className="bg-[#030a04]/80 text-slate-400 font-mono border-b border-emerald-500/20">
                 <tr>
                   <th className="py-3 px-4">Audit ID</th>
                   <th className="py-3 px-4">Algorithm</th>
@@ -354,7 +354,7 @@ export default function HistoryPage({ dbHealth }) {
               <tbody className="divide-y divide-slate-800">
                 {filteredItems.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3 px-4 font-mono text-purple-400 font-semibold">#{item.id}</td>
+                    <td className="py-3 px-4 font-mono text-emerald-400 font-semibold">#{item.id}</td>
                     <td className="py-3 px-4 font-medium text-white">{item.algorithm_name}</td>
                     <td className="py-3 px-4 text-slate-300 font-mono text-[11px]">{item.operation_type}</td>
                     <td className="py-3 px-4">
@@ -373,10 +373,10 @@ export default function HistoryPage({ dbHealth }) {
                         <button
                           type="button"
                           onClick={() => setViewingItem(item)}
-                          className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-medium inline-flex items-center gap-1 transition-colors shadow-sm"
+                          className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-emerald-500/25 text-[11px] font-medium inline-flex items-center gap-1 transition-colors shadow-sm"
                           title={`View details for Audit #${item.id}`}
                         >
-                          <Eye className="w-3 h-3 text-indigo-400" />
+                          <Eye className="w-3 h-3 text-emerald-400" />
                           <span>View</span>
                         </button>
 
@@ -384,10 +384,10 @@ export default function HistoryPage({ dbHealth }) {
                         <button
                           type="button"
                           onClick={() => handleDownloadSingleReport(item)}
-                          className="px-2.5 py-1 rounded-md bg-indigo-950/60 hover:bg-indigo-900/70 text-indigo-300 hover:text-indigo-200 border border-indigo-700/50 text-[11px] font-medium inline-flex items-center gap-1 transition-colors shadow-sm"
+                          className="px-2.5 py-1 rounded-md bg-[#06180a] hover:bg-emerald-950/70 text-emerald-300 hover:text-emerald-200 border border-indigo-700/50 text-[11px] font-medium inline-flex items-center gap-1 transition-colors shadow-sm"
                           title={`Download PDF Report for Audit #${item.id}`}
                         >
-                          <Download className="w-3 h-3 text-indigo-400" />
+                          <Download className="w-3 h-3 text-emerald-400" />
                           <span>Download Report</span>
                         </button>
 
@@ -416,11 +416,11 @@ export default function HistoryPage({ dbHealth }) {
       {/* ============================================================== */}
       {viewingItem && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-scaleUp">
+          <div className="bg-[#040e06] border border-emerald-500/25 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-scaleUp">
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-indigo-950/80 border border-indigo-500/40 text-indigo-400">
+                <span className="p-1.5 rounded-lg bg-[#06180a] border border-emerald-500/40 text-emerald-400">
                   <FileText className="w-4 h-4" />
                 </span>
                 <div>
@@ -451,22 +451,22 @@ export default function HistoryPage({ dbHealth }) {
 
             {/* Parameter Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+              <div className="p-3 rounded-lg bg-[#030a04] border border-emerald-500/20">
                 <span className="text-[11px] text-slate-400 block mb-1">Algorithm Name</span>
                 <span className="font-semibold text-white">{viewingItem.algorithm_name}</span>
               </div>
 
-              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+              <div className="p-3 rounded-lg bg-[#030a04] border border-emerald-500/20">
                 <span className="text-[11px] text-slate-400 block mb-1">Operation Type</span>
-                <span className="font-mono text-indigo-300 font-semibold">{viewingItem.operation_type}</span>
+                <span className="font-mono text-emerald-300 font-semibold">{viewingItem.operation_type}</span>
               </div>
 
-              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+              <div className="p-3 rounded-lg bg-[#030a04] border border-emerald-500/20">
                 <span className="text-[11px] text-slate-400 block mb-1">Execution Status</span>
                 <StatusBadge status={viewingItem.status} label={viewingItem.status} size="xs" />
               </div>
 
-              <div className="p-3 rounded-lg bg-slate-950 border border-slate-800">
+              <div className="p-3 rounded-lg bg-[#030a04] border border-emerald-500/20">
                 <span className="text-[11px] text-slate-400 block mb-1">Execution Latency</span>
                 <span className="font-mono text-emerald-300 font-semibold flex items-center gap-1">
                   <Clock className="w-3 h-3" />
@@ -474,7 +474,7 @@ export default function HistoryPage({ dbHealth }) {
                 </span>
               </div>
 
-              <div className="col-span-2 p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-1">
+              <div className="col-span-2 p-3 rounded-lg bg-[#030a04] border border-emerald-500/20 space-y-1">
                 <span className="text-[11px] text-slate-400 block mb-0.5">Execution Timestamp (IST - India Timings)</span>
                 <span className="font-mono text-emerald-300 font-semibold text-xs flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-emerald-400" />
@@ -487,7 +487,7 @@ export default function HistoryPage({ dbHealth }) {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-between gap-2 pt-3 border-t border-emerald-500/20">
               <button
                 type="button"
                 onClick={() => {
@@ -503,7 +503,7 @@ export default function HistoryPage({ dbHealth }) {
                 <button
                   type="button"
                   onClick={() => handleDownloadSingleReport(viewingItem)}
-                  className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors shadow-sm"
+                  className="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors shadow-sm"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download Report</span>
@@ -526,7 +526,7 @@ export default function HistoryPage({ dbHealth }) {
       {/* ============================================================== */}
       {itemToDelete && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-rose-900/60 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+          <div className="bg-[#040e06] border border-rose-900/60 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
             <div className="flex items-start gap-3">
               <span className="p-2 rounded-lg bg-rose-950/80 border border-rose-700/50 text-rose-400 shrink-0">
                 <AlertTriangle className="w-5 h-5" />
@@ -538,7 +538,7 @@ export default function HistoryPage({ dbHealth }) {
                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                   Are you sure you want to permanently delete this audit record for{' '}
                   <strong className="text-white">{itemToDelete.algorithm_name}</strong> (
-                  <span className="font-mono text-purple-300">{itemToDelete.operation_type}</span>
+                  <span className="font-mono text-emerald-300">{itemToDelete.operation_type}</span>
                   ) from the PostgreSQL database?
                 </p>
                 <p className="text-[11px] text-rose-300 mt-2 font-medium">
@@ -547,7 +547,7 @@ export default function HistoryPage({ dbHealth }) {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-emerald-500/20">
               <button
                 type="button"
                 onClick={() => setItemToDelete(null)}

@@ -5,9 +5,9 @@ export default function AboutPage() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="border-b border-slate-800 pb-5">
+      <div className="border-b border-emerald-500/20 pb-5">
         <div className="flex items-center gap-2 mb-1">
-          <span className="p-2 rounded-lg bg-purple-950/60 border border-purple-500/30 text-purple-400">
+          <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400">
             <Info className="w-5 h-5" />
           </span>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
@@ -20,16 +20,16 @@ export default function AboutPage() {
       </div>
 
       {/* Overview Card */}
-      <div className="glass-panel rounded-xl p-6 border border-slate-800 space-y-4">
+      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
         <h2 className="text-lg font-bold text-white m-0">Project Purpose & Academic Scope</h2>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed m-0">
           <strong>SecureCipher</strong> is engineered as a full-stack cryptographic laboratory designed to bridge the gap between theoretical cryptography and real-world implementation. The system compares modern enterprise-grade security primitives against historical and legacy algorithms, emphasizing security-by-design standards: zero plaintext persistence, zero key leakage, and end-to-end audit tracking.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-          <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
-            <h3 className="text-xs font-bold text-purple-300 mb-1 flex items-center gap-1.5 m-0">
-              <Shield className="w-4 h-4 text-purple-400" />
+          <div className="p-3.5 rounded-lg bg-[#040e06]/80 border border-emerald-500/20">
+            <h3 className="text-xs font-bold text-emerald-300 mb-1 flex items-center gap-1.5 m-0">
+              <Shield className="w-4 h-4 text-emerald-400" />
               Symmetric Protection
             </h3>
             <p className="text-[11px] text-slate-400 m-0">
@@ -37,9 +37,9 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
-            <h3 className="text-xs font-bold text-blue-300 mb-1 flex items-center gap-1.5 m-0">
-              <Lock className="w-4 h-4 text-blue-400" />
+          <div className="p-3.5 rounded-lg bg-[#040e06]/80 border border-emerald-500/20">
+            <h3 className="text-xs font-bold text-teal-300 mb-1 flex items-center gap-1.5 m-0">
+              <Lock className="w-4 h-4 text-teal-400" />
               Asymmetric & Exchange
             </h3>
             <p className="text-[11px] text-slate-400 m-0">
@@ -47,7 +47,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
+          <div className="p-3.5 rounded-lg bg-[#040e06]/80 border border-emerald-500/20">
             <h3 className="text-xs font-bold text-emerald-300 mb-1 flex items-center gap-1.5 m-0">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               Integrity Verification
@@ -60,55 +60,55 @@ export default function AboutPage() {
       </div>
 
       {/* Technology Stack Specifications */}
-      <div className="glass-panel rounded-xl p-6 border border-slate-800 space-y-4">
+      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
         <h2 className="text-lg font-bold text-white m-0">Full-Stack Architecture & Technology Stack</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Frontend Stack */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wider font-mono m-0">
+            <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono m-0">
               Frontend Client Layer
             </h3>
             <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">React 18 / 19</span>
-                <span className="font-mono text-purple-300 text-[11px]">Component Framework</span>
+                <span className="font-mono text-emerald-300 text-[11px]">Component Framework</span>
               </li>
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">Vite</span>
-                <span className="font-mono text-purple-300 text-[11px]">Build Tool & Dev Server</span>
+                <span className="font-mono text-emerald-300 text-[11px]">Build Tool & Dev Server</span>
               </li>
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">Tailwind CSS</span>
-                <span className="font-mono text-purple-300 text-[11px]">Dark Navy Design System</span>
+                <span className="font-mono text-emerald-300 text-[11px]">Dark Navy Design System</span>
               </li>
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">React Router v7</span>
-                <span className="font-mono text-purple-300 text-[11px]">Client-Side Routing</span>
+                <span className="font-mono text-emerald-300 text-[11px]">Client-Side Routing</span>
               </li>
             </ul>
           </div>
 
           {/* Backend Stack */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-blue-400 uppercase tracking-wider font-mono m-0">
+            <h3 className="text-xs font-bold text-teal-400 uppercase tracking-wider font-mono m-0">
               Backend & Persistence Layer
             </h3>
             <ul className="space-y-2 text-xs text-slate-300">
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">FastAPI</span>
-                <span className="font-mono text-blue-300 text-[11px]">Asynchronous Python REST API</span>
+                <span className="font-mono text-teal-300 text-[11px]">Asynchronous Python REST API</span>
               </li>
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">Uvicorn</span>
-                <span className="font-mono text-blue-300 text-[11px]">ASGI Web Server</span>
+                <span className="font-mono text-teal-300 text-[11px]">ASGI Web Server</span>
               </li>
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">SQLAlchemy 2.x</span>
-                <span className="font-mono text-blue-300 text-[11px]">Modern Declarative ORM</span>
+                <span className="font-mono text-teal-300 text-[11px]">Modern Declarative ORM</span>
               </li>
-              <li className="flex items-center justify-between p-2 rounded bg-slate-900/60 border border-slate-800">
+              <li className="flex items-center justify-between p-2 rounded bg-[#040e06]/60 border border-emerald-500/20">
                 <span className="font-semibold text-white">Psycopg 3 & PostgreSQL</span>
-                <span className="font-mono text-blue-300 text-[11px]">Relational Persistence</span>
+                <span className="font-mono text-teal-300 text-[11px]">Relational Persistence</span>
               </li>
             </ul>
           </div>
@@ -116,18 +116,18 @@ export default function AboutPage() {
       </div>
 
       {/* PostgreSQL Local Setup Guide */}
-      <div className="glass-panel rounded-xl p-6 border border-slate-800 space-y-4">
+      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
         <h2 className="text-lg font-bold text-white flex items-center gap-2 m-0">
-          <Database className="w-5 h-5 text-purple-400" />
+          <Database className="w-5 h-5 text-emerald-400" />
           <span>Local PostgreSQL Windows Setup Instructions</span>
         </h2>
         <p className="text-xs text-slate-300 leading-relaxed m-0">
           To connect the local Windows PostgreSQL instance to SecureCipher, create the designated database user and database:
         </p>
 
-        <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3 font-mono text-xs">
+        <div className="bg-[#030a04] p-4 rounded-lg border border-emerald-500/20 space-y-3 font-mono text-xs">
           <div className="text-slate-400"># 1. Open psql as the postgres administrator</div>
-          <div className="text-purple-300 bg-black/60 p-2 rounded">
+          <div className="text-emerald-300 bg-black/60 p-2 rounded">
             psql -U postgres
           </div>
 
@@ -139,12 +139,12 @@ export default function AboutPage() {
           </div>
 
           <div className="text-slate-400"># 3. Create backend/.env with your chosen password</div>
-          <div className="text-blue-300 bg-black/60 p-2 rounded break-all">
+          <div className="text-teal-300 bg-black/60 p-2 rounded break-all">
             DATABASE_URL="postgresql+psycopg://securecipher_user:YourStrongPasswordHere@localhost:5432/securecipher_db"
           </div>
 
           <div className="text-slate-400"># 4. Initialize database tables</div>
-          <div className="text-purple-300 bg-black/60 p-2 rounded">
+          <div className="text-emerald-300 bg-black/60 p-2 rounded">
             python -m app.db.init_db
           </div>
         </div>

@@ -11,8 +11,9 @@ import {
   History,
   Info,
   X,
-  Server,
+  ShieldCheck,
   User,
+  Home,
 } from 'lucide-react';
 
 const navItems = [
@@ -29,7 +30,7 @@ const navItems = [
   { name: 'Operation History', path: '/history', icon: History },
   { name: 'Profile & Settings', path: '/profile', icon: User },
   { name: 'About & Roadmap', path: '/about', icon: Info },
-  { name: 'Home Landing Page', path: '/', icon: Server },
+  { name: 'Home Landing Page', path: '/', icon: Home },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -38,31 +39,36 @@ export default function Sidebar({ isOpen, onClose }) {
       {/* Mobile backdrop overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 lg:hidden"
+          className="fixed inset-0 bg-black/80 backdrop-blur-xs z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#0D121F] border-r border-slate-800 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#030804] border-r border-emerald-500/15 flex flex-col transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand Header */}
-        <div className="h-16 border-b border-slate-800 px-5 flex items-center justify-between">
+        <div className="h-16 border-b border-emerald-500/15 px-5 flex items-center justify-between bg-[#040e06]/60">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center shadow-md">
-              <Server className="w-4 h-4 text-white" />
+            <div className="relative w-8 h-8 rounded-xl bg-[#06180a] border border-emerald-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-emerald-950/50">
+              <div className="w-full h-full bg-[#030a04] rounded-[9px] flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              </div>
+              <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping opacity-75" />
             </div>
             <div>
-              <h1 className="text-sm font-bold tracking-tight text-white m-0">SecureCipher</h1>
-              <p className="text-[10px] text-slate-400 font-mono m-0">College Mini-Project</p>
+              <h1 className="text-sm font-extrabold tracking-tight text-white m-0 flex items-center gap-1">
+                Secure<span className="text-emerald-400">Cipher</span>
+              </h1>
+              <p className="text-[10px] text-emerald-500/70 font-mono m-0">College Mini-Project</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#06180a]"
           >
             <X className="w-5 h-5" />
           </button>
@@ -75,7 +81,7 @@ export default function Sidebar({ isOpen, onClose }) {
               return (
                 <div
                   key={`header-${index}`}
-                  className="pt-4 pb-1 px-3 text-[10px] font-semibold tracking-wider text-slate-400 uppercase font-mono"
+                  className="pt-4 pb-1 px-3 text-[10px] font-bold tracking-wider text-emerald-500/60 uppercase font-mono"
                 >
                   {item.label}
                 </div>
@@ -89,16 +95,16 @@ export default function Sidebar({ isOpen, onClose }) {
                 to={item.path}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                  `flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
                     isActive
-                      ? 'bg-purple-900/40 text-purple-200 border border-purple-500/40 shadow-sm shadow-purple-950'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                      ? 'bg-[#06180a] text-emerald-300 border border-emerald-500/40 shadow-md shadow-emerald-950/60 font-semibold'
+                      : 'text-slate-400 hover:text-emerald-300 hover:bg-[#06180a]/40 border border-transparent'
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-purple-400' : 'text-slate-400'}`} />
+                    <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
                     <span>{item.name}</span>
                   </>
                 )}
@@ -108,15 +114,15 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Footer info box */}
-        <div className="p-4 border-t border-slate-800 bg-[#0B0F19]/60">
-          <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800/80">
+        <div className="p-4 border-t border-emerald-500/15 bg-[#020603]">
+          <div className="p-3 rounded-xl bg-[#040e06] border border-emerald-500/20">
             <div className="flex items-center justify-between text-[11px] mb-1">
               <span className="text-slate-400">Architecture:</span>
-              <span className="text-purple-300 font-mono font-medium">FastAPI + Vite</span>
+              <span className="text-emerald-300 font-mono font-medium">FastAPI + Vite</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-slate-400">Version:</span>
-              <span className="text-blue-300 font-mono">v0.1.0 Foundation</span>
+              <span className="text-slate-400">Security:</span>
+              <span className="text-emerald-400 font-mono text-[10px] uppercase">Zero-Knowledge</span>
             </div>
           </div>
         </div>

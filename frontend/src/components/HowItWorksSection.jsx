@@ -31,7 +31,7 @@ export default function HowItWorksSection({
   example,
   securityNotes = [],
   keyTakeaway,
-  themeColor = 'purple',
+  themeColor = 'emerald',
 }) {
   // Color configuration mapping
   const colorMap = {
@@ -91,7 +91,7 @@ export default function HowItWorksSection({
     },
   };
 
-  const theme = colorMap[themeColor] || colorMap.purple;
+  const theme = colorMap[themeColor] || colorMap.emerald;
 
   // Defensively normalize warningBanner (supports string or object)
   const normalizedWarning = typeof warningBanner === 'string'
@@ -151,7 +151,7 @@ export default function HowItWorksSection({
   return (
     <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 space-y-7 relative overflow-hidden">
       {/* Decorative subtle ambient backdrop glow */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-purple-500/5 via-blue-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       {/* Prominent Warning Banner (if algorithm is legacy/insecure) */}
       {normalizedWarning && (

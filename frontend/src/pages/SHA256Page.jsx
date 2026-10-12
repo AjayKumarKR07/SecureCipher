@@ -144,7 +144,7 @@ export default function SHA256Page({ onOperationSuccess }) {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="p-2 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-emerald-400">
@@ -163,20 +163,20 @@ export default function SHA256Page({ onOperationSuccess }) {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
             FIPS 180-4 Active
           </span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-950/40 text-purple-300 border border-purple-500/30">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#06180a] text-emerald-300 border border-emerald-500/30">
             256-bit Output
           </span>
         </div>
       </div>
 
       {/* Mode Selector Tabs */}
-      <div className="flex border-b border-slate-800 gap-2">
+      <div className="flex border-b border-emerald-500/20 gap-2">
         <button
           onClick={() => setActiveTab('text')}
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'text'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
           <FileText className="w-3.5 h-3.5" />
@@ -187,7 +187,7 @@ export default function SHA256Page({ onOperationSuccess }) {
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'file'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
           <Upload className="w-3.5 h-3.5" />
@@ -198,7 +198,7 @@ export default function SHA256Page({ onOperationSuccess }) {
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'compare'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
           <Scale className="w-3.5 h-3.5" />
@@ -209,7 +209,7 @@ export default function SHA256Page({ onOperationSuccess }) {
       {/* TAB 1: TEXT HASHING */}
       {activeTab === 'text' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+          <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-white">UTF-8 Text Payload</span>
               <div className="flex items-center gap-1.5">
@@ -246,7 +246,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Enter UTF-8 text string to compute SHA-256 digest..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
               />
 
               <button
@@ -276,7 +276,7 @@ export default function SHA256Page({ onOperationSuccess }) {
             )}
 
             {textResult && (
-              <div className="p-4 rounded-lg bg-slate-900/90 border border-emerald-500/40 space-y-3">
+              <div className="p-4 rounded-lg bg-[#040e06]/90 border border-emerald-500/40 space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
                   <span className="text-emerald-300 font-bold flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -297,21 +297,21 @@ export default function SHA256Page({ onOperationSuccess }) {
                   </div>
                 </div>
 
-                <div className="font-mono text-xs text-emerald-300 bg-slate-950 p-3 rounded border border-slate-800 break-all select-all font-bold tracking-wider">
+                <div className="font-mono text-xs text-emerald-300 bg-[#030a04] p-3 rounded border border-emerald-500/20 break-all select-all font-bold tracking-wider">
                   {textResult.digest}
                 </div>
 
                 {/* Byte Breakdown */}
                 <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-mono pt-1">
-                  <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                  <div className="bg-[#030a04] p-2 rounded border border-emerald-500/20">
                     <span className="text-slate-400 block">Output Bits:</span>
                     <span className="text-emerald-400 font-bold">256 bits</span>
                   </div>
-                  <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                  <div className="bg-[#030a04] p-2 rounded border border-emerald-500/20">
                     <span className="text-slate-400 block">Byte Length:</span>
                     <span className="text-emerald-400 font-bold">32 bytes</span>
                   </div>
-                  <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                  <div className="bg-[#030a04] p-2 rounded border border-emerald-500/20">
                     <span className="text-slate-400 block">Hex Digits:</span>
                     <span className="text-emerald-400 font-bold">64 nibbles</span>
                   </div>
@@ -322,7 +322,7 @@ export default function SHA256Page({ onOperationSuccess }) {
 
           {/* Side Specifications */}
           <div className="space-y-4">
-            <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+            <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
               <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
                 <Cpu className="w-4 h-4 text-emerald-400" />
                 <span>SHA-256 Engine Specs</span>
@@ -357,7 +357,7 @@ export default function SHA256Page({ onOperationSuccess }) {
       {/* TAB 2: FILE STREAM HASHING */}
       {activeTab === 'file' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+          <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xs font-semibold text-white">Streamed File Integrity Checksum</h3>
@@ -372,7 +372,7 @@ export default function SHA256Page({ onOperationSuccess }) {
 
             <form onSubmit={handleHashFile} className="space-y-4">
               {/* File Upload Drop Zone */}
-              <div className="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-xl p-6 text-center transition-colors bg-slate-900/40">
+              <div className="border-2 border-dashed border-emerald-500/25 hover:border-emerald-500/60 rounded-xl p-6 text-center transition-colors bg-[#040e06]/40">
                 <input
                   type="file"
                   id="sha256-file-input"
@@ -405,7 +405,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                   value={fileExpectedHash}
                   onChange={(e) => setFileExpectedHash(e.target.value.trim().toLowerCase())}
                   placeholder="Paste 64-hex character expected checksum to verify integrity..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -436,7 +436,7 @@ export default function SHA256Page({ onOperationSuccess }) {
             )}
 
             {fileResult && (
-              <div className="p-4 rounded-lg bg-slate-900/90 border border-emerald-500/40 space-y-3">
+              <div className="p-4 rounded-lg bg-[#040e06]/90 border border-emerald-500/40 space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
                   <span className="text-emerald-300 font-bold flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -457,7 +457,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                   </div>
                 </div>
 
-                <div className="font-mono text-xs text-emerald-300 bg-slate-950 p-3 rounded border border-slate-800 break-all select-all font-bold tracking-wider">
+                <div className="font-mono text-xs text-emerald-300 bg-[#030a04] p-3 rounded border border-emerald-500/20 break-all select-all font-bold tracking-wider">
                   {fileResult.digest}
                 </div>
 
@@ -493,7 +493,7 @@ export default function SHA256Page({ onOperationSuccess }) {
 
           {/* Stream Architecture Card */}
           <div className="space-y-4">
-            <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+            <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
               <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
                 <Sliders className="w-4 h-4 text-emerald-400" />
                 <span>Chunk Stream Architecture</span>
@@ -501,10 +501,10 @@ export default function SHA256Page({ onOperationSuccess }) {
               <p className="text-xs text-slate-300 leading-relaxed">
                 Rather than buffering entire gigabyte files into server RAM, the backend processes bytes iteratively:
               </p>
-              <div className="p-3 bg-slate-950 rounded border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1">
+              <div className="p-3 bg-[#030a04] rounded border border-emerald-500/20 font-mono text-[11px] text-slate-300 space-y-1">
                 <div className="text-emerald-400">hasher = hashlib.sha256()</div>
                 <div>while chunk := await file.read(65536):</div>
-                <div className="pl-4 text-indigo-300">hasher.update(chunk)</div>
+                <div className="pl-4 text-emerald-300">hasher.update(chunk)</div>
                 <div className="text-emerald-400">return hasher.hexdigest()</div>
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -518,7 +518,7 @@ export default function SHA256Page({ onOperationSuccess }) {
       {/* TAB 3: INTEGRITY & AVALANCHE COMPARISON */}
       {activeTab === 'compare' && (
         <div className="space-y-6">
-          <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
+          <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-xs font-semibold text-white">Dual-Payload Integrity & Avalanche Analyzer</h3>
@@ -529,7 +529,7 @@ export default function SHA256Page({ onOperationSuccess }) {
               <button
                 type="button"
                 onClick={applyAvalanchePreset}
-                className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium flex items-center gap-1.5 shadow transition-all self-start sm:self-auto"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-medium flex items-center gap-1.5 shadow transition-all self-start sm:self-auto"
               >
                 <Flame className="w-3.5 h-3.5 text-amber-400" />
                 <span>Load 1-Bit Flip Avalanche Test</span>
@@ -546,7 +546,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                     value={compareInputA}
                     onChange={(e) => setCompareInputA(e.target.value)}
                     placeholder="Enter first string..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
 
@@ -559,7 +559,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                     <select
                       value={compareMode}
                       onChange={(e) => setCompareMode(e.target.value)}
-                      className="bg-slate-950 border border-slate-700 rounded text-[11px] text-slate-300 px-2 py-0.5 focus:outline-none focus:border-emerald-500"
+                      className="bg-[#030a04] border border-emerald-500/25 rounded text-[11px] text-slate-300 px-2 py-0.5 focus:outline-none focus:border-emerald-500"
                     >
                       <option value="text_vs_text">Compare Text vs Text</option>
                       <option value="text_vs_hash">Verify Text vs Checksum</option>
@@ -574,7 +574,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                         ? 'Paste 64-hex character checksum...'
                         : 'Enter second string...'
                     }
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
               </div>
@@ -627,28 +627,28 @@ export default function SHA256Page({ onOperationSuccess }) {
                         : `Integrity Mismatch: Digests differ by ${compareResult.hamming_distance_bits} bits (${compareResult.bit_difference_percentage}% avalanche bit flip).`}
                     </span>
                   </div>
-                  <span className="text-[11px] font-mono bg-slate-950 px-2.5 py-1 rounded border border-slate-800 font-bold">
+                  <span className="text-[11px] font-mono bg-[#030a04] px-2.5 py-1 rounded border border-emerald-500/20 font-bold">
                     {compareResult.is_match ? 'IDENTICAL MATCH ✓' : 'DIFFERENT DIGESTS ✗'}
                   </span>
                 </div>
 
                 {/* Metrics Breakdown */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs">
-                  <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                  <div className="p-3 bg-[#040e06] rounded-lg border border-emerald-500/20">
                     <span className="text-slate-400 text-[11px] block">Hamming Distance (Bits):</span>
                     <span className="text-lg font-bold font-mono text-emerald-400">
                       {compareResult.hamming_distance_bits} / 256
                     </span>
                   </div>
-                  <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                  <div className="p-3 bg-[#040e06] rounded-lg border border-emerald-500/20">
                     <span className="text-slate-400 text-[11px] block">Avalanche Bit Flip:</span>
                     <span className="text-lg font-bold font-mono text-amber-400">
                       {compareResult.bit_difference_percentage}%
                     </span>
                   </div>
-                  <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                  <div className="p-3 bg-[#040e06] rounded-lg border border-emerald-500/20">
                     <span className="text-slate-400 text-[11px] block">Execution Duration:</span>
-                    <span className="text-lg font-bold font-mono text-indigo-400">
+                    <span className="text-lg font-bold font-mono text-emerald-400">
                       {compareResult.execution_duration_ms} ms
                     </span>
                   </div>
@@ -656,7 +656,7 @@ export default function SHA256Page({ onOperationSuccess }) {
 
                 {/* Side-by-Side Digests */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-                  <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                  <div className="p-3 rounded-lg bg-[#040e06] border border-emerald-500/20 space-y-1">
                     <div className="flex items-center justify-between text-[11px] text-slate-400">
                       <span>Digest A:</span>
                       <button
@@ -667,12 +667,12 @@ export default function SHA256Page({ onOperationSuccess }) {
                         {copiedKey === 'comp-a' ? 'Copied' : 'Copy'}
                       </button>
                     </div>
-                    <div className="p-2 rounded bg-slate-950 text-emerald-300 break-all select-all font-bold">
+                    <div className="p-2 rounded bg-[#030a04] text-emerald-300 break-all select-all font-bold">
                       {compareResult.hash_a}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                  <div className="p-3 rounded-lg bg-[#040e06] border border-emerald-500/20 space-y-1">
                     <div className="flex items-center justify-between text-[11px] text-slate-400">
                       <span>Digest B:</span>
                       <button
@@ -683,7 +683,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                         {copiedKey === 'comp-b' ? 'Copied' : 'Copy'}
                       </button>
                     </div>
-                    <div className="p-2 rounded bg-slate-950 text-emerald-300 break-all select-all font-bold">
+                    <div className="p-2 rounded bg-[#030a04] text-emerald-300 break-all select-all font-bold">
                       {compareResult.hash_b}
                     </div>
                   </div>
@@ -778,7 +778,7 @@ export default function SHA256Page({ onOperationSuccess }) {
 
       {/* Educational & Architectural Panels */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+        <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
           <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
             <Cpu className="w-4 h-4 text-emerald-400" />
             <span>Merkle-Damgård Structure</span>
@@ -788,7 +788,7 @@ export default function SHA256Page({ onOperationSuccess }) {
           </p>
         </div>
 
-        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+        <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
           <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
             <Flame className="w-4 h-4 text-amber-400" />
             <span>Strict Avalanche Effect</span>
@@ -798,9 +798,9 @@ export default function SHA256Page({ onOperationSuccess }) {
           </p>
         </div>
 
-        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+        <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
           <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-            <ShieldCheck className="w-4 h-4 text-indigo-400" />
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
             <span>Audit & Privacy Policy</span>
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">

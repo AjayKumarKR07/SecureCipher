@@ -158,10 +158,10 @@ export default function RSAPage({ onOperationSuccess }) {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-lg bg-blue-950/60 border border-blue-500/30 text-blue-400">
+            <span className="p-2 rounded-lg bg-[#04160d] border border-teal-500/30 text-teal-400">
               <KeyRound className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
@@ -177,21 +177,21 @@ export default function RSAPage({ onOperationSuccess }) {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
             Engine Active
           </span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-blue-950/40 text-blue-300 border border-blue-500/30">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#04160d] text-teal-300 border border-teal-500/30">
             OAEP-SHA256
           </span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-950/40 text-purple-300 border border-purple-500/30">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#06180a] text-emerald-300 border border-emerald-500/30">
             2048 / 3072-bit
           </span>
         </div>
       </div>
 
       {/* Real Key Generator Workbench */}
-      <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+      <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <Key className="w-4 h-4 text-blue-400" />
+              <Key className="w-4 h-4 text-teal-400" />
               <span>Cryptographic Keypair Generator</span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -202,7 +202,7 @@ export default function RSAPage({ onOperationSuccess }) {
             <select
               value={keyGenSize}
               onChange={(e) => setKeyGenSize(e.target.value)}
-              className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+              className="bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
             >
               <option value="2048">RSA-2048 (190 bytes max payload)</option>
               <option value="3072">RSA-3072 (318 bytes max payload)</option>
@@ -211,7 +211,7 @@ export default function RSAPage({ onOperationSuccess }) {
               type="button"
               onClick={handleGenerateKeys}
               disabled={keyGenLoading}
-              className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md shadow-blue-950/50 flex items-center gap-1.5 transition-all"
+              className="px-4 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold disabled:opacity-50 text-white text-xs font-semibold shadow-md shadow-blue-950/50 flex items-center gap-1.5 transition-all"
             >
               {keyGenLoading ? (
                 <>
@@ -236,13 +236,13 @@ export default function RSAPage({ onOperationSuccess }) {
         )}
 
         {generatedKeys && (
-          <div className="mt-4 pt-4 border-t border-slate-800 space-y-3">
+          <div className="mt-4 pt-4 border-t border-emerald-500/20 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>RSA-{generatedKeys.key_size} Keypair Generated Successfully</span>
               </span>
-              <span className="text-[11px] font-mono text-slate-400 px-2 py-0.5 rounded bg-slate-900 border border-slate-800">
+              <span className="text-[11px] font-mono text-slate-400 px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20">
                 {generatedKeys.execution_duration_ms} ms
               </span>
             </div>
@@ -251,14 +251,14 @@ export default function RSAPage({ onOperationSuccess }) {
               {/* Public Key Card */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-blue-300 flex items-center gap-1">
+                  <span className="font-medium text-teal-300 flex items-center gap-1">
                     <Lock className="w-3.5 h-3.5" /> Public Key (SPKI PEM)
                   </span>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setEncryptPublicKey(generatedKeys.public_key)}
-                      className="text-[11px] text-blue-400 hover:underline"
+                      className="text-[11px] text-teal-400 hover:underline"
                     >
                       Use in Encrypt
                     </button>
@@ -276,21 +276,21 @@ export default function RSAPage({ onOperationSuccess }) {
                   readOnly
                   rows={4}
                   value={generatedKeys.public_key}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-[11px] text-blue-200/90 select-all focus:outline-none"
+                  className="w-full bg-[#030a04] border border-emerald-500/20 rounded-lg p-2 font-mono text-[11px] text-blue-200/90 select-all focus:outline-none"
                 />
               </div>
 
               {/* Private Key Card */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-purple-300 flex items-center gap-1">
+                  <span className="font-medium text-emerald-300 flex items-center gap-1">
                     <Unlock className="w-3.5 h-3.5" /> Private Key (PKCS#8 PEM)
                   </span>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setDecryptPrivateKey(generatedKeys.private_key)}
-                      className="text-[11px] text-purple-400 hover:underline"
+                      className="text-[11px] text-emerald-400 hover:underline"
                     >
                       Use in Decrypt
                     </button>
@@ -308,12 +308,12 @@ export default function RSAPage({ onOperationSuccess }) {
                   readOnly
                   rows={4}
                   value={generatedKeys.private_key}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-[11px] text-purple-200/90 select-all focus:outline-none"
+                  className="w-full bg-[#030a04] border border-emerald-500/20 rounded-lg p-2 font-mono text-[11px] text-emerald-200/90 select-all focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-emerald-500/20">
               <div className="flex items-center gap-2 text-[11px] text-slate-400">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span>Zero-Storage: Private keys exist only in client memory.</span>
@@ -325,13 +325,13 @@ export default function RSAPage({ onOperationSuccess }) {
 
       {/* Main Grid: Tabs & Mathematics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
+        <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-5">
           {/* Tabs: Encrypt / Decrypt */}
-          <div className="flex rounded-lg bg-slate-900 p-1 border border-slate-800">
+          <div className="flex rounded-lg bg-[#040e06] p-1 border border-emerald-500/20">
             <button
               onClick={() => { setActiveTab('encrypt'); setEncryptError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
-                activeTab === 'encrypt' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                activeTab === 'encrypt' ? 'bg-teal-500 text-slate-950 font-bold shadow-md' : 'text-slate-400 hover:text-white'
               }`}
             >
               <Lock className="w-3.5 h-3.5" />
@@ -340,7 +340,7 @@ export default function RSAPage({ onOperationSuccess }) {
             <button
               onClick={() => { setActiveTab('decrypt'); setDecryptError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
-                activeTab === 'decrypt' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+                activeTab === 'decrypt' ? 'bg-emerald-500 text-slate-950 font-bold shadow-md' : 'text-slate-400 hover:text-white'
               }`}
             >
               <Unlock className="w-3.5 h-3.5" />
@@ -361,7 +361,7 @@ export default function RSAPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => setEncryptPublicKey(generatedKeys.public_key)}
-                      className="text-[11px] text-blue-400 hover:underline font-mono"
+                      className="text-[11px] text-teal-400 hover:underline font-mono"
                     >
                       Paste Generated Public Key
                     </button>
@@ -372,7 +372,7 @@ export default function RSAPage({ onOperationSuccess }) {
                   value={encryptPublicKey}
                   onChange={(e) => setEncryptPublicKey(e.target.value)}
                   placeholder="-----BEGIN PUBLIC KEY-----&#10;MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...&#10;-----END PUBLIC KEY-----"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                 />
               </div>
 
@@ -399,7 +399,7 @@ export default function RSAPage({ onOperationSuccess }) {
                   value={encryptPlaintext}
                   onChange={(e) => setEncryptPlaintext(e.target.value)}
                   placeholder="Enter sensitive message or session key to encrypt..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                 />
                 {plaintextByteLength > maxBytes2048 && (
                   <p className="mt-1 text-[11px] text-amber-300 flex items-center gap-1">
@@ -421,7 +421,7 @@ export default function RSAPage({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={encryptLoading}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-blue-950/40 transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-blue-950/40 transition-all flex items-center justify-center gap-2"
               >
                 {encryptLoading ? (
                   <>
@@ -438,13 +438,13 @@ export default function RSAPage({ onOperationSuccess }) {
 
               {/* Encryption Output Card */}
               {encryptResult && (
-                <div className="mt-5 space-y-3 p-4 rounded-xl bg-slate-900/90 border border-blue-500/30">
+                <div className="mt-5 space-y-3 p-4 rounded-xl bg-[#040e06]/90 border border-teal-500/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-white flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       <span>RSA-{encryptResult.key_size} Ciphertext (OAEP-SHA256)</span>
                     </span>
-                    <span className="text-[11px] font-mono text-blue-300 px-2 py-0.5 rounded bg-blue-950 border border-blue-800">
+                    <span className="text-[11px] font-mono text-teal-300 px-2 py-0.5 rounded bg-blue-950 border border-blue-800">
                       {encryptResult.execution_duration_ms} ms
                     </span>
                   </div>
@@ -455,22 +455,22 @@ export default function RSAPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(encryptResult.ciphertext, 'ct')}
-                        className="text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                        className="text-teal-400 hover:text-teal-300 flex items-center gap-1"
                       >
                         {copiedKey === 'ct' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedKey === 'ct' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="p-2.5 rounded bg-slate-950 font-mono text-xs text-blue-200 border border-slate-800 break-all select-all">
+                    <div className="p-2.5 rounded bg-[#030a04] font-mono text-xs text-blue-200 border border-emerald-500/20 break-all select-all">
                       {encryptResult.ciphertext}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800">
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-500/20">
                     <button
                       type="button"
                       onClick={handleTransferToDecrypt}
-                      className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
                     >
                       <span>Transfer to Decrypt Tab</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -478,7 +478,7 @@ export default function RSAPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(JSON.stringify(encryptResult, null, 2), 'json')}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-emerald-500/25 flex items-center gap-1.5 transition-colors"
                     >
                       {copiedKey === 'json' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedKey === 'json' ? 'JSON Copied' : 'Copy Complete JSON'}</span>
@@ -502,7 +502,7 @@ export default function RSAPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => setDecryptPrivateKey(generatedKeys.private_key)}
-                      className="text-[11px] text-purple-400 hover:underline font-mono"
+                      className="text-[11px] text-emerald-400 hover:underline font-mono"
                     >
                       Paste Generated Private Key
                     </button>
@@ -513,7 +513,7 @@ export default function RSAPage({ onOperationSuccess }) {
                   value={decryptPrivateKey}
                   onChange={(e) => setDecryptPrivateKey(e.target.value)}
                   placeholder="-----BEGIN PRIVATE KEY-----&#10;MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQ...&#10;-----END PRIVATE KEY-----"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -527,7 +527,7 @@ export default function RSAPage({ onOperationSuccess }) {
                   value={decryptCiphertext}
                   onChange={(e) => setDecryptCiphertext(e.target.value)}
                   placeholder="Paste Base64 encoded RSA ciphertext..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -543,7 +543,7 @@ export default function RSAPage({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={decryptLoading}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-purple-950/40 transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-emerald-950/40 transition-all flex items-center justify-center gap-2"
               >
                 {decryptLoading ? (
                   <>
@@ -560,7 +560,7 @@ export default function RSAPage({ onOperationSuccess }) {
 
               {/* Decryption Output Card */}
               {decryptResult && (
-                <div className="mt-5 space-y-3 p-4 rounded-xl bg-slate-900/90 border border-emerald-500/40">
+                <div className="mt-5 space-y-3 p-4 rounded-xl bg-[#040e06]/90 border border-emerald-500/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-white flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -583,7 +583,7 @@ export default function RSAPage({ onOperationSuccess }) {
                         <span>{copiedKey === 'pt' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="p-3 rounded bg-slate-950 font-mono text-xs text-emerald-200 border border-slate-800 break-all select-all">
+                    <div className="p-3 rounded bg-[#030a04] font-mono text-xs text-emerald-200 border border-emerald-500/20 break-all select-all">
                       {decryptResult.plaintext}
                     </div>
                   </div>
@@ -595,9 +595,9 @@ export default function RSAPage({ onOperationSuccess }) {
 
         {/* Mathematics & Architectural Specifications */}
         <div className="space-y-4">
-          <div className="glass-panel rounded-xl p-5 border border-slate-800">
+          <div className="glass-panel rounded-xl p-5 border border-emerald-500/20">
             <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-blue-400" />
+              <Cpu className="w-4 h-4 text-teal-400" />
               <span>RSA Mathematical Foundation</span>
             </h3>
             <ul className="space-y-2.5 text-xs text-slate-300">
@@ -620,16 +620,16 @@ export default function RSAPage({ onOperationSuccess }) {
             </ul>
           </div>
 
-          <div className="glass-panel rounded-xl p-5 border border-slate-800">
+          <div className="glass-panel rounded-xl p-5 border border-emerald-500/20">
             <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-purple-400" />
+              <ShieldAlert className="w-4 h-4 text-emerald-400" />
               <span>OAEP Padding & Payload Limits</span>
             </h3>
             <div className="text-xs text-slate-300 space-y-2 leading-relaxed">
               <p>
                 <strong>OAEP (RFC 8017):</strong> Uses SHA-256 and Mask Generation Function 1 (MGF1). OAEP adds randomized entropy to prevent Coppersmith and Bleichenbacher chosen-ciphertext attacks (IND-CCA2 secure).
               </p>
-              <div className="p-2.5 rounded bg-slate-900 border border-slate-800 font-mono text-[11px] text-blue-300 space-y-1">
+              <div className="p-2.5 rounded bg-[#040e06] border border-emerald-500/20 font-mono text-[11px] text-teal-300 space-y-1">
                 <div>Max Payload = k - 2 × hLen - 2</div>
                 <div className="text-slate-400">• RSA-2048: 256 - 64 - 2 = <strong>190 bytes</strong></div>
                 <div className="text-slate-400">• RSA-3072: 384 - 64 - 2 = <strong>318 bytes</strong></div>
@@ -640,7 +640,7 @@ export default function RSAPage({ onOperationSuccess }) {
             </div>
           </div>
 
-          <div className="glass-panel rounded-xl p-5 border border-slate-800 bg-slate-900/40">
+          <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 bg-[#040e06]/40">
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 font-mono flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               Security Architecture

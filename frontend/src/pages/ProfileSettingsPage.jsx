@@ -193,7 +193,7 @@ export default function ProfileSettingsPage() {
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'profile'
                 ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                : 'bg-[#040e06]/60 text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
             <User className="w-3.5 h-3.5" />
@@ -205,7 +205,7 @@ export default function ProfileSettingsPage() {
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === 'password'
                 ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                : 'bg-[#040e06]/60 text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
             <Lock className="w-3.5 h-3.5" />
@@ -217,7 +217,7 @@ export default function ProfileSettingsPage() {
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer relative ${
               activeTab === 'notifications'
                 ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                : 'bg-[#040e06]/60 text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
             <Bell className="w-3.5 h-3.5" />
@@ -277,7 +277,7 @@ export default function ProfileSettingsPage() {
                   type="email"
                   disabled
                   value={user?.email || ''}
-                  className="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed"
+                  className="w-full bg-[#040e06]/60 border border-emerald-500/20 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed"
                 />
                 <p className="text-[11px] text-slate-500 mt-1">
                   Email was verified using a secure 6-digit HMAC-SHA256 one-time code.
@@ -534,13 +534,13 @@ export default function ProfileSettingsPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={markAllAsRead}
-                  className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-300 hover:text-white"
+                  className="px-3 py-1.5 rounded-lg bg-[#040e06] border border-emerald-500/20 text-[11px] font-mono text-slate-300 hover:text-white"
                 >
                   Mark All Read
                 </button>
                 <button
                   onClick={clearAllNotifications}
-                  className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] font-mono text-rose-400 hover:text-rose-300"
+                  className="px-3 py-1.5 rounded-lg bg-[#040e06] border border-emerald-500/20 text-[11px] font-mono text-rose-400 hover:text-rose-300"
                 >
                   Clear All
                 </button>
@@ -607,7 +607,7 @@ export default function ProfileSettingsPage() {
                   type="checkbox"
                   checked={notifSettings.securityAlerts}
                   onChange={(e) => updateSetting('securityAlerts', e.target.checked)}
-                  className="w-4 h-4 text-emerald-500 rounded border-emerald-500/40 bg-slate-900"
+                  className="w-4 h-4 text-emerald-500 rounded border-emerald-500/40 bg-[#040e06]"
                 />
               </label>
 
@@ -617,7 +617,7 @@ export default function ProfileSettingsPage() {
                   type="checkbox"
                   checked={notifSettings.auditLogs}
                   onChange={(e) => updateSetting('auditLogs', e.target.checked)}
-                  className="w-4 h-4 text-emerald-500 rounded border-emerald-500/40 bg-slate-900"
+                  className="w-4 h-4 text-emerald-500 rounded border-emerald-500/40 bg-[#040e06]"
                 />
               </label>
 
@@ -627,7 +627,7 @@ export default function ProfileSettingsPage() {
                   type="checkbox"
                   checked={notifSettings.executionAlerts}
                   onChange={(e) => updateSetting('executionAlerts', e.target.checked)}
-                  className="w-4 h-4 text-emerald-500 rounded border-emerald-500/40 bg-slate-900"
+                  className="w-4 h-4 text-emerald-500 rounded border-emerald-500/40 bg-[#040e06]"
                 />
               </label>
             </div>

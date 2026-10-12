@@ -171,10 +171,10 @@ export default function AESPage({ onOperationSuccess }) {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-lg bg-purple-950/60 border border-purple-500/30 text-purple-400">
+            <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400">
               <Shield className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
@@ -190,7 +190,7 @@ export default function AESPage({ onOperationSuccess }) {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
             Engine Active
           </span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-950/40 text-purple-300 border border-purple-500/30">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#06180a] text-emerald-300 border border-emerald-500/30">
             AEAD Authenticated
           </span>
         </div>
@@ -198,14 +198,14 @@ export default function AESPage({ onOperationSuccess }) {
 
       {/* Main Configuration & Interactive Workbench */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
+        <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-5">
           {/* Tabs: Encrypt / Decrypt */}
-          <div className="flex rounded-lg bg-slate-900 p-1 border border-slate-800">
+          <div className="flex rounded-lg bg-[#040e06] p-1 border border-emerald-500/20">
             <button
               onClick={() => { setActiveTab('encrypt'); setEncryptError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
                 activeTab === 'encrypt'
-                  ? 'bg-purple-600 text-white shadow-md'
+                  ? 'bg-emerald-500 text-slate-950 font-bold shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -216,7 +216,7 @@ export default function AESPage({ onOperationSuccess }) {
               onClick={() => { setActiveTab('decrypt'); setDecryptError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
                 activeTab === 'decrypt'
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-teal-500 text-slate-950 font-bold shadow-md'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -237,7 +237,7 @@ export default function AESPage({ onOperationSuccess }) {
                   value={encryptPlaintext}
                   onChange={(e) => setEncryptPlaintext(e.target.value)}
                   placeholder="Enter message to encrypt..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -249,7 +249,7 @@ export default function AESPage({ onOperationSuccess }) {
                   <button
                     type="button"
                     onClick={generateRandomPassphrase}
-                    className="text-[11px] text-purple-400 hover:text-purple-300 font-mono flex items-center gap-1"
+                    className="text-[11px] text-emerald-400 hover:text-emerald-300 font-mono flex items-center gap-1"
                   >
                     <Sparkles className="w-3 h-3" />
                     <span>Generate Strong Passphrase</span>
@@ -260,7 +260,7 @@ export default function AESPage({ onOperationSuccess }) {
                   value={encryptPassphrase}
                   onChange={(e) => setEncryptPassphrase(e.target.value)}
                   placeholder="Enter secret passphrase..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
                 <p className="mt-1 text-[11px] text-slate-500">
                   Key Derivation: Scrypt (N=16384, r=8, p=1) derives a 256-bit key using a fresh 16-byte salt.
@@ -277,7 +277,7 @@ export default function AESPage({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={encryptLoading}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-950/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs font-semibold shadow-lg shadow-emerald-950/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {encryptLoading ? (
                   <>
@@ -294,13 +294,13 @@ export default function AESPage({ onOperationSuccess }) {
 
               {/* Encryption Result Output */}
               {encryptResult && (
-                <div className="mt-5 space-y-3 p-4 rounded-xl bg-slate-900/90 border border-purple-500/30">
+                <div className="mt-5 space-y-3 p-4 rounded-xl bg-[#040e06]/90 border border-emerald-500/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-white flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       Encrypted Output (AEAD)
                     </span>
-                    <span className="text-[11px] font-mono text-purple-300 px-2 py-0.5 rounded bg-purple-950 border border-purple-800">
+                    <span className="text-[11px] font-mono text-emerald-300 px-2 py-0.5 rounded bg-[#06180a] border border-emerald-800">
                       {encryptResult.execution_duration_ms} ms
                     </span>
                   </div>
@@ -312,13 +312,13 @@ export default function AESPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(encryptResult.ciphertext, 'ct')}
-                        className="text-purple-400 hover:text-purple-300 flex items-center gap-1"
+                        className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
                       >
                         {copiedKey === 'ct' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedKey === 'ct' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="p-2.5 rounded bg-slate-950 font-mono text-xs text-purple-200 border border-slate-800 break-all select-all">
+                    <div className="p-2.5 rounded bg-[#030a04] font-mono text-xs text-emerald-200 border border-emerald-500/20 break-all select-all">
                       {encryptResult.ciphertext}
                     </div>
                   </div>
@@ -331,12 +331,12 @@ export default function AESPage({ onOperationSuccess }) {
                         <button
                           type="button"
                           onClick={() => handleCopy(encryptResult.tag, 'tag')}
-                          className="text-purple-400 hover:text-purple-300"
+                          className="text-emerald-400 hover:text-emerald-300"
                         >
                           {copiedKey === 'tag' ? 'Copied' : 'Copy'}
                         </button>
                       </div>
-                      <div className="p-2 rounded bg-slate-950 font-mono text-[11px] text-emerald-300 border border-slate-800 break-all select-all">
+                      <div className="p-2 rounded bg-[#030a04] font-mono text-[11px] text-emerald-300 border border-emerald-500/20 break-all select-all">
                         {encryptResult.tag}
                       </div>
                     </div>
@@ -347,12 +347,12 @@ export default function AESPage({ onOperationSuccess }) {
                         <button
                           type="button"
                           onClick={() => handleCopy(encryptResult.nonce, 'nonce')}
-                          className="text-purple-400 hover:text-purple-300"
+                          className="text-emerald-400 hover:text-emerald-300"
                         >
                           {copiedKey === 'nonce' ? 'Copied' : 'Copy'}
                         </button>
                       </div>
-                      <div className="p-2 rounded bg-slate-950 font-mono text-[11px] text-blue-300 border border-slate-800 break-all select-all">
+                      <div className="p-2 rounded bg-[#030a04] font-mono text-[11px] text-teal-300 border border-emerald-500/20 break-all select-all">
                         {encryptResult.nonce}
                       </div>
                     </div>
@@ -365,22 +365,22 @@ export default function AESPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(encryptResult.salt, 'salt')}
-                        className="text-purple-400 hover:text-purple-300"
+                        className="text-emerald-400 hover:text-emerald-300"
                       >
                         {copiedKey === 'salt' ? 'Copied' : 'Copy'}
                       </button>
                     </div>
-                    <div className="p-2 rounded bg-slate-950 font-mono text-[11px] text-slate-300 border border-slate-800 break-all select-all">
+                    <div className="p-2 rounded bg-[#030a04] font-mono text-[11px] text-slate-300 border border-emerald-500/20 break-all select-all">
                       {encryptResult.salt}
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800">
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-500/20">
                     <button
                       type="button"
                       onClick={handleTransferToDecrypt}
-                      className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
                     >
                       <span>Transfer to Decrypt Tab</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -388,7 +388,7 @@ export default function AESPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(JSON.stringify(encryptResult, null, 2), 'json')}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-emerald-500/25 flex items-center gap-1.5 transition-colors"
                     >
                       {copiedKey === 'json' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedKey === 'json' ? 'JSON Copied' : 'Copy Complete JSON'}</span>
@@ -407,7 +407,7 @@ export default function AESPage({ onOperationSuccess }) {
                 <button
                   type="button"
                   onClick={handlePasteJSON}
-                  className="text-[11px] text-blue-400 hover:text-blue-300 font-mono flex items-center gap-1"
+                  className="text-[11px] text-teal-400 hover:text-teal-300 font-mono flex items-center gap-1"
                 >
                   <Copy className="w-3 h-3" />
                   <span>Auto-Fill from Clipboard JSON</span>
@@ -423,7 +423,7 @@ export default function AESPage({ onOperationSuccess }) {
                   value={decryptPassphrase}
                   onChange={(e) => setDecryptPassphrase(e.target.value)}
                   placeholder="Enter passphrase used during encryption..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                 />
               </div>
 
@@ -436,7 +436,7 @@ export default function AESPage({ onOperationSuccess }) {
                   value={decryptCiphertext}
                   onChange={(e) => setDecryptCiphertext(e.target.value)}
                   placeholder="Paste Base64 ciphertext..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                 />
               </div>
 
@@ -450,7 +450,7 @@ export default function AESPage({ onOperationSuccess }) {
                     value={decryptNonce}
                     onChange={(e) => setDecryptNonce(e.target.value)}
                     placeholder="12-byte Nonce"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                   />
                 </div>
 
@@ -463,7 +463,7 @@ export default function AESPage({ onOperationSuccess }) {
                     value={decryptSalt}
                     onChange={(e) => setDecryptSalt(e.target.value)}
                     placeholder="16-byte Salt"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                   />
                 </div>
 
@@ -476,7 +476,7 @@ export default function AESPage({ onOperationSuccess }) {
                     value={decryptTag}
                     onChange={(e) => setDecryptTag(e.target.value)}
                     placeholder="16-byte Tag"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
                   />
                 </div>
               </div>
@@ -491,7 +491,7 @@ export default function AESPage({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={decryptLoading}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-blue-950/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-semibold shadow-lg shadow-blue-950/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {decryptLoading ? (
                   <>
@@ -508,7 +508,7 @@ export default function AESPage({ onOperationSuccess }) {
 
               {/* Decrypted Plaintext Output */}
               {decryptResult && (
-                <div className="mt-5 space-y-3 p-4 rounded-xl bg-slate-900/90 border border-emerald-500/40">
+                <div className="mt-5 space-y-3 p-4 rounded-xl bg-[#040e06]/90 border border-emerald-500/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -531,7 +531,7 @@ export default function AESPage({ onOperationSuccess }) {
                         <span>{copiedKey === 'decrypted' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="p-3 rounded-lg bg-slate-950 font-mono text-xs text-white border border-slate-800 whitespace-pre-wrap select-all">
+                    <div className="p-3 rounded-lg bg-[#030a04] font-mono text-xs text-white border border-emerald-500/20 whitespace-pre-wrap select-all">
                       {decryptResult.plaintext}
                     </div>
                   </div>
@@ -543,36 +543,36 @@ export default function AESPage({ onOperationSuccess }) {
 
         {/* Algorithm Technical Specifications Panel */}
         <div className="space-y-4">
-          <div className="glass-panel rounded-xl p-5 border border-slate-800">
+          <div className="glass-panel rounded-xl p-5 border border-emerald-500/20">
             <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-purple-400" />
+              <Cpu className="w-4 h-4 text-emerald-400" />
               <span>AES-256-GCM Architecture</span>
             </h3>
             <ul className="space-y-2.5 text-xs text-slate-300">
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Cipher:</strong> Rijndael 128-bit block cipher with 14 rounds for 256-bit key</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>AEAD Mode:</strong> Galois/Counter Mode (GCM) providing simultaneous confidentiality and message integrity</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Key Derivation:</strong> Scrypt KDF with 16-byte salt, N=16384, r=8, p=1</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Nonce Uniqueness:</strong> 12 random bytes per encryption. Nonces are never reused</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Authentication:</strong> 128-bit GMAC authentication tag verifies ciphertext integrity prior to release</span>
               </li>
             </ul>
           </div>
 
-          <div className="glass-panel rounded-xl p-5 border border-slate-800 bg-slate-900/40">
+          <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 bg-[#040e06]/40">
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 font-mono flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5 text-emerald-400" />
               Security Architecture
@@ -597,7 +597,7 @@ export default function AESPage({ onOperationSuccess }) {
         algorithmName="AES-256-GCM (Authenticated Encryption)"
         subtitle="Symmetric authenticated cipher combining high-speed counter mode encryption with GMAC integrity verification."
         badge="NIST FIPS 197 & SP 800-38D"
-        themeColor="purple"
+        themeColor="emerald"
         purpose="AES-256-GCM provides simultaneous confidentiality and message integrity. It is used as the global standard for securing data in transit (TLS 1.3, HTTPS, SSH) and data at rest (database encryption, cloud storage disks). Because it is an AEAD (Authenticated Encryption with Associated Data) cipher, it guarantees that any unauthorized alteration of the encrypted message is detected immediately."
         diagramSteps={[
           { title: '1. User Input', subtitle: 'Plaintext + Passphrase', icon: FileText },

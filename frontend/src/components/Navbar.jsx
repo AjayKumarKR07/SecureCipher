@@ -23,7 +23,6 @@ const GithubIcon = ({ className }) => (
   </svg>
 );
 
-
 export default function Navbar({
   backendHealth,
   dbHealth,
@@ -49,38 +48,39 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-emerald-500/20 bg-[#030a04]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-16 border-b border-emerald-500/15 bg-[#030804]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none"
+          className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#06180a] focus:outline-none"
           aria-label="Toggle Navigation"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-5 h-5 text-emerald-400" />
         </button>
 
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-500 p-0.5 shadow-lg shadow-emerald-900/30 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-[#040e06] rounded-[7px] flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="relative w-8 h-8 rounded-xl bg-[#06180a] border border-emerald-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:border-emerald-400 transition-all">
+            <div className="w-full h-full bg-[#030a04] rounded-[9px] flex items-center justify-center">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
             </div>
+            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping opacity-75" />
           </div>
           <div>
-            <span className="font-bold tracking-tight text-white text-base">
+            <span className="font-extrabold tracking-tight text-white text-base flex items-center gap-1">
               Secure<span className="text-emerald-400">Cipher</span>
             </span>
-            <span className="hidden sm:inline-block ml-2 text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-300">
-              Dashboard
-            </span>
           </div>
+          <span className="hidden sm:inline-block ml-1 text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 font-bold">
+            Dashboard
+          </span>
         </Link>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Backend Status Telemetry */}
-        <div className="hidden sm:flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800">
-          <Activity className="w-3.5 h-3.5 text-blue-400" />
-          <span className="text-xs text-slate-400">API:</span>
+        <div className="hidden sm:flex items-center gap-2 bg-[#06180a]/80 px-3 py-1.5 rounded-xl border border-emerald-500/20 text-xs font-mono">
+          <Activity className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-slate-400">API:</span>
           <StatusBadge
             status={backendHealth?.connected ? 'connected' : 'offline'}
             label={backendHealth?.connected ? `Live (${backendHealth?.latency || 0}ms)` : 'Offline'}
@@ -89,9 +89,9 @@ export default function Navbar({
         </div>
 
         {/* Database Status Telemetry */}
-        <div className="hidden md:flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800">
-          <Database className="w-3.5 h-3.5 text-purple-400" />
-          <span className="text-xs text-slate-400">PostgreSQL:</span>
+        <div className="hidden md:flex items-center gap-2 bg-[#06180a]/80 px-3 py-1.5 rounded-xl border border-emerald-500/20 text-xs font-mono">
+          <Database className="w-3.5 h-3.5 text-teal-400" />
+          <span className="text-slate-400">PostgreSQL:</span>
           <StatusBadge
             status={dbHealth?.connected ? 'connected' : dbHealth?.status === 'unconfigured' ? 'unconfigured' : 'disconnected'}
             label={
@@ -110,21 +110,20 @@ export default function Navbar({
           onClick={onRefresh}
           disabled={isRefreshing}
           title="Refresh Backend & Database Health"
-          className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors disabled:opacity-50"
+          className="p-2 rounded-xl bg-[#06180a] border border-emerald-500/25 text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer"
         >
-          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-purple-400' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-emerald-400' : 'text-emerald-400'}`} />
         </button>
-
 
         {/* Notifications Icon */}
         <Link
           to="/profile"
           title="Notifications & Activity"
-          className="relative p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
+          className="relative p-2 rounded-xl bg-[#06180a] border border-emerald-500/25 text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors"
         >
-          <Bell className="w-4 h-4 text-slate-300" />
+          <Bell className="w-4 h-4 text-emerald-400" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse border-2 border-slate-950" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse border-2 border-black" />
           )}
         </Link>
 
@@ -133,22 +132,22 @@ export default function Navbar({
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setProfileDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800/90 border border-slate-800 hover:border-emerald-500/40 pl-3 pr-2 py-1.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-2 bg-[#06180a] hover:bg-[#08220e] border border-emerald-500/30 hover:border-emerald-400 pl-3 pr-2 py-1.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
             >
               <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center text-[10px] font-bold text-slate-950">
                 {user.full_name ? user.full_name[0].toUpperCase() : 'U'}
               </div>
-              <span className="text-slate-200 font-medium truncate max-w-[90px]">
+              <span className="text-emerald-300 font-semibold truncate max-w-[90px]">
                 {user.full_name.split(' ')[0]}
               </span>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3.5 h-3.5 text-emerald-400/70 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Profile Dropdown Card */}
             {profileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-2xl p-2 z-50 text-xs space-y-1 backdrop-blur-xl animate-in fade-in zoom-in-95">
+              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#040e06] border border-emerald-500/30 shadow-2xl p-2 z-50 text-xs space-y-1 backdrop-blur-xl animate-in fade-in zoom-in-95">
                 {/* User Header */}
-                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 mb-2">
+                <div className="p-3 rounded-xl bg-[#06180a] border border-emerald-500/20 mb-2">
                   <p className="font-bold text-white text-sm truncate">{user.full_name}</p>
                   <p className="text-[11px] text-slate-400 truncate mt-0.5">{user.email}</p>
                   <span className="inline-block mt-2 text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
@@ -159,7 +158,7 @@ export default function Navbar({
                 <Link
                   to="/profile"
                   onClick={() => setProfileDropdownOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-[#06180a] transition-colors"
                 >
                   <User className="w-4 h-4 text-emerald-400" />
                   <span>Account Settings</span>
@@ -168,7 +167,7 @@ export default function Navbar({
                 <Link
                   to="/profile"
                   onClick={() => setProfileDropdownOpen(false)}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-[#06180a] transition-colors"
                 >
                   <Lock className="w-4 h-4 text-emerald-400" />
                   <span>Change Password</span>
@@ -177,7 +176,7 @@ export default function Navbar({
                 <Link
                   to="/profile"
                   onClick={() => setProfileDropdownOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-[#06180a] transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <Bell className="w-4 h-4 text-emerald-400" />
@@ -190,7 +189,7 @@ export default function Navbar({
                   )}
                 </Link>
 
-                <div className="border-t border-slate-800 pt-1 mt-1">
+                <div className="border-t border-emerald-500/15 pt-1 mt-1">
                   <button
                     onClick={() => {
                       logout();
@@ -209,7 +208,7 @@ export default function Navbar({
         ) : (
           <Link
             to="/login"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-xs font-semibold text-emerald-300 hover:text-white hover:bg-emerald-900/60 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#06180a] border border-emerald-500/40 text-xs font-semibold text-emerald-300 hover:text-white hover:bg-emerald-900/60 transition-colors"
           >
             <User className="w-3.5 h-3.5" />
             <span>Sign In</span>
@@ -221,9 +220,9 @@ export default function Navbar({
           href="https://github.com/AjayKumarKR07/SecureCipher"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white hover:border-purple-500/40 transition-colors"
+          className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#06180a] border border-emerald-500/25 text-xs text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors"
         >
-          <GithubIcon className="w-3.5 h-3.5 text-slate-400" />
+          <GithubIcon className="w-3.5 h-3.5 text-emerald-400" />
           <span>GitHub</span>
         </a>
       </div>
