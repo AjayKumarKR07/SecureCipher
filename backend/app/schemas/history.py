@@ -21,3 +21,10 @@ class OperationHistoryResponse(BaseModel):
     message: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class DeleteHistoryResponse(BaseModel):
+    success: bool
+    deleted_id: int
+    message: str
+

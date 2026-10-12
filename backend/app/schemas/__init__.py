@@ -2,6 +2,17 @@
 from app.schemas.health import HealthResponse, DatabaseHealthResponse
 from app.schemas.algorithm import AlgorithmInfo, AlgorithmListResponse
 from app.schemas.history import OperationHistoryItem, OperationHistoryResponse
+from app.schemas.auth import (
+    RequestOTPRequest,
+    RequestOTPResponse,
+    VerifyOTPRegisterRequest,
+    LoginRequest,
+    UserResponse,
+    AuthTokenResponse,
+    AuthStatusResponse,
+    ChangePasswordRequest,
+    UpdateProfileRequest,
+)
 from app.schemas.aes import (
     AESEncryptRequest,
     AESEncryptResponse,

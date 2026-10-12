@@ -15,8 +15,12 @@ import {
   Hash,
   AlertCircle,
   CheckCircle2,
+  FileText,
+  Layers,
+  Key,
 } from 'lucide-react';
 import { encryptDES, decryptDES } from '../services/api';
+import HowItWorksSection from '../components/HowItWorksSection';
 
 export default function DESPage({ onOperationSuccess }) {
   const [activeTab, setActiveTab] = useState('encrypt');
@@ -97,6 +101,8 @@ export default function DESPage({ onOperationSuccess }) {
       setDecError('');
     }
   };
+
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -294,18 +300,20 @@ export default function DESPage({ onOperationSuccess }) {
                   </div>
 
                   {/* Security Notice on Result */}
-                  <div className="p-2.5 rounded bg-amber-950/30 border border-amber-500/30 text-[11px] text-amber-300/90 flex items-center justify-between">
+                  <div className="p-2.5 rounded bg-amber-950/30 border border-amber-500/30 text-[11px] text-amber-300/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span>
                       <strong>Authentication Status:</strong> None (CBC mode does not verify integrity).
                     </span>
-                    <button
-                      type="button"
-                      onClick={handleTransferToDecrypt}
-                      className="px-2 py-1 rounded bg-orange-600 hover:bg-orange-500 text-white text-[11px] font-medium flex items-center gap-1 shadow transition-colors"
-                    >
-                      <span>Transfer to Decrypt</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleTransferToDecrypt}
+                        className="px-2 py-1 rounded bg-orange-600 hover:bg-orange-500 text-white text-[11px] font-medium flex items-center gap-1 shadow transition-colors"
+                      >
+                        <span>Transfer to Decrypt</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -468,6 +476,90 @@ export default function DESPage({ onOperationSuccess }) {
           </div>
         </div>
       </div>
+
+      {/* Educational "How It Works" Section */}
+      <HowItWorksSection
+        algorithmName="DES (Data Encryption Standard — Legacy Block Cipher)"
+        subtitle="Historical 16-round symmetric Feistel cipher operating on 64-bit blocks with a deprecated 56-bit key space."
+        badge="NIST FIPS 46-3 (Withdrawn 2005)"
+        themeColor="orange"
+        warningBanner="INSECURE LEGACY CIPHER — EDUCATIONAL USE ONLY: DES has a critically small 56-bit key space that can be broken by brute-force in hours. CBC mode provides zero message authentication and is vulnerable to bit-flipping attacks. NEVER use DES for real data."
+        purpose="DES was adopted by NBS (now NIST) in 1977 as the first public federal encryption standard for securing financial transactions and government communications. Today, it serves as an essential teaching benchmark in cryptanalysis to demonstrate the Feistel structure, S-box non-linearity, and why 56-bit key spaces are completely vulnerable to modern parallel brute-force attacks."
+        diagramSteps={[
+          { title: '1. Plaintext & Key', subtitle: 'UTF-8 Text + 8-Byte ASCII Key (56-bit)', icon: FileText },
+          { title: '2. PKCS#7 Padding', subtitle: 'Aligns data to exact 8-Byte block boundary', icon: Layers },
+          { title: '3. DES-CBC Engine', subtitle: '16 Feistel rounds with random 8-Byte IV', icon: Cpu },
+          { title: '4. Base64 Output', subtitle: 'Ciphertext & IV encoded in Base64', icon: Lock },
+        ]}
+        workflowSteps={[
+          {
+            title: 'Key Validation & 56-Bit Reduction',
+            tag: 'Step 1',
+            description: 'The user supplies an 8-character ASCII key (64 bits). The least significant bit of each byte was historically used as an odd parity check, leaving only 56 bits of true cryptographic entropy (2^56 possible keys).',
+          },
+          {
+            title: 'PKCS#7 Block Padding',
+            tag: 'Step 2',
+            description: 'Because DES encrypts in fixed 64-bit (8-byte) blocks, arbitrary plaintext must be padded. PKCS#7 appends N bytes each with value N (e.g., \\x05\\x05\\x05\\x05\\x05 for 3 bytes of remaining space) so the total length is an exact multiple of 8.',
+          },
+          {
+            title: 'Random 8-Byte IV & CBC Chaining',
+            tag: 'Step 3',
+            description: 'A cryptographically fresh 8-byte Initialization Vector (IV) is generated via os.urandom(8). In Cipher Block Chaining (CBC) mode, each plaintext block is XORed with the preceding ciphertext block (or IV for the first block) before 16 rounds of Feistel substitution-permutation.',
+          },
+          {
+            title: 'Ciphertext Emission & Base64 Encoding',
+            tag: 'Step 4',
+            description: 'The resulting binary ciphertext and random IV are encoded into Base64 strings for safe JSON transmission. Decryption reverses the process: executing 16 Feistel rounds with inverted subkeys, XORing with previous ciphertext/IV, and stripping PKCS#7 padding.',
+          },
+        ]}
+        concepts={[
+          {
+            term: '56 Effective Key Bits',
+            explanation: 'Although the DES key is 8 bytes (64 bits), 8 bits are parity bits, giving only 56 bits of real entropy. A keyspace of 2^56 (approx. 72 quadrillion keys) can be exhaustively searched in under a day using modern distributed GPU clusters.',
+          },
+          {
+            term: '64-Bit Block Size & Sweet32',
+            explanation: 'Encrypting in small 64-bit blocks creates collision vulnerabilities (Sweet32 attack). By the birthday paradox, after encrypting about 2^32 blocks (approx. 32 GB), ciphertext blocks repeat, leaking plaintext.',
+          },
+          {
+            term: 'PKCS#7 Block Padding',
+            explanation: 'Standard padding scheme that adds 1 to 8 bytes to fill the final 64-bit block. Each padding byte contains the integer count of padding bytes added, allowing deterministic unpadding.',
+          },
+          {
+            term: 'CBC Mode & Lack of Authentication',
+            explanation: 'CBC provides confidentiality but ZERO message integrity. An active attacker can flip bits in the IV or ciphertext block C_(i-1) to deterministically alter decrypted plaintext in block P_i without triggering any error.',
+          },
+          {
+            term: '16-Round Feistel Structure',
+            explanation: 'Splits 64 bits into two 32-bit halves (L, R). In each round: L_i = R_(i-1), R_i = L_(i-1) \u2295 F(R_(i-1), K_i). The decryption algorithm is mathematically identical to encryption, simply applying the 16 subkeys in reverse order.',
+          },
+          {
+            term: 'Base64 Representation',
+            explanation: 'Raw encrypted blocks and IVs are arbitrary binary bytes that corrupt plain text consoles. Base64 encodes these bytes into 64 ASCII characters for safe JSON transport.',
+          },
+        ]}
+        example={{
+          scenario: 'DES-CBC Encryption & Base64 Transmission',
+          input: 'Plaintext: "Secret Message" | Key: "DESKEY56" (8 ASCII bytes)',
+          process: 'Padded to 16 bytes (2 blocks) with \\x02\\x02. XORed with fresh 8-byte IV and run through 16 Feistel rounds per block.',
+          output: 'Ciphertext: "3B1m...=" (Base64) | IV: "x9Ak...=" (Base64 8 bytes).',
+        }}
+        securityNotes={{
+          benefits: [
+            'Historically critical: Established modern symmetric block cipher theory and Feistel network design.',
+            'Very simple hardware implementation: Feistel network uses the exact same circuit for encryption and decryption.',
+            'Demonstrates the necessity of block padding (PKCS#7) and initialization vectors (IV).',
+          ],
+          limitations: [
+            'CRITICAL: 56-bit key space is trivial to crack via brute-force (EFF Deep Crack broke DES in 1999; modern GPUs do it in hours).',
+            'Unauthenticated CBC: Vulnerable to padding oracle attacks and deterministic bit-flipping tampering.',
+            'Sweet32 birthday attacks leak data after only ~32 GB of encrypted traffic on 64-bit blocks.',
+          ],
+          warning: 'INSECURE: Withdrawn by NIST in 2005. Replace with AES-256-GCM for all production and sensitive applications.',
+        }}
+        keyTakeaway="DES is an insecure legacy 56-bit block cipher that lacks message authentication and must only be used for historical and educational study."
+      />
 
       {/* Comprehensive DES vs AES Comparison Section */}
       <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-4">

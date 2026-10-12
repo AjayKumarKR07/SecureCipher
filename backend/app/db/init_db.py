@@ -1,7 +1,7 @@
 import logging
 import sys
 from app.db.session import Base, get_engine
-from app.models.history import OperationHistory
+from app.models import OperationHistory, User, EmailOTP
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)

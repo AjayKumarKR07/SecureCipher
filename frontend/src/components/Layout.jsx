@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
@@ -10,6 +11,17 @@ export default function Layout({
   isRefreshing,
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const isCyberPage = ['/', '/login', '/register'].includes(location.pathname);
+
+  // When on Home, Login, or Register, provide an immersive, full-screen cyber experience
+  if (isCyberPage) {
+    return (
+      <div className="min-h-screen bg-[#030704] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-300">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0B0F19] text-slate-100 flex flex-col">

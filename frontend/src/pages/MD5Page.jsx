@@ -17,8 +17,11 @@ import {
   FileCheck,
   Flame,
   ShieldCheck,
+  Layers,
+  Hash,
 } from 'lucide-react';
 import { hashMD5Text, hashMD5File, compareMD5 } from '../services/api';
+import HowItWorksSection from '../components/HowItWorksSection';
 
 export default function MD5Page({ onOperationSuccess }) {
   // Tabs: 'text' | 'file' | 'compare'
@@ -138,6 +141,8 @@ export default function MD5Page({ onOperationSuccess }) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
+
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -712,6 +717,89 @@ export default function MD5Page({ onOperationSuccess }) {
           </div>
         </div>
       )}
+
+      {/* Educational "How It Works" Section */}
+      <HowItWorksSection
+        algorithmName="MD5 (Message Digest 5 — Legacy Hash)"
+        subtitle="Historical 128-bit one-way hash algorithm designed by Ronald Rivest in 1991, now cryptographically broken."
+        badge="RFC 1321 (Deprecated)"
+        themeColor="amber"
+        warningBanner="LEGACY ALGORITHM — EDUCATIONAL USE ONLY: MD5 is cryptographically broken due to practical collision vulnerabilities. It must NEVER be used for passwords, digital certificates, or security-sensitive integrity verification."
+        purpose="MD5 was historically designed to produce a compact 128-bit (16-byte) checksum to verify data integrity and fingerprint files. While still occasionally found in legacy checksum files (like old .md5 verification files) or non-cryptographic hash tables, it is strictly obsolete for security because practical collisions can be generated in seconds on commodity laptops."
+        diagramSteps={[
+          { title: '1. Input Payload', subtitle: 'UTF-8 String or 64KB Chunk Stream', icon: FileText },
+          { title: '2. 512-bit Padding', subtitle: 'Bit 1 + Zeroes + 64-bit Length', icon: Layers },
+          { title: '3. 4 Non-Linear Rounds', subtitle: '64 Operations on 4 State Registers', icon: Cpu },
+          { title: '4. 128-bit Hex Digest', subtitle: 'Fixed 32 Lowercase Hex Chars', icon: Hash },
+        ]}
+        workflowSteps={[
+          {
+            title: 'Input Ingestion & Stream Buffering',
+            tag: 'Step 1',
+            description: 'The user enters UTF-8 text or uploads a binary file (up to 50 MB). For files, the backend streams data in 64 KB memory chunks via hashlib.md5() to guarantee constant O(1) memory usage.',
+          },
+          {
+            title: 'Message Padding (RFC 1321)',
+            tag: 'Step 2',
+            description: 'The message is padded with a single "1" bit followed by zeroes until its length is congruent to 448 mod 512. The original 64-bit input length is appended in little-endian byte ordering.',
+          },
+          {
+            title: 'Four Compression Rounds & State Registers',
+            tag: 'Step 3',
+            description: 'Four 32-bit registers (A, B, C, D) initialized to standard magic constants are updated across 64 steps grouped into 4 rounds using non-linear boolean functions F(X,Y,Z), G(X,Y,Z), H(X,Y,Z), and I(X,Y,Z).',
+          },
+          {
+            title: 'Digest Generation & 32-Hex Output',
+            tag: 'Step 4',
+            description: 'The four registers are added to their initial states and concatenated to produce the final 128-bit (16-byte) digest. The application renders this binary digest as a 32-character lowercase hexadecimal string.',
+          },
+        ]}
+        concepts={[
+          {
+            term: '128-Bit Digest & 32 Hex Characters',
+            explanation: 'MD5 produces half the bit-length of SHA-256 (128 bits vs 256 bits), yielding a 32-character hex string regardless of input size.',
+          },
+          {
+            term: 'Collision Vulnerability (Wang et al., 2004)',
+            explanation: 'A collision occurs when two completely different inputs produce the exact same hash. Chinese cryptanalysts demonstrated practical MD5 collisions, meaning attackers can generate two certificates or files with identical MD5 checksums.',
+          },
+          {
+            term: 'Comparison: MD5 vs. SHA-256',
+            explanation: 'MD5 operates with 128 bits and 4 rounds, making it fast but completely insecure against collisions (birthday bound reduced to < 2^16 operations). SHA-256 uses 256 bits and 64 rounds with 2^128 collision resistance.',
+          },
+          {
+            term: 'One-Way Function',
+            explanation: 'Like all hash algorithms, MD5 cannot be decrypted. However, attackers use massive precomputed "rainbow tables" and GPU crackers to invert common passwords in milliseconds.',
+          },
+          {
+            term: 'Non-Cryptographic Use Cases',
+            explanation: 'MD5 remains valid only for non-adversarial checksums (detecting accidental disk bit rot) or hash table indexing, never where an attacker might tamper with data.',
+          },
+          {
+            term: 'Hashing vs. Encryption',
+            explanation: 'MD5 has no secret keys and no decryption mechanism; it is a one-way mathematical reduction, not reversible cipher encryption.',
+          },
+        ]}
+        example={{
+          scenario: 'Legacy Text Hashing & Collision Demonstration',
+          input: 'Input: "SecureCipher College Demo"',
+          process: 'Processed through 4 rounds of non-linear compression using registers A, B, C, D.',
+          output: 'Digest: 6f849c95d2c2069fa74c3d3170e17f53 (32 hex characters).',
+        }}
+        securityNotes={{
+          benefits: [
+            'Extremely fast computation and low CPU overhead on legacy hardware.',
+            'Deterministic: Identical inputs always yield the identical 32-character hexadecimal digest.',
+            'Historically ubiquitous for verifying file downloads against benign network corruption.',
+          ],
+          limitations: [
+            'CRITICAL: Cryptographically broken collision resistance; attackers can forge malicious executables matching legitimate checksums.',
+            'Strictly forbidden by NIST, ISO, and modern compliance standards for digital signatures and TLS certificates.',
+            'Completely unsuitable for password storage; GPUs can compute billions of MD5 hashes per second.',
+          ],
+        }}
+        keyTakeaway="MD5 is a broken legacy hash function that produces a 32-character digest and must never be used for security or authentication."
+      />
 
       {/* Educational & Architectural Panels */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

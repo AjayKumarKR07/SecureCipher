@@ -12,6 +12,7 @@ import {
   Info,
   X,
   Server,
+  User,
 } from 'lucide-react';
 
 const navItems = [
@@ -26,6 +27,7 @@ const navItems = [
   { name: 'DES Legacy Cipher', path: '/algorithm/des', icon: Lock },
   { type: 'header', label: 'Audit & Info' },
   { name: 'Operation History', path: '/history', icon: History },
+  { name: 'Profile & Settings', path: '/profile', icon: User },
   { name: 'About & Roadmap', path: '/about', icon: Info },
 ];
 

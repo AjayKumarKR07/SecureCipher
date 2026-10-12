@@ -8,6 +8,7 @@ from app.api.endpoints.diffie_hellman import router as diffie_hellman_router
 from app.api.endpoints.sha256 import router as sha256_router
 from app.api.endpoints.md5 import router as md5_router
 from app.api.endpoints.des import router as des_router
+from app.api.endpoints.auth import auth_router
 
 __all__ = [
     "health_router",
@@ -19,6 +20,7 @@ __all__ = [
     "sha256_router",
     "md5_router",
     "des_router",
+    "auth_router",
 ]
 
 

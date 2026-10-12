@@ -83,3 +83,30 @@ def record_audit_operation(
         except Exception:
             pass
 
+
+def delete_history_item(db: Optional[Session], item_id: int) -> Tuple[bool, Optional[str]]:
+    """
+    Deletes a single audit record from PostgreSQL history by ID.
+    Returns (success, error_message).
+    """
+    if db is None:
+        return False, "Database connection not available"
+
+    try:
+        record = db.get(OperationHistory, item_id)
+        if not record:
+            return False, f"Audit record #{item_id} not found"
+
+        db.delete(record)
+        db.commit()
+        logger.info("Deleted audit record #%s", item_id)
+        return True, None
+    except Exception as e:
+        logger.warning("Failed to delete audit record #%s: %s", item_id, str(e))
+        try:
+            db.rollback()
+        except Exception:
+            pass
+        return False, str(e)
+
+

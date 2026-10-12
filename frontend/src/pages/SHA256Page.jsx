@@ -15,8 +15,10 @@ import {
   Scale,
   FileCheck,
   Flame,
+  Layers,
 } from 'lucide-react';
 import { hashSHA256Text, hashSHA256File, compareSHA256 } from '../services/api';
+import HowItWorksSection from '../components/HowItWorksSection';
 
 export default function SHA256Page({ onOperationSuccess }) {
   // Tabs: 'text' | 'file' | 'compare'
@@ -136,6 +138,8 @@ export default function SHA256Page({ onOperationSuccess }) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
+
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -689,6 +693,88 @@ export default function SHA256Page({ onOperationSuccess }) {
           </div>
         </div>
       )}
+
+      {/* Educational "How It Works" Section */}
+      <HowItWorksSection
+        algorithmName="SHA-256 (Secure Hash Algorithm 256-bit)"
+        subtitle="Cryptographic one-way hash function generating deterministic 256-bit digests for integrity verification and digital signatures."
+        badge="NIST FIPS 180-4 Standard"
+        themeColor="emerald"
+        purpose="SHA-256 computes a fixed-size 256-bit (32-byte) digital fingerprint of arbitrary data. It is primarily used for software download integrity verification, git commit checksums, digital signatures, blockchain proof-of-work, and TLS handshakes. Because it is computationally infeasible to invert or find collisions, any accidental corruption or deliberate tampering changes the digest completely."
+        diagramSteps={[
+          { title: '1. Input Payload', subtitle: 'UTF-8 String or 64KB Chunk Stream', icon: FileText },
+          { title: '2. 512-bit Padding', subtitle: 'Bit 1 + Zeroes + 64-bit Length', icon: Layers },
+          { title: '3. Compression Core', subtitle: '64 Iterative Rounds (Ch, Maj, \u03A3, \u03C3)', icon: Cpu },
+          { title: '4. 256-bit Hex Digest', subtitle: 'Fixed 64 Lowercase Hex Chars', icon: Hash },
+        ]}
+        workflowSteps={[
+          {
+            title: 'Input Ingestion & Stream Buffering',
+            tag: 'Step 1',
+            description: 'The user enters UTF-8 text or uploads a binary file (up to 50 MB). For files, SecureCipher streams the data in 64 KB memory chunks using hashlib.sha256() to maintain constant O(1) server memory.',
+          },
+          {
+            title: 'Merkle-Damgård Message Padding',
+            tag: 'Step 2',
+            description: 'The payload is padded so its total bit length becomes congruent to 448 mod 512. A single "1" bit is appended, followed by zero bits, and finally the original 64-bit length is attached in big-endian format.',
+          },
+          {
+            title: 'Initial Hash Values & 64 Compression Rounds',
+            tag: 'Step 3',
+            description: 'Eight 32-bit working state variables (H0\u2013H7) initialized from fractional parts of square roots of prime numbers are processed through 64 rounds of bitwise logic (Choice, Majority, rotations, and constants K_t).',
+          },
+          {
+            title: 'Digest Generation & 64-Hex Representation',
+            tag: 'Step 4',
+            description: 'The updated state variables are concatenated to form the final 256-bit (32-byte) digest. The application formats this raw binary digest into standard lowercase 64-character hexadecimal for human-readable display.',
+          },
+        ]}
+        concepts={[
+          {
+            term: 'One-Way Hash Function',
+            explanation: 'A mathematical algorithm that easily converts input data into a fixed-length string, but is computationally impossible to invert back to the original message.',
+          },
+          {
+            term: '256-Bit Digest & 64 Hex Digits',
+            explanation: 'Regardless of whether input is a 3-letter word or a 50 MB ISO file, the resulting digest is always exactly 256 bits (32 bytes), rendered as 64 hexadecimal characters.',
+          },
+          {
+            term: 'Chunked File Streaming',
+            explanation: 'Processing large files by reading 65,536-byte chunks incrementally. This prevents memory exhaustion and server crashes during large uploads.',
+          },
+          {
+            term: 'Strict Avalanche Effect',
+            explanation: 'Flipping even a single bit in the input causes approximately 50% of the output bits to change unpredictably, preventing similarity matching attacks.',
+          },
+          {
+            term: 'Pre-image & Collision Resistance',
+            explanation: 'Pre-image resistance means you cannot recover input from a hash. Collision resistance means you cannot find two different inputs that produce identical hashes.',
+          },
+          {
+            term: 'Hashing vs. Encryption',
+            explanation: 'Encryption is two-way and reversible using a secret key. Hashing is one-way and mathematically irreversible\u2014there is no decryption key.',
+          },
+        ]}
+        example={{
+          scenario: 'Verifying Text Checksum & Avalanche Effect',
+          input: 'Input A: "SecureCipher 2026" vs Input B: "securecipher 2026"',
+          process: 'Both inputs are padded and compressed through 64 rounds of SHA-256 independently, showing extreme output divergence despite having identical semantic meaning.',
+          output: 'Digest A: 014a48ff98e0... (64 hex) \u2260 Digest B: 8fbc14589201... (64 hex) \u2192 129 out of 256 bits changed (50.4% Hamming distance).',
+        }}
+        securityNotes={{
+          benefits: [
+            'Collision-resistant: No known collision attacks exist against the full 64-round SHA-256 algorithm.',
+            'Deterministic and verifiable: Anyone calculating SHA-256 on the identical file will receive the exact same 64-hex digest.',
+            'Complies with NIST FIPS 180-4 and accepted globally across cryptographic protocols.',
+          ],
+          limitations: [
+            'Hashing does not provide confidentiality: Anyone with access to the original plaintext can verify if it matches a given digest.',
+            'Vulnerable to length-extension attacks if used directly as a MAC; use HMAC-SHA256 for message authentication.',
+            'Raw SHA-256 is fast on GPUs; never use raw SHA-256 for passwords without memory-hard stretching (use Scrypt or Argon2).',
+          ],
+        }}
+        keyTakeaway="SHA-256 is an irreversible one-way cryptographic hash function that produces a unique 64-character digital fingerprint to verify data integrity."
+      />
 
       {/* Educational & Architectural Panels */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

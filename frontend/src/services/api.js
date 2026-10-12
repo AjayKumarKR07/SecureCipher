@@ -163,6 +163,21 @@ export async function fetchHistory(limit = 20) {
 }
 
 /**
+ * Deletes a single operation history record by ID
+ */
+export async function deleteHistoryItem(id) {
+  const response = await fetch(`${API_BASE_URL}/history/${id}`, {
+    method: 'DELETE',
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || `Failed to delete record #${id}`);
+  }
+  return data;
+}
+
+
+/**
  * Real AES-256-GCM Text Encryption
  */
 export async function encryptAES(plaintext, passphrase) {
@@ -466,3 +481,182 @@ export async function decryptDES(ciphertext, key, iv) {
   }
   return data;
 }
+
+/* =========================================================================
+   AUTHENTICATION & EMAIL VERIFICATION API METHODS
+   ========================================================================= */
+
+export function getAuthToken() {
+  return localStorage.getItem('securecipher_token') || sessionStorage.getItem('securecipher_token');
+}
+
+export function setAuthToken(token, remember = false) {
+  if (remember) {
+    localStorage.setItem('securecipher_token', token);
+    sessionStorage.removeItem('securecipher_token');
+  } else {
+    sessionStorage.setItem('securecipher_token', token);
+    localStorage.removeItem('securecipher_token');
+  }
+}
+
+export function clearAuthToken() {
+  localStorage.removeItem('securecipher_token');
+  sessionStorage.removeItem('securecipher_token');
+}
+
+/**
+ * Step 1: Request Email Verification OTP
+ */
+export async function requestRegisterOTP({ fullName, email, password }) {
+  const response = await fetch(`${API_BASE_URL}/auth/register/request-otp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      full_name: fullName,
+      email,
+      password,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || data.message || 'Failed to request verification code');
+  }
+  return data;
+}
+
+/**
+ * Step 2: Verify OTP and Register Account
+ */
+export async function verifyRegisterOTP({ fullName, email, password, otp }) {
+  const response = await fetch(`${API_BASE_URL}/auth/register/verify-otp`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      full_name: fullName,
+      email,
+      password,
+      otp,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || data.message || 'OTP verification failed');
+  }
+  return data;
+}
+
+/**
+ * User Login
+ */
+export async function loginUser({ email, password, rememberMe }) {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      remember_me: Boolean(rememberMe),
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Authentication failed. Please verify credentials.');
+  }
+  return data;
+}
+
+/**
+ * Fetch Current Authenticated User Profile
+ */
+export async function fetchCurrentUser() {
+  const token = getAuthToken();
+  if (!token) return null;
+
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    clearAuthToken();
+    return null;
+  }
+  return await response.json();
+}
+
+/**
+ * Terminate Session
+ */
+export async function logoutUser() {
+  try {
+    const token = getAuthToken();
+    if (token) {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+    }
+  } catch (err) {
+    console.warn('Logout notification error:', err);
+  } finally {
+    clearAuthToken();
+  }
+}
+
+/**
+ * Update User Profile
+ */
+export async function updateProfile({ fullName }) {
+  const token = getAuthToken();
+  if (!token) throw new Error('Not authenticated');
+
+  const response = await fetch(`${API_BASE_URL}/auth/profile`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ full_name: fullName }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to update profile');
+  }
+  return data;
+}
+
+/**
+ * Change Account Password
+ */
+export async function changePassword({ currentPassword, newPassword }) {
+  const token = getAuthToken();
+  if (!token) throw new Error('Not authenticated');
+
+  const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to change password');
+  }
+  return data;
+}
+
+

@@ -22,6 +22,23 @@ class Settings(BaseSettings):
         "http://localhost:3000",
     ]
 
+    # JWT Authentication Configuration
+    JWT_SECRET_KEY: str = "securecipher_jwt_super_secret_signing_key_at_least_32_bytes_2026"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
+
+    # SMTP Email Configuration (Optional - for real email verification)
+    SMTP_HOST: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    SMTP_FROM_EMAIL: Optional[str] = None
+    SMTP_FROM_NAME: str = "SecureCipher Security"
+    SMTP_TLS: bool = True
+
+    # Environment
+    ENVIRONMENT: str = "development"
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:

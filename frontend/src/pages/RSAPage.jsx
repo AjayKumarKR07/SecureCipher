@@ -15,8 +15,10 @@ import {
   ShieldCheck,
   Info,
   ShieldAlert,
+  FileText,
 } from 'lucide-react';
 import { generateRSAKeys, encryptRSA, decryptRSA } from '../services/api';
+import HowItWorksSection from '../components/HowItWorksSection';
 
 export default function RSAPage({ onOperationSuccess }) {
   const [activeTab, setActiveTab] = useState('encrypt');
@@ -150,6 +152,8 @@ export default function RSAPage({ onOperationSuccess }) {
       setDecryptLoading(false);
     }
   };
+
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -309,9 +313,11 @@ export default function RSAPage({ onOperationSuccess }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>Zero-Storage Guarantee: Private keys and plaintext exist only in client memory. The server neither stores nor logs private keys or cipher materials.</span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-800">
+              <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Zero-Storage: Private keys exist only in client memory.</span>
+              </div>
             </div>
           </div>
         )}
@@ -648,6 +654,121 @@ export default function RSAPage({ onOperationSuccess }) {
           </div>
         </div>
       </div>
+
+      {/* Educational "How It Works" Section */}
+      <HowItWorksSection
+        algorithmName="RSA-OAEP Public-Key Cryptosystem"
+        subtitle="Asymmetric cryptosystem based on prime factorization with randomized OAEP-SHA256 padding for IND-CCA2 security."
+        badge="NIST FIPS 186-5 & RFC 8017"
+        themeColor="blue"
+        purpose="RSA is an asymmetric cryptosystem where encryption and decryption use mathematically linked, distinct keys. It is primarily used for secure key transport (wrapping symmetric keys like AES), digital certificates, and digital signatures. Anyone with the public key can encrypt data, but only the holder of the matching private key can reverse the mathematical trapdoor and decrypt it."
+        diagramSteps={[
+          { title: '1. Plaintext + Public Key', subtitle: 'Short message (<= 190B) + SPKI PEM', icon: FileText },
+          { title: '2. OAEP Padding (SHA-256)', subtitle: 'Random Seed + MGF1 Masking', icon: ShieldCheck },
+          { title: '3. Modular Exponentiation', subtitle: 'c = m^e mod n (e = 65537)', icon: Cpu },
+          { title: '4. Private Key Decrypt', subtitle: 'm = c^d mod n -> Original Plaintext', icon: KeyRound },
+        ]}
+        workflowSteps={[
+          {
+            title: 'Keypair Generation',
+            tag: 'Primes p & q',
+            description: 'The recipient generates two large random primes p and q. The modulus n = p * q is computed along with public exponent e = 65537 and private exponent d = e^-1 mod phi(n).',
+          },
+          {
+            title: 'Key Distribution',
+            tag: 'PEM Format',
+            description: 'The public key is published in SubjectPublicKeyInfo (SPKI) PEM format. The private key (PKCS#8 PEM) is kept strictly secret by the recipient.',
+          },
+          {
+            title: 'Plaintext Byte Limit Check',
+            tag: '190B / 318B',
+            description: 'The message length is verified against the OAEP limit: max 190 bytes for RSA-2048, or 318 bytes for RSA-3072. Oversized messages are rejected.',
+          },
+          {
+            title: 'OAEP-SHA256 Padding',
+            tag: 'RFC 8017',
+            description: 'A fresh random 32-byte seed is generated. The Mask Generation Function (MGF1 with SHA-256) masks both the seed and data block to achieve IND-CCA2 security.',
+          },
+          {
+            title: 'Modular Encryption',
+            tag: 'c = m^e mod n',
+            description: 'The padded integer block is raised to power e modulo n. The resulting 256-byte (for 2048-bit) binary ciphertext is encoded into Base64.',
+          },
+          {
+            title: 'Private Key Inversion & Verification',
+            tag: 'm = c^d mod n',
+            description: 'The recipient raises ciphertext to power d modulo n. OAEP unpadding verifies the structural delimiters and hash label before releasing plaintext.',
+          },
+        ]}
+        concepts={[
+          {
+            term: 'Public Key (n, e)',
+            badge: 'Encryption Key',
+            definition: 'Freely distributed key used by anyone to encrypt messages intended for the owner. It cannot decrypt messages.',
+          },
+          {
+            term: 'Private Key (n, d)',
+            badge: 'Decryption Key',
+            definition: 'Confidential key held solely by the recipient. Used to decrypt ciphertexts and create digital signatures.',
+          },
+          {
+            term: 'OAEP Padding',
+            badge: 'MGF1-SHA256',
+            definition: 'Optimal Asymmetric Encryption Padding. A Feistel-like padding scheme using SHA-256 and MGF1 to prevent chosen-ciphertext attacks.',
+          },
+          {
+            term: 'Payload Limit (k - 2hLen - 2)',
+            badge: 'Modulus Bound',
+            definition: 'RSA can only encrypt blocks smaller than the modulus. RSA-2048 holds max 190 bytes; RSA-3072 holds max 318 bytes.',
+          },
+          {
+            term: 'PEM & Base64',
+            badge: 'Key Encoding',
+            definition: 'Privacy-Enhanced Mail format. Wraps Base64-encoded ASN.1 DER binary keys between header and footer dashed text markers.',
+          },
+          {
+            term: 'Encryption vs Digital Signatures',
+            badge: 'Role Reversal',
+            definition: 'Encryption uses the recipient public key to protect confidentiality. Signatures use the sender private key to prove authenticity.',
+          },
+        ]}
+        example={{
+          title: 'Symmetric Session Key Encapsulation',
+          inputs: [
+            { label: 'Plaintext', value: '"AES-256-Key: 9f8a3c...7e (32 bytes)"' },
+            { label: 'Public Key', value: '2048-bit SPKI PEM' },
+          ],
+          process: 'OAEP pads 32-byte AES key with random seed into 256-byte block. Modulus n computes c = m^65537 mod n.',
+          outputs: [
+            { label: 'Ciphertext', value: '256 bytes Base64 string' },
+            { label: 'Decrypted', value: 'Original 32-byte AES Key' },
+          ],
+          note: 'Notice: In real-world protocols (TLS/PGP), RSA is used to encrypt small symmetric keys (hybrid encryption), while AES encrypts large files.',
+        }}
+        securityNotes={[
+          {
+            type: 'benefit',
+            title: 'Zero Shared Secret Pre-Agreement',
+            description: 'Allows secure communication without requiring sender and recipient to share a pre-existing password or secret key.',
+          },
+          {
+            type: 'benefit',
+            title: 'IND-CCA2 Security via OAEP',
+            description: 'OAEP padding prevents Coppersmith, Bleichenbacher padding oracle, and chosen-ciphertext attacks.',
+          },
+          {
+            type: 'warning',
+            title: 'Short Message Restriction',
+            description: 'RSA cannot encrypt large files directly. It is designed to encrypt small payloads (<= 190 bytes for RSA-2048) or wrap symmetric keys.',
+          },
+          {
+            type: 'warning',
+            title: 'Private Key Protection',
+            description: 'If an adversary compromises the private key, all historical and future messages encrypted with the matching public key can be decrypted.',
+          },
+        ]}
+        keyTakeaway="RSA-OAEP is designed for short secrets like symmetric session keys, relying on prime factorization to let anyone encrypt while only the private key owner can decrypt."
+      />
     </div>
   );
 }

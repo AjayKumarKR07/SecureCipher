@@ -67,3 +67,151 @@
 .animate-pulse-subtle {
   animation: pulse-subtle 2s infinite ease-in-out;
 }
+
+/* ============================================================== */
+/* SECURECIPHER REFERENCE CYBERSECURITY DESIGN UTILITIES          */
+/* ============================================================== */
+
+/* Deep Forest & Cyber Green Gradients */
+.bg-cyber-dark {
+  background-color: #030804;
+}
+
+.bg-cyber-panel {
+  background: linear-gradient(180deg, rgba(8, 22, 11, 0.85) 0%, rgba(4, 11, 6, 0.95) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.16);
+}
+
+.bg-cyber-panel:hover {
+  border-color: rgba(74, 222, 128, 0.35);
+  box-shadow: 0 0 25px -5px rgba(34, 197, 94, 0.12);
+}
+
+/* Cyber Green Radial Glows */
+.cyber-glow-green {
+  box-shadow: 0 0 35px -5px rgba(34, 197, 94, 0.25);
+}
+
+.cyber-glow-sm {
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+}
+
+/* Animated Horizon Beam */
+@keyframes horizon-glow {
+  0%, 100% { opacity: 0.75; transform: scaleX(1); }
+  50% { opacity: 0.95; transform: scaleX(1.05); }
+}
+
+.animate-horizon {
+  animation: horizon-glow 6s infinite ease-in-out;
+}
+
+/* Cyber Orb Glow */
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.5)); }
+  50% { transform: scale(1.04); opacity: 1; filter: drop-shadow(0 0 35px rgba(74, 222, 128, 0.75)); }
+}
+
+.animate-orb {
+  animation: orb-pulse 4s infinite ease-in-out;
+}
+
+/* Orbital Rotation */
+@keyframes orbital-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: orbital-spin 22s linear infinite;
+}
+
+@keyframes orbital-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.animate-spin-reverse {
+  animation: orbital-reverse 30s linear infinite;
+}
+
+/* =========================================================================
+   LIGHT / WHITE MODE THEME
+   ========================================================================= */
+
+.light-theme {
+  color-scheme: light;
+}
+
+.light-theme body {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.light-theme .min-h-screen {
+  background-color: #f8fafc;
+}
+
+.light-theme .bg-\[\#030704\],
+.light-theme .bg-\[\#020603\],
+.light-theme .bg-\[\#0B0F19\],
+.light-theme .bg-\[\#0D121F\],
+.light-theme .bg-\[\#040e06\],
+.light-theme .bg-\[\#040c06\],
+.light-theme .bg-\[\#030804\],
+.light-theme .bg-\[\#040d05\],
+.light-theme .bg-\[\#061408\],
+.light-theme .bg-\[\#061208\] {
+  background-color: #ffffff !important;
+}
+
+.light-theme .bg-slate-900,
+.light-theme .bg-slate-950,
+.light-theme .bg-slate-900\/80,
+.light-theme .bg-slate-900\/40 {
+  background-color: #f1f5f9 !important;
+}
+
+.light-theme .bg-\[\#0B0F19\]\/80,
+.light-theme .bg-\[\#030704\]\/85 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.light-theme .text-white,
+.light-theme .text-slate-100 {
+  color: #0f172a !important;
+}
+
+.light-theme .text-slate-300,
+.light-theme .text-slate-400 {
+  color: #475569 !important;
+}
+
+.light-theme .text-slate-500,
+.light-theme .text-slate-600 {
+  color: #64748b !important;
+}
+
+.light-theme .border-slate-800,
+.light-theme .border-slate-800\/80,
+.light-theme .border-emerald-500\/10,
+.light-theme .border-emerald-500\/15,
+.light-theme .border-emerald-500\/20,
+.light-theme .border-emerald-500\/25,
+.light-theme .border-emerald-500\/30 {
+  border-color: #cbd5e1 !important;
+}
+
+.light-theme input,
+.light-theme textarea,
+.light-theme select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.light-theme .shadow-2xl,
+.light-theme .shadow-xl {
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+}
+

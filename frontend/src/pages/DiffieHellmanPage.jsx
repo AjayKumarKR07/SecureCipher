@@ -17,8 +17,10 @@ import {
   Lock,
   Unlock,
   Zap,
+  FileText,
 } from 'lucide-react';
 import { generateDHKeypair, deriveDHSecret, simulateDHExchange } from '../services/api';
+import HowItWorksSection from '../components/HowItWorksSection';
 
 export default function DiffieHellmanPage({ onOperationSuccess }) {
   const [activeMode, setActiveMode] = useState('simulation'); // 'simulation' | 'workbench'
@@ -181,6 +183,8 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
     aliceDerivedKey &&
     bobDerivedKey &&
     aliceDerivedKey.derived_key_b64 === bobDerivedKey.derived_key_b64;
+
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -425,14 +429,16 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between">
+                  <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <span className="text-xs text-emerald-200 font-medium flex items-center gap-2">
                       <Check className="w-4 h-4 text-emerald-400" />
                       <span>Mathematical Key Equality: <strong>Identical 256-bit Session Key Derived</strong></span>
                     </span>
-                    <span className="text-[11px] font-mono text-slate-400 truncate max-w-xs">
-                      Fingerprint: {simulationResult.key_fingerprint.substring(0, 16)}...
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-mono text-slate-400 truncate max-w-xs">
+                        Fingerprint: {simulationResult.key_fingerprint.substring(0, 16)}...
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -725,9 +731,11 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                     : 'Key Mismatch: Derived keys do not match. Verify private and peer public key pairings.'}
                 </span>
               </div>
-              <span className="text-[11px] font-mono bg-slate-950 px-2.5 py-1 rounded border border-slate-800">
-                {workbenchKeysMatch ? 'KEY MATCH ✓' : 'KEY MISMATCH ✗'}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-[11px] font-mono bg-slate-950 px-2.5 py-1 rounded border border-slate-800">
+                  {workbenchKeysMatch ? 'KEY MATCH ✓' : 'KEY MISMATCH ✗'}
+                </span>
+              </div>
             </div>
           )}
         </div>
@@ -765,6 +773,135 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
           </p>
         </div>
       </div>
+
+      {/* Educational "How It Works" Section */}
+      <HowItWorksSection
+        algorithmName="Diffie-Hellman Key Agreement Protocol"
+        subtitle="Asymmetric handshake establishing matching symmetric keys over untrusted channels via discrete logarithms."
+        badge="RFC 3526 MODP-2048 & NIST SP 800-56A"
+        themeColor="indigo"
+        warningBanner={{
+          type: 'amber',
+          headline: 'UNAUTHENTICATED PROTOCOL WARNING: MAN-IN-THE-MIDDLE (MITM) VULNERABILITY',
+          detail: 'Raw Diffie-Hellman establishes a shared secret but provides ZERO identity authentication. An active adversary on the network can intercept public values and negotiate independent keys with both parties. In production (TLS 1.3), Diffie-Hellman keys must be authenticated using digital certificates (X.509).',
+        }}
+        purpose={
+          <>
+            <p>
+              Diffie-Hellman is a <strong>key agreement protocol</strong>, NOT a message encryption cipher. It allows two independent parties (Alice and Bob) who have never met to establish an identical shared secret key across an insecure public channel (like the open Internet) without transmitting the secret itself.
+            </p>
+            <p className="text-[11px] text-slate-400">
+              Once established, this shared secret is expanded into a 256-bit symmetric session key using HKDF-SHA256, which then feeds into a high-speed cipher like AES-256-GCM for bulk message encryption.
+            </p>
+          </>
+        }
+        diagramSteps={[
+          { title: '1. Independent Keypairs', subtitle: 'Alice (a, A) & Bob (b, B)', icon: Key },
+          { title: '2. Public Exchange', subtitle: 'Send Public Keys A & B Over Wire', icon: Repeat },
+          { title: '3. Shared Secret', subtitle: 'S = B^a = A^b = g^(ab) mod p', icon: Cpu },
+          { title: '4. HKDF Expansion', subtitle: 'Uniform 256-bit Symmetric Key', icon: ShieldCheck },
+        ]}
+        workflowSteps={[
+          {
+            title: 'Domain Parameter Selection',
+            tag: 'RFC 3526',
+            description: 'Alice and Bob agree on public group parameters: MODP Group 14 (a 2048-bit prime modulus p and generator g = 2). These numbers are completely public.',
+          },
+          {
+            title: 'Independent Private & Public Generation',
+            tag: 'Secret Exponents',
+            description: 'Alice picks private exponent a and computes public A = g^a mod p. Bob picks private exponent b and computes public B = g^b mod p. Private keys never leave the endpoint.',
+          },
+          {
+            title: 'Public Key Exchange',
+            tag: 'Over Insecure Wire',
+            description: 'Alice sends A to Bob; Bob sends B to Alice. An eavesdropper observing the wire sees only p, g, A, and B, but cannot deduce a or b due to the discrete log problem.',
+          },
+          {
+            title: 'Independent Secret Derivation',
+            tag: 'S = g^(ab) mod p',
+            description: 'Alice computes S = B^a mod p. Bob computes S = A^b mod p. By modular exponentiation rules, (g^b)^a = (g^a)^b = g^(ab) mod p, yielding the exact same integer on both sides.',
+          },
+          {
+            title: 'HKDF-SHA256 Key Expansion',
+            tag: 'RFC 5869',
+            description: 'Raw modular numbers are not uniformly distributed across bits. HKDF-SHA256 digests the shared secret into a uniform 256-bit symmetric encryption key.',
+          },
+          {
+            title: 'Key Agreement Verification',
+            tag: 'Match Confirmed',
+            description: 'Both parties now share the identical 256-bit key ready for AES encryption without ever having transmitted the key across the wire.',
+          },
+        ]}
+        concepts={[
+          {
+            term: 'Key Agreement vs Encryption',
+            badge: 'Key Negotiation',
+            definition: 'Diffie-Hellman does NOT encrypt message text. It negotiates an identical secret key between two parties, which is then used by a cipher like AES.',
+          },
+          {
+            term: 'Discrete Logarithm Problem',
+            badge: 'Mathematical Basis',
+            definition: 'Given g, p, and g^a mod p, it is computationally infeasible to calculate private exponent a when p is 2048 bits on classical computers.',
+          },
+          {
+            term: 'Shared Secret (g^(ab) mod p)',
+            badge: 'Mathematical Intersection',
+            definition: 'Alice calculates (g^b)^a mod p, and Bob calculates (g^a)^b mod p. Both formulas arrive at the exact same integer S = g^(ab) mod p.',
+          },
+          {
+            term: 'HKDF-SHA256',
+            badge: 'Key Expansion',
+            definition: 'HMAC-based Key Derivation Function. Extracts uniform pseudo-random bits from the non-uniform raw Diffie-Hellman secret.',
+          },
+          {
+            term: 'Perfect Forward Secrecy (PFS)',
+            badge: 'Ephemeral Keys',
+            definition: 'When ephemeral keypairs are generated per session and discarded, compromising a long-term server key cannot decrypt past recorded traffic.',
+          },
+          {
+            term: 'Man-in-the-Middle (MITM) Risk',
+            badge: 'Security Warning',
+            definition: 'Without digital certificates to verify public key ownership, an active attacker can intercept public keys and establish separate sessions with Alice and Bob.',
+          },
+        ]}
+        example={{
+          title: 'Alice & Bob Handshake Simulation',
+          inputs: [
+            { label: 'Domain Group', value: 'RFC 3526 MODP-2048 (g=2)' },
+            { label: 'Keypair Generation', value: 'Independent Private Exponents (a, b)' },
+          ],
+          process: 'Alice and Bob exchange public values A and B. Alice calculates B^a mod p; Bob calculates A^b mod p. Both pass result through HKDF-SHA256.',
+          outputs: [
+            { label: 'Alice Derived Key', value: '256-bit Base64 Key' },
+            { label: 'Bob Derived Key', value: 'Exact Matching Base64 Key' },
+          ],
+          note: 'Notice: Both endpoints arrived at identical 256-bit keys independently without ever sending their private exponents over the wire.',
+        }}
+        securityNotes={[
+          {
+            type: 'benefit',
+            title: 'Forward Secrecy (PFS)',
+            description: 'Using fresh ephemeral keypairs per session ensures that long-term key compromises do not decrypt past recorded sessions.',
+          },
+          {
+            type: 'benefit',
+            title: 'Zero Pre-Shared Key Requirement',
+            description: 'Enables two strangers on the Internet to establish encrypted communication without a pre-existing shared password.',
+          },
+          {
+            type: 'warning',
+            title: 'Authentication Vulnerability (MITM)',
+            description: 'Unauthenticated Diffie-Hellman has no identity verification. Mallory can perform two separate handshakes and eavesdrop in real time.',
+          },
+          {
+            type: 'warning',
+            title: 'Key Agreement is NOT Encryption',
+            description: 'Diffie-Hellman must always feed into a symmetric cipher like AES-256-GCM to encrypt actual application payloads.',
+          },
+        ]}
+        keyTakeaway="Diffie-Hellman establishes a shared symmetric key over an insecure wire without transmitting secrets, but requires digital certificates in production to prevent Man-in-the-Middle attacks."
+      />
     </div>
   );
 }

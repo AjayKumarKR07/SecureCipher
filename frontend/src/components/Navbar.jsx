@@ -1,6 +1,24 @@
-import React from 'react';
-import { ShieldCheck, RefreshCw, Database, Activity, Menu } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  ShieldCheck,
+  RefreshCw,
+  Database,
+  Activity,
+  Menu,
+  User,
+  LogOut,
+  Sun,
+  Moon,
+  Bell,
+  Settings,
+  Lock,
+  ChevronDown,
+} from 'lucide-react';
 import StatusBadge from './StatusBadge';
+import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useNotifications } from '../context/NotificationContext';
 
 const GithubIcon = ({ className }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -16,6 +34,24 @@ export default function Navbar({
   isRefreshing,
   onToggleSidebar,
 }) {
+  const { user, logout } = useAuth();
+  const { toggleTheme, isDark } = useTheme();
+  const { unreadCount } = useNotifications();
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfileDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="sticky top-0 z-30 h-16 border-b border-slate-800 bg-[#0B0F19]/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -44,7 +80,7 @@ export default function Navbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-4">
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Backend Status Telemetry */}
         <div className="hidden sm:flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800">
           <Activity className="w-3.5 h-3.5 text-blue-400" />
@@ -82,6 +118,132 @@ export default function Navbar({
         >
           <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-purple-400' : ''}`} />
         </button>
+
+        {/* Dark / White Mode Switcher */}
+        <button
+          onClick={toggleTheme}
+          title={isDark ? 'Switch to White / Light Mode' : 'Switch to Dark Mode'}
+          className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-slate-700 transition-colors"
+        >
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-400" />}
+        </button>
+
+        {/* Notifications Icon */}
+        <Link
+          to="/profile"
+          title="Notifications & Activity"
+          className="relative p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-colors"
+        >
+          <Bell className="w-4 h-4 text-slate-300" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse border-2 border-slate-950" />
+          )}
+        </Link>
+
+        {/* User Account Dropdown Menu */}
+        {user ? (
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setProfileDropdownOpen((prev) => !prev)}
+              className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800/90 border border-slate-800 hover:border-emerald-500/40 pl-3 pr-2 py-1.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
+            >
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center text-[10px] font-bold text-slate-950">
+                {user.full_name ? user.full_name[0].toUpperCase() : 'U'}
+              </div>
+              <span className="text-slate-200 font-medium truncate max-w-[90px]">
+                {user.full_name.split(' ')[0]}
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Profile Dropdown Card */}
+            {profileDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-2xl p-2 z-50 text-xs space-y-1 backdrop-blur-xl animate-in fade-in zoom-in-95">
+                {/* User Header */}
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 mb-2">
+                  <p className="font-bold text-white text-sm truncate">{user.full_name}</p>
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">{user.email}</p>
+                  <span className="inline-block mt-2 text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Verified Analyst
+                  </span>
+                </div>
+
+                <Link
+                  to="/profile"
+                  onClick={() => setProfileDropdownOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                >
+                  <User className="w-4 h-4 text-emerald-400" />
+                  <span>Account Settings</span>
+                </Link>
+
+                <Link
+                  to="/profile"
+                  onClick={() => setProfileDropdownOpen(false)}
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                >
+                  <Lock className="w-4 h-4 text-emerald-400" />
+                  <span>Change Password</span>
+                </Link>
+
+                <Link
+                  to="/profile"
+                  onClick={() => setProfileDropdownOpen(false)}
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Bell className="w-4 h-4 text-emerald-400" />
+                    <span>Notifications</span>
+                  </div>
+                  {unreadCount > 0 && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-emerald-500/30 text-emerald-300">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleTheme();
+                    setProfileDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-400" />}
+                    <span>{isDark ? 'White / Light Mode' : 'Dark Mode'}</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    {isDark ? 'Dark' : 'Light'}
+                  </span>
+                </button>
+
+                <div className="border-t border-slate-800 pt-1 mt-1">
+                  <button
+                    onClick={() => {
+                      logout();
+                      setProfileDropdownOpen(false);
+                      navigate('/');
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40 text-xs font-semibold text-emerald-300 hover:text-white hover:bg-emerald-900/60 transition-colors"
+          >
+            <User className="w-3.5 h-3.5" />
+            <span>Sign In</span>
+          </Link>
+        )}
 
         {/* GitHub Link */}
         <a

@@ -66,3 +66,9 @@ def test_history():
     assert "items" in data
     assert "total" in data
     assert isinstance(data["items"], list)
+
+
+def test_delete_history_item_not_found():
+    response = client.delete("/api/history/99999999")
+    assert response.status_code in (404, 400)
+

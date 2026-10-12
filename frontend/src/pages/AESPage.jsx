@@ -12,8 +12,11 @@ import {
   ArrowRight,
   RefreshCw,
   Sparkles,
+  FileText,
+  ShieldCheck,
 } from 'lucide-react';
 import { encryptAES, decryptAES } from '../services/api';
+import HowItWorksSection from '../components/HowItWorksSection';
 
 export default function AESPage({ onOperationSuccess }) {
   const [activeTab, setActiveTab] = useState('encrypt');
@@ -162,6 +165,8 @@ export default function AESPage({ onOperationSuccess }) {
       setDecryptError('Clipboard permission denied. Please paste values manually.');
     });
   };
+
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -586,6 +591,122 @@ export default function AESPage({ onOperationSuccess }) {
           </div>
         </div>
       </div>
+
+      {/* Educational "How It Works" Section */}
+      <HowItWorksSection
+        algorithmName="AES-256-GCM (Authenticated Encryption)"
+        subtitle="Symmetric authenticated cipher combining high-speed counter mode encryption with GMAC integrity verification."
+        badge="NIST FIPS 197 & SP 800-38D"
+        themeColor="purple"
+        purpose="AES-256-GCM provides simultaneous confidentiality and message integrity. It is used as the global standard for securing data in transit (TLS 1.3, HTTPS, SSH) and data at rest (database encryption, cloud storage disks). Because it is an AEAD (Authenticated Encryption with Associated Data) cipher, it guarantees that any unauthorized alteration of the encrypted message is detected immediately."
+        diagramSteps={[
+          { title: '1. User Input', subtitle: 'Plaintext + Passphrase', icon: FileText },
+          { title: '2. Scrypt KDF', subtitle: 'Stretches Passphrase + 16B Salt', icon: Key },
+          { title: '3. AES-GCM Engine', subtitle: 'CTR Encryption + Fresh 12B Nonce', icon: Cpu },
+          { title: '4. AEAD Output', subtitle: 'Ciphertext + 16B Tag (Base64)', icon: ShieldCheck },
+        ]}
+        workflowSteps={[
+          {
+            title: 'Passphrase & Salt Ingestion',
+            tag: 'Step 1',
+            description: 'The user provides plaintext and a secret passphrase. The system generates a cryptographically fresh 16-byte random salt using os.urandom(16) to defeat precomputed rainbow tables.',
+          },
+          {
+            title: 'Scrypt Key Derivation (KDF)',
+            tag: 'Step 2',
+            description: 'Scrypt (N=16384, r=8, p=1) expands the low-entropy passphrase into a uniformly distributed 256-bit (32-byte) binary symmetric key through memory-hard computations.',
+          },
+          {
+            title: 'Fresh Nonce Generation',
+            tag: 'Step 3',
+            description: 'A fresh 12-byte (96-bit) random nonce (Number Used Once) is generated. In GCM mode, reusing a nonce with the same key breaks authentication completely, so fresh nonces are strictly enforced.',
+          },
+          {
+            title: 'Galois/Counter Mode (GCM) Encryption',
+            tag: 'Step 4',
+            description: 'AES-256 encrypts incrementing counter blocks derived from the nonce. The plaintext is XORed with the keystream to produce the ciphertext.',
+          },
+          {
+            title: 'Galois MAC (GMAC) Tag Generation',
+            tag: 'Step 5',
+            description: 'GCM computes an algebraic 128-bit (16-byte) authentication tag over the ciphertext and nonce in the Galois field GF(2^128). This tag acts as an unforgeable cryptographic seal.',
+          },
+          {
+            title: 'Base64 Serialization & Verification',
+            tag: 'Step 6',
+            description: 'The binary ciphertext, tag, nonce, and salt are converted into safe ASCII Base64 strings. During decryption, the tag is verified before any plaintext is released.',
+          },
+        ]}
+        concepts={[
+          {
+            term: 'Symmetric Encryption',
+            badge: '256-bit Key',
+            definition: 'Uses the exact same secret key for both encryption and decryption. Both sender and receiver must protect this key.',
+          },
+          {
+            term: 'Scrypt KDF',
+            badge: 'Memory-Hard',
+            definition: 'A password-stretching algorithm requiring 16 MB of sequential RAM access, rendering GPU/ASIC brute-force cracking cost-prohibitive.',
+          },
+          {
+            term: 'Random Salt (16 Bytes)',
+            badge: '128-bit Entropy',
+            definition: 'Random bytes mixed into the passphrase during KDF execution so identical passwords produce completely unique keys.',
+          },
+          {
+            term: 'Nonce (12 Bytes)',
+            badge: 'Must Never Repeat',
+            definition: 'Number Used Once. Initializes the GCM counter. Reusing a nonce with the same key fatally compromises GCM authenticity.',
+          },
+          {
+            term: 'Authentication Tag (16B)',
+            badge: 'GMAC Integrity Seal',
+            definition: 'A 128-bit cryptographic checksum. Any change to a single bit of ciphertext or nonce causes tag verification to fail.',
+          },
+          {
+            term: 'Base64 Encoding',
+            badge: 'Data Representation',
+            definition: 'Translates raw binary bytes into printable ASCII characters for safe JSON transport. Base64 is an encoding format, NOT encryption.',
+          },
+        ]}
+        example={{
+          title: 'Encrypted Message Demonstration',
+          inputs: [
+            { label: 'Plaintext', value: '"Confidential Research Data"' },
+            { label: 'Passphrase', value: '"MySecretPass#2026"' },
+          ],
+          process: 'Scrypt stretches passphrase with 16B salt into a 256-bit key. AES-GCM encrypts with a fresh 12B nonce and computes a 16B GMAC tag.',
+          outputs: [
+            { label: 'Ciphertext (B64)', value: '"7kLm9Qx...pZ=="' },
+            { label: 'Tag (B64)', value: '"a1B2c3...9w=="' },
+            { label: 'Nonce (B64)', value: '"x9Y2k...1A=="' },
+          ],
+          note: 'Notice: If even a single character in the ciphertext is altered by an adversary, the backend traps InvalidTag and immediately rejects decryption.',
+        }}
+        securityNotes={[
+          {
+            type: 'benefit',
+            title: 'AEAD Integrity Protection',
+            description: 'Unlike older modes (CBC/ECB), GCM detects bit-flipping and ciphertext tampering instantly before releasing plaintext.',
+          },
+          {
+            type: 'benefit',
+            title: 'Hardware Acceleration',
+            description: 'Modern CPUs execute AES instructions (AES-NI) in hardware at multiple gigabytes per second with constant-time execution.',
+          },
+          {
+            type: 'warning',
+            title: 'Nonce Reuse Catastrophe',
+            description: 'Reusing a nonce with the same key in GCM destroys authenticity and leaks plaintext XOR differentials.',
+          },
+          {
+            type: 'warning',
+            title: 'Authentication Failure Behavior',
+            description: 'If the passphrase is wrong or 1 bit of ciphertext is modified, the backend safely returns a 400 error without leaking partial plaintext.',
+          },
+        ]}
+        keyTakeaway="AES-256-GCM guarantees that if your ciphertext is altered by even one bit, the authentication tag fails and the message is instantly rejected."
+      />
     </div>
   );
 }
