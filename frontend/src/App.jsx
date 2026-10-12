@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
@@ -26,6 +26,15 @@ function PublicRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return null;
   return user ? <Navigate to="/dashboard" replace /> : children;
+}
+
+// Route Guard: Requires an authenticated user session.
+// If logged out, redirects immediately to /register (with intent state to return after sign-up/login)
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  if (loading) return null;
+  return user ? children : <Navigate to="/register" state={{ from: location }} replace />;
 }
 
 // On the root path: show authenticated Workspace Dashboard if logged in, otherwise public Landing HomePage
@@ -102,11 +111,13 @@ export default function App() {
                 <Route
                   path="/dashboard"
                   element={
-                    <Dashboard
-                      backendHealth={backendHealth}
-                      dbHealth={dbHealth}
-                      onRefresh={checkTelemetry}
-                    />
+                    <ProtectedRoute>
+                      <Dashboard
+                        backendHealth={backendHealth}
+                        dbHealth={dbHealth}
+                        onRefresh={checkTelemetry}
+                      />
+                    </ProtectedRoute>
                   }
                 />
                 <Route
@@ -121,16 +132,20 @@ export default function App() {
                 />
                 <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
                 <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
-                <Route path="/profile" element={<ProfileSettingsPage />} />
-                <Route path="/algorithm/aes" element={<AESPage onOperationSuccess={checkTelemetry} />} />
-                <Route path="/algorithm/rsa" element={<RSAPage onOperationSuccess={checkTelemetry} />} />
-                <Route path="/algorithm/diffie-hellman" element={<DiffieHellmanPage onOperationSuccess={checkTelemetry} />} />
-                <Route path="/algorithm/sha-256" element={<SHA256Page onOperationSuccess={checkTelemetry} />} />
-                <Route path="/algorithm/md5" element={<MD5Page onOperationSuccess={checkTelemetry} />} />
-                <Route path="/algorithm/des" element={<DESPage onOperationSuccess={checkTelemetry} />} />
+                <Route path="/profile" element={<ProtectedRoute><ProfileSettingsPage /></ProtectedRoute>} />
+                <Route path="/algorithm/aes" element={<ProtectedRoute><AESPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
+                <Route path="/algorithm/rsa" element={<ProtectedRoute><RSAPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
+                <Route path="/algorithm/diffie-hellman" element={<ProtectedRoute><DiffieHellmanPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
+                <Route path="/algorithm/sha-256" element={<ProtectedRoute><SHA256Page onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
+                <Route path="/algorithm/md5" element={<ProtectedRoute><MD5Page onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
+                <Route path="/algorithm/des" element={<ProtectedRoute><DESPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
                 <Route
                   path="/history"
-                  element={<HistoryPage dbHealth={dbHealth} />}
+                  element={
+                    <ProtectedRoute>
+                      <HistoryPage dbHealth={dbHealth} />
+                    </ProtectedRoute>
+                  }
                 />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />

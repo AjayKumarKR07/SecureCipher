@@ -135,7 +135,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
               About
             </Link>
             <Link
-              to="/history"
+              to={user ? "/history" : "/register"}
               className="px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-950/50 transition-colors"
             >
               Audit History
@@ -150,17 +150,19 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             </div>
 
 
-            {/* Notifications Button */}
-            <Link
-              to="/profile"
-              title="Notifications & Activity"
-              className="relative p-2 rounded-full bg-[#061408] border border-emerald-500/25 text-slate-300 hover:text-white hover:border-emerald-400/50 transition-colors"
-            >
-              <Bell className="w-3.5 h-3.5 text-emerald-400/90" />
-              {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              )}
-            </Link>
+            {/* Notifications Button (Only when authenticated) */}
+            {user && (
+              <Link
+                to="/profile"
+                title="Notifications & Activity"
+                className="relative p-2 rounded-full bg-[#061408] border border-emerald-500/25 text-slate-300 hover:text-white hover:border-emerald-400/50 transition-colors"
+              >
+                <Bell className="w-3.5 h-3.5 text-emerald-400/90" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                )}
+              </Link>
+            )}
 
             {user ? (
               <div className="relative">
@@ -254,7 +256,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             )}
 
             <Link
-              to="/dashboard"
+              to={user ? "/dashboard" : "/register"}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#0a2310] hover:bg-[#0d2f16] border border-emerald-400/50 hover:border-emerald-300 text-emerald-300 hover:text-white text-xs font-semibold shadow-md shadow-emerald-950/50 hover:shadow-emerald-900/50 transition-all group"
             >
               <span>{user ? 'Go to Dashboard' : 'Launch Dashboard'}</span>
@@ -297,7 +299,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
               How It Works
             </button>
             <Link
-              to="/history"
+              to={user ? "/history" : "/register"}
               onClick={() => setMobileMenuOpen(false)}
               className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
@@ -345,7 +347,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             )}
 
             <Link
-              to="/dashboard"
+              to={user ? "/dashboard" : "/register"}
               onClick={() => setMobileMenuOpen(false)}
               className="block w-full text-center mt-3 py-2 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold shadow-lg"
             >
