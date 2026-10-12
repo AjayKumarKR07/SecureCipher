@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import HomePage from './pages/HomePage';
 import AESPage from './pages/AESPage';
 import RSAPage from './pages/RSAPage';
 import DiffieHellmanPage from './pages/DiffieHellmanPage';
@@ -24,7 +25,28 @@ import { fetchHealth, fetchDatabaseHealth } from './services/api';
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return null;
-  return user ? <Navigate to="/" replace /> : children;
+  return user ? <Navigate to="/dashboard" replace /> : children;
+}
+
+// On the root path: show authenticated Workspace Dashboard if logged in, otherwise public Landing HomePage
+function HomeOrDashboard({ backendHealth, dbHealth, onRefresh }) {
+  const { user } = useAuth();
+  if (user) {
+    return (
+      <Dashboard
+        backendHealth={backendHealth}
+        dbHealth={dbHealth}
+        onRefresh={onRefresh}
+      />
+    );
+  }
+  return (
+    <HomePage
+      backendHealth={backendHealth}
+      dbHealth={dbHealth}
+      onRefresh={onRefresh}
+    />
+  );
 }
 
 export default function App() {
@@ -70,7 +92,27 @@ export default function App() {
                 <Route
                   path="/"
                   element={
+                    <HomeOrDashboard
+                      backendHealth={backendHealth}
+                      dbHealth={dbHealth}
+                      onRefresh={checkTelemetry}
+                    />
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
                     <Dashboard
+                      backendHealth={backendHealth}
+                      dbHealth={dbHealth}
+                      onRefresh={checkTelemetry}
+                    />
+                  }
+                />
+                <Route
+                  path="/home"
+                  element={
+                    <HomePage
                       backendHealth={backendHealth}
                       dbHealth={dbHealth}
                       onRefresh={checkTelemetry}

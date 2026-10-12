@@ -190,7 +190,7 @@ export default function RegisterPage() {
       setStep('success');
       setSuccessMsg('Account created and verified successfully!');
       setTimeout(() => {
-        navigate('/algorithm/aes', { replace: true });
+        navigate('/dashboard', { replace: true });
       }, 2000);
     } else {
       setError(result.error);

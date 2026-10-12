@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { type: 'header', label: 'Symmetric & Asymmetric' },
   { name: 'AES Encryption', path: '/algorithm/aes', icon: Shield },
   { name: 'RSA Encryption', path: '/algorithm/rsa', icon: KeyRound },
@@ -29,6 +29,7 @@ const navItems = [
   { name: 'Operation History', path: '/history', icon: History },
   { name: 'Profile & Settings', path: '/profile', icon: User },
   { name: 'About & Roadmap', path: '/about', icon: Info },
+  { name: 'Home Landing Page', path: '/', icon: Server },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {

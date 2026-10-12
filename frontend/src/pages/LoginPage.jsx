@@ -29,7 +29,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   // Check if user came with a redirect intent
-  const redirectPath = location.state?.from?.pathname || '/';
+  const redirectPath = location.state?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e) => {
     e.preventDefault();

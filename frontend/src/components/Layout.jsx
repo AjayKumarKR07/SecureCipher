@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import { useAuth } from '../context/AuthContext';
 
 export default function Layout({
   children,
@@ -12,9 +13,13 @@ export default function Layout({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
-  const isCyberPage = ['/', '/login', '/register'].includes(location.pathname);
+  const { user } = useAuth();
 
-  // When on Home, Login, or Register, provide an immersive, full-screen cyber experience
+  // Full-screen cyber experience for login/register, or for public landing page when unauthenticated
+  const isCyberPage =
+    ['/login', '/register'].includes(location.pathname) ||
+    (location.pathname === '/' && !user);
+
   if (isCyberPage) {
     return (
       <div className="min-h-screen bg-[#030704] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-300">
@@ -24,7 +29,7 @@ export default function Layout({
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#030704] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-300">
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
@@ -43,11 +48,11 @@ export default function Layout({
           {children}
         </main>
 
-        <footer className="border-t border-slate-800/80 py-4 px-6 text-center text-xs text-slate-400 bg-[#0B0F19]">
+        <footer className="border-t border-emerald-500/15 py-4 px-6 text-center text-xs text-slate-400 bg-[#030704]">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 max-w-7xl mx-auto">
-            <span>SecureCipher – Multi-Algorithm Cryptography & Secure Data Protection System</span>
-            <span className="font-mono text-[11px] text-slate-400">
-              College Mini-Project | React + FastAPI + PostgreSQL
+            <span className="text-slate-400">SecureCipher – Multi-Algorithm Cryptography & Secure Data Protection System</span>
+            <span className="font-mono text-[11px] text-emerald-400/80">
+              B.Tech ISE Capstone | React 19 + FastAPI + PostgreSQL
             </span>
           </div>
         </footer>

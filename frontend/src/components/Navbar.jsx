@@ -49,7 +49,7 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-slate-800 bg-[#0B0F19]/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
+    <header className="sticky top-0 z-30 h-16 border-b border-emerald-500/20 bg-[#030a04]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
@@ -59,21 +59,21 @@ export default function Navbar({
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-blue-500 p-0.5 shadow-lg shadow-purple-900/30 flex items-center justify-center">
-            <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-purple-400" />
+        <Link to="/dashboard" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-500 p-0.5 shadow-lg shadow-emerald-900/30 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-full h-full bg-[#040e06] rounded-[7px] flex items-center justify-center">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
             </div>
           </div>
           <div>
             <span className="font-bold tracking-tight text-white text-base">
-              Secure<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Cipher</span>
+              Secure<span className="text-emerald-400">Cipher</span>
             </span>
-            <span className="hidden sm:inline-block ml-2 text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-purple-950/60 border border-purple-500/30 text-purple-300">
-              Mini-Project
+            <span className="hidden sm:inline-block ml-2 text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-300">
+              Dashboard
             </span>
           </div>
-        </div>
+        </Link>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
