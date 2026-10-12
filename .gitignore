@@ -58,3 +58,6 @@ desktop.ini
 # Database / SQLite / Local storage
 *.sqlite3
 *.db
+
+# Temporary / Scratch
+scratch/
