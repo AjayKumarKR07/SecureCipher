@@ -13,7 +13,6 @@ import {
   X,
   ShieldCheck,
   User,
-  Home,
 } from 'lucide-react';
 
 const navItems = [
@@ -30,7 +29,6 @@ const navItems = [
   { name: 'Operation History', path: '/history', icon: History },
   { name: 'Profile & Settings', path: '/profile', icon: User },
   { name: 'About & Roadmap', path: '/about', icon: Info },
-  { name: 'Home Landing Page', path: '/', icon: Home },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
