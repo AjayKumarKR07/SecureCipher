@@ -84,7 +84,7 @@ export async function fetchAlgorithms() {
           purpose: 'Confidential bulk data encryption and secure file protection',
           description: 'NIST FIPS 197 standard. Operates on 128-bit blocks using 128, 192, or 256-bit keys.',
           key_size_info: '128, 192, or 256 bits',
-          status: 'Foundation Layout Ready (Pending Crypto Implementation)',
+          status: 'Active (AES-256-GCM Implemented)',
           features: ['128-bit block size', 'FIPS 197 compliant', 'CBC and GCM modes'],
         },
         {
@@ -94,7 +94,7 @@ export async function fetchAlgorithms() {
           purpose: 'Public-key encryption, secure key transport, and digital signatures',
           description: 'Trapdoor one-way permutation based on the difficulty of prime factorization.',
           key_size_info: '2048, 3072, or 4096 bits',
-          status: 'Foundation Layout Ready (Pending Crypto Implementation)',
+          status: 'Active (RSA-OAEP-SHA256 Implemented)',
           features: ['Public/Private key pairs', 'OAEP padding', 'Digital signatures'],
         },
         {

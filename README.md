@@ -319,7 +319,33 @@ All API routes are mounted under the `/api` prefix:
 
 ---
 
-## 11. Next Implementation Phase (Roadmap)
+## 11. Implementation Status & Roadmap
 
-- **Phase 2:** Integrate Python cryptographic backends (`cryptography` / `pycryptodome`) for real-time encryption, decryption, key pair derivation, and file stream hashing.
-- **Phase 3:** File drag-and-drop encryption (.enc files) and downloadable digital certificate validation.
+- **Phase 1 (Complete):** Core architecture, FastAPI routing, PostgreSQL telemetry schema, React 19 UI, and health monitoring.
+- **Phase 2 (Complete):** Live cryptographic engine integration using Python `cryptography` and `pycryptodome`:
+  - `AES-256-GCM` with Scrypt KDF and authentication tag validation.
+  - `RSA-2048/3072` keypair generation, OAEP-SHA256 encryption, and private key decryption.
+  - `Diffie-Hellman` key exchange (RFC 3526 MODP Group 14, 2048-bit) with HKDF-SHA256 key derivation.
+  - `SHA-256` text hashing, chunked 50 MB file stream hashing, and integrity/avalanche comparison.
+  - `MD5` text and file hashing with legacy collision vulnerability analysis.
+  - `DES-CBC` Feistel cipher with fresh 8-byte IV generation, PKCS#7 padding, and DES vs AES comparative analysis.
+- **Phase 3 (Future):** Extended streaming for files > 100 MB, downloadable PKCS#12 certificates, and PSS digital signatures.
+
+---
+
+## 12. Educational Scope, Trust Boundaries & Limitations
+
+> **Academic & Mini-Project Disclaimer:**  
+> SecureCipher is developed as an educational workbench and comparative demonstration system for undergraduate computer science / cybersecurity coursework. It is **not** intended or certified as a production-grade cryptographic framework or hardware security module (HSM) replacement.
+
+1. **Diffie-Hellman Mutual Authentication Boundary:**
+   - Raw Diffie-Hellman key agreement establishes a shared secret over an insecure channel but provides **no inherent identity authentication**.
+   - In production environments (e.g., TLS 1.3, Signal Protocol), Diffie-Hellman exchange keys are signed with digital certificates (X.509) to prevent **Man-in-the-Middle (MITM)** attacks. The local educational workbench simulates two-party agreement in memory; production deployment would require an authenticated PKI infrastructure.
+
+2. **Legacy Ciphers Deprecation & Tampering Risks:**
+   - **MD5 (RFC 1321):** Severely broken by practical collision attacks ($< 2^{32}$ operations). Included strictly for legacy checksum matching and illustrating the avalanche effect compared to SHA-256. Must **never** be used for password hashing, SSL/TLS certificates, or digital signatures.
+   - **DES (FIPS 46-3):** Obsolete Feistel cipher with a 56-bit effective key space ($2^{56} \approx 7.2 \times 10^{16}$ keys), vulnerable to brute-force recovery within hours. Furthermore, DES-CBC mode provides **zero cryptographic integrity or message authentication**, making it susceptible to bit-flipping attacks. Included solely for historical study and comparative cryptanalysis alongside modern AES.
+
+3. **In-Memory Cryptographic Handling:**
+   - All private keys, plaintexts, and derived secrets exist strictly in volatile server/client memory during operation execution.
+   - PostgreSQL persistence is strictly limited to non-sensitive operational metadata (algorithm name, operation type, status, execution duration in milliseconds, and timestamp). No ciphertexts, passphrases, or keys are ever written to the database or logged to disk.

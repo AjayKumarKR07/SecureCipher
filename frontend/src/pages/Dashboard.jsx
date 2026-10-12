@@ -203,7 +203,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
             </p>
           </div>
           <span className="text-xs font-mono text-purple-400 px-2.5 py-1 rounded bg-purple-950/40 border border-purple-800/40 self-start sm:self-auto">
-            Implementation Phase 1: Foundation Ready
+            Engine Status: All 6 Algorithms Active
           </span>
         </div>
 
