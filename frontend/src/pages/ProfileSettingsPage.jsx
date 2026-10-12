@@ -184,8 +184,6 @@ export default function ProfileSettingsPage() {
               </p>
             </div>
           </div>
-
-          </div>
         </div>
 
         {/* Tab Buttons */}
