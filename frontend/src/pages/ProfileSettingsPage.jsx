@@ -5,8 +5,6 @@ import {
   Shield,
   KeyRound,
   Bell,
-  Sun,
-  Moon,
   Lock,
   Eye,
   EyeOff,
@@ -25,14 +23,12 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
 import { changePassword, updateProfile } from '../services/api';
 import { formatIndiaTime } from './HistoryPage';
 
 export default function ProfileSettingsPage() {
   const { user, refreshUser, logout } = useAuth();
-  const { theme, setTheme, toggleTheme, isDark } = useTheme();
   const {
     notifications,
     unreadCount,
@@ -189,25 +185,6 @@ export default function ProfileSettingsPage() {
             </div>
           </div>
 
-          {/* Quick Theme Switcher Pill */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={toggleTheme}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-emerald-500/30 text-xs font-medium text-slate-300 hover:text-white hover:border-emerald-400 transition-all shadow-md"
-              title="Toggle Dark and White mode"
-            >
-              {isDark ? (
-                <>
-                  <Sun className="w-4 h-4 text-amber-400" />
-                  <span>Light Mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-4 h-4 text-emerald-400" />
-                  <span>Dark Mode</span>
-                </>
-              )}
-            </button>
           </div>
         </div>
 
@@ -250,18 +227,6 @@ export default function ProfileSettingsPage() {
             {unreadCount > 0 && (
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse ml-0.5" />
             )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('theme')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'theme'
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
-            <Sliders className="w-3.5 h-3.5" />
-            Dark & White Mode
           </button>
         </div>
       </div>
@@ -672,82 +637,6 @@ export default function ProfileSettingsPage() {
         </div>
       )}
 
-      {/* ============================================================== */}
-      {/* TAB 4: DARK AND WHITE MODE THEME TOGGLE                        */}
-      {/* ============================================================== */}
-      {activeTab === 'theme' && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#061208]/90 border border-emerald-500/20 space-y-6">
-          <div>
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Sliders className="w-5 h-5 text-emerald-400" />
-              Appearance & Theme Selection
-            </h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Choose your preferred visual presentation: Dark Forest-Green (Default) or Crisp White Mode.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-6 pt-2">
-            {/* Dark Theme Option Card */}
-            <div
-              onClick={() => setTheme('dark')}
-              className={`p-6 rounded-2xl border-2 transition-all cursor-pointer relative ${
-                isDark
-                  ? 'border-emerald-400 bg-[#030804] shadow-[0_0_25px_rgba(34,197,94,0.25)]'
-                  : 'border-slate-800 bg-slate-900/60 opacity-80 hover:opacity-100'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-                    <Moon className="w-4 h-4" />
-                  </div>
-                  <h3 className="font-bold text-white text-sm">Dark Cyber Mode</h3>
-                </div>
-                {isDark && (
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                )}
-              </div>
-              <p className="text-xs text-slate-400 leading-relaxed mb-4">
-                Default aesthetic inspired by cybersecurity command centers with near-black backgrounds, neon-green accents, and ambient light beams.
-              </p>
-              <div className="h-16 rounded-xl bg-[#020603] border border-emerald-500/30 p-2 flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-                <div className="flex-1 h-2 rounded bg-emerald-950/80" />
-              </div>
-            </div>
-
-            {/* White / Light Theme Option Card */}
-            <div
-              onClick={() => setTheme('light')}
-              className={`p-6 rounded-2xl border-2 transition-all cursor-pointer relative ${
-                !isDark
-                  ? 'border-emerald-500 bg-white text-slate-900 shadow-[0_0_25px_rgba(34,197,94,0.25)]'
-                  : 'border-slate-800 bg-slate-900/60 opacity-80 hover:opacity-100'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-500">
-                    <Sun className="w-4 h-4" />
-                  </div>
-                  <h3 className="font-bold text-slate-900 text-sm">White / Light Mode</h3>
-                </div>
-                {!isDark && (
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]" />
-                )}
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                Crisp high-contrast daylight theme with bright white backgrounds, clean slate borders, and sharp dark typography for presentations and reading.
-              </p>
-              <div className="h-16 rounded-xl bg-slate-100 border border-slate-300 p-2 flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-emerald-500 shadow-sm" />
-                <div className="flex-1 h-2 rounded bg-slate-300" />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

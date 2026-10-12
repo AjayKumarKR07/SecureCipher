@@ -25,8 +25,6 @@ import {
   ArrowUpRight,
   User,
   LogOut,
-  Sun,
-  Moon,
   Bell,
   ChevronDown,
 } from 'lucide-react';
@@ -34,12 +32,10 @@ import StatusBadge from '../components/StatusBadge';
 import { fetchAlgorithms, fetchHistory } from '../services/api';
 import { formatIndiaTime } from './HistoryPage';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
 
 export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
   const { user, logout } = useAuth();
-  const { toggleTheme, isDark } = useTheme();
   const { unreadCount } = useNotifications();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [algorithms, setAlgorithms] = useState([]);
@@ -153,14 +149,6 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
               <span>{backendHealth?.connected ? 'Live Telemetry' : 'Connecting'}</span>
             </div>
 
-            {/* Dark / White Mode Switcher */}
-            <button
-              onClick={toggleTheme}
-              title={isDark ? 'Switch to White / Light Mode' : 'Switch to Dark Mode'}
-              className="p-2 rounded-full bg-[#061408] border border-emerald-500/25 text-slate-300 hover:text-amber-400 hover:border-emerald-400/50 transition-colors cursor-pointer"
-            >
-              {isDark ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-emerald-400" />}
-            </button>
 
             {/* Notifications Button */}
             <Link
@@ -232,23 +220,6 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
                         </span>
                       )}
                     </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        toggleTheme();
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-emerald-950/40 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-400" />}
-                        <span>{isDark ? 'White / Light Mode' : 'Dark Mode'}</span>
-                      </div>
-                      <span className="text-[10px] font-mono text-slate-400">
-                        {isDark ? 'Dark' : 'Light'}
-                      </span>
-                    </button>
 
                     <div className="border-t border-emerald-500/15 pt-1 mt-1">
                       <button

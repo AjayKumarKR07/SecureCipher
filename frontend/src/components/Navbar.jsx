@@ -8,8 +8,6 @@ import {
   Menu,
   User,
   LogOut,
-  Sun,
-  Moon,
   Bell,
   Settings,
   Lock,
@@ -17,7 +15,6 @@ import {
 } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import { useNotifications } from '../context/NotificationContext';
 
 const GithubIcon = ({ className }) => (
@@ -35,7 +32,6 @@ export default function Navbar({
   onToggleSidebar,
 }) {
   const { user, logout } = useAuth();
-  const { toggleTheme, isDark } = useTheme();
   const { unreadCount } = useNotifications();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -119,14 +115,6 @@ export default function Navbar({
           <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-purple-400' : ''}`} />
         </button>
 
-        {/* Dark / White Mode Switcher */}
-        <button
-          onClick={toggleTheme}
-          title={isDark ? 'Switch to White / Light Mode' : 'Switch to Dark Mode'}
-          className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-amber-400 hover:border-slate-700 transition-colors"
-        >
-          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-400" />}
-        </button>
 
         {/* Notifications Icon */}
         <Link
@@ -201,23 +189,6 @@ export default function Navbar({
                     </span>
                   )}
                 </Link>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    toggleTheme();
-                    setProfileDropdownOpen(false);
-                  }}
-                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5">
-                    {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-emerald-400" />}
-                    <span>{isDark ? 'White / Light Mode' : 'Dark Mode'}</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-slate-400">
-                    {isDark ? 'Dark' : 'Light'}
-                  </span>
-                </button>
 
                 <div className="border-t border-slate-800 pt-1 mt-1">
                   <button
