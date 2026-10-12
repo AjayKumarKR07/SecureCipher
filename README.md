@@ -11,9 +11,6 @@
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](./LICENSE)
 
-**GitHub:** [AjayKumarKR07/SecureCipher](https://github.com/AjayKumarKR07/SecureCipher)
-
-> College Mini-Project — B.Tech Computer Science / Cybersecurity
 >
 > A full-stack cryptographic workbench with interactive algorithm demonstrations,
 > authenticated user management, PostgreSQL audit telemetry, and professional PDF reporting.
@@ -43,6 +40,7 @@
 17. [Troubleshooting](#17-troubleshooting)
 18. [Roadmap](#18-roadmap)
 19. [Disclaimer](#19-disclaimer)
+20. [Academic & Technical Project Report (IEEE/Viva Format)](./PROJECT_REPORT.md)
 
 ---
 
@@ -63,7 +61,7 @@
 ### Authentication and User Management
 
 | Feature | Detail |
-|---|---|
+| --- | --- |
 | **User Registration** | Full name, email, password with OTP email verification flow |
 | **Login** | JWT Bearer token authentication with optional remember-me persistence |
 | **Password Change** | Current password verification, live strength meter, bcrypt re-hashing |
@@ -104,7 +102,7 @@
 ## 3. Cryptographic Algorithms
 
 | # | Algorithm | Standard | Key Size | Mode | Purpose |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | 1 | **AES-256-GCM** | NIST FIPS 197 | 256-bit | GCM (AEAD) | Authenticated symmetric encryption with Scrypt KDF |
 | 2 | **RSA-OAEP** | RFC 8017 | 2048 / 3072-bit | OAEP-SHA256 | Asymmetric public-key encryption and decryption |
 | 3 | **Diffie-Hellman** | RFC 3526 | 2048-bit MODP | Group 14 + HKDF | Shared-secret key agreement handshake |
@@ -121,7 +119,7 @@
 ### Frontend
 
 | Technology | Version | Role |
-|---|---|---|
+| --- | --- | --- |
 | React | 19 | Component-based UI framework |
 | Vite | 6 | Build tool and HMR dev server |
 | React Router | v7 | Client-side SPA routing |
@@ -133,7 +131,7 @@
 ### Backend
 
 | Technology | Version | Role |
-|---|---|---|
+| --- | --- | --- |
 | FastAPI | 0.115 | ASGI REST API framework |
 | Uvicorn | 0.32 | ASGI production server |
 | SQLAlchemy | 2.x | ORM with declarative models |
@@ -148,7 +146,7 @@
 ### Database
 
 | Item | Detail |
-|---|---|
+| --- | --- |
 | Engine | PostgreSQL 14+ on localhost:5432 |
 | Database | `securecipher_db` |
 | User | `securecipher_user` |
@@ -289,7 +287,7 @@ SecureCipher/
 ## 7. Prerequisites
 
 | Tool | Minimum Version | Check Command |
-|---|---|---|
+| --- | --- | --- |
 | Python | 3.10+ | `python --version` |
 | Node.js | 18+ | `node --version` |
 | npm | 9+ | `npm --version` |
@@ -350,8 +348,9 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 Interactive API documentation:
-- **Swagger UI:** http://127.0.0.1:8000/docs
-- **ReDoc:** http://127.0.0.1:8000/redoc
+
+- **Swagger UI:** <http://127.0.0.1:8000/docs>
+- **ReDoc:** <http://127.0.0.1:8000/redoc>
 
 ---
 
@@ -368,7 +367,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+Open **<http://localhost:5173>** in your browser.
 
 ---
 
@@ -408,14 +407,14 @@ All routes are prefixed with `/api`.
 ### Health
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/api/health` | Backend status and version |
 | `GET` | `/api/health/database` | Live PostgreSQL connectivity check |
 
 ### Authentication
 
 | Method | Endpoint | Auth Required | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `POST` | `/api/auth/register/request-otp` | No | Send 6-digit OTP to email for registration |
 | `POST` | `/api/auth/register/verify-otp` | No | Verify OTP and create account |
 | `POST` | `/api/auth/login` | No | Login and receive JWT access token |
@@ -427,21 +426,21 @@ All routes are prefixed with `/api`.
 ### Algorithms Metadata
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/api/algorithms` | List all 6 registered algorithm specs |
 | `GET` | `/api/algorithms/{id}` | Single algorithm specification |
 
 ### AES-256-GCM
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/aes/encrypt` | Encrypt UTF-8 text (AES-256-GCM + Scrypt KDF) |
 | `POST` | `/api/aes/decrypt` | Authenticate GCM tag and decrypt ciphertext |
 
 ### RSA-OAEP
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/rsa/generate-keys` | Generate RSA-2048 or RSA-3072 keypair (PEM PKCS#8 + SPKI) |
 | `POST` | `/api/rsa/encrypt` | Encrypt with RSA public key (OAEP-SHA256) |
 | `POST` | `/api/rsa/decrypt` | Decrypt with RSA private key |
@@ -449,7 +448,7 @@ All routes are prefixed with `/api`.
 ### Diffie-Hellman
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/diffie-hellman/generate-keypair` | Generate DH keypair (RFC 3526 MODP Group 14, 2048-bit) |
 | `POST` | `/api/diffie-hellman/derive-secret` | Derive shared secret from peer public key + HKDF-SHA256 |
 | `POST` | `/api/diffie-hellman/simulate-exchange` | Full Alice and Bob key agreement simulation in-memory |
@@ -457,7 +456,7 @@ All routes are prefixed with `/api`.
 ### SHA-256
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/sha256/hash-text` | Hash UTF-8 text (NIST FIPS 180-4) |
 | `POST` | `/api/sha256/hash-file` | Chunk-stream hash file up to 50 MB |
 | `POST` | `/api/sha256/compare` | Integrity check + Hamming distance + avalanche analysis |
@@ -465,7 +464,7 @@ All routes are prefixed with `/api`.
 ### MD5
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/md5/hash-text` | 128-bit legacy MD5 digest |
 | `POST` | `/api/md5/hash-file` | Chunk-streamed file MD5 (50 MB limit) |
 | `POST` | `/api/md5/compare` | Compare two digests or verify text vs hex checksum |
@@ -473,14 +472,14 @@ All routes are prefixed with `/api`.
 ### DES-CBC
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/des/encrypt` | DES-CBC encrypt with fresh 8-byte IV and PKCS#7 padding |
 | `POST` | `/api/des/decrypt` | DES-CBC decrypt (unauthenticated — educational only) |
 
 ### Audit History
 
 | Method | Endpoint | Description |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/api/history` | Paginated audit log (filterable by algorithm, status, date) |
 | `GET` | `/api/history/{id}` | Single record detail |
 | `DELETE` | `/api/history/{id}` | Delete a single audit record |
@@ -550,7 +549,7 @@ CREATE TABLE operation_history (
 ### PDF Report Types
 
 | Report | Page Format | Contents |
-|---|---|---|
+| --- | --- | --- |
 | Single Operation | A4 Portrait | Header, algorithm specs, operation metadata, security explanation, IST timestamp |
 | Full Audit Log | A4 Landscape | Summary statistics, complete paginated table, generation timestamp in IST |
 
@@ -563,7 +562,7 @@ All timestamps are rendered in **Indian Standard Time (IST, UTC+05:30)** using `
 ### Data Storage Policy
 
 | Data | Stored? | Location |
-|---|---|---|
+| --- | --- | --- |
 | Algorithm name | Yes | `operation_history.algorithm_name` |
 | Operation type | Yes | `operation_history.operation_type` |
 | Status | Yes | `operation_history.status` |
@@ -611,7 +610,7 @@ pytest -v
 **73 / 73 tests passing — 100% pass rate**
 
 | Test File | Coverage |
-|---|---|
+| --- | --- |
 | `test_api.py` | Health endpoints, history CRUD, pagination, filters |
 | `test_auth.py` | Registration, login, password change, profile update |
 | `test_aes.py` | AES-256-GCM encrypt/decrypt roundtrip, tamper detection |
@@ -629,9 +628,11 @@ pytest -v
 
 - **`.env` not created:** Run `Copy-Item .env.example .env` and fill in `DATABASE_URL`
 - **Service stopped:**
+
   ```powershell
   Start-Service postgresql-x64-17   # Replace with your installed version
   ```
+
 - **Wrong credentials:** Re-run the SQL commands in Section 8
 
 ### Port already in use
@@ -674,7 +675,7 @@ alembic upgrade head
 ## 18. Roadmap
 
 | Phase | Status | Features |
-|---|---|---|
+| --- | --- | --- |
 | Phase 1 | ✅ Complete | FastAPI + PostgreSQL foundation, React UI, health monitoring |
 | Phase 2 | ✅ Complete | All 6 cryptographic engines, audit history, algorithm workbenches |
 | Phase 3 | ✅ Complete | JWT authentication, OTP registration, profile and password management |
