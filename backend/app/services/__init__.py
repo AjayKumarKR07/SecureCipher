@@ -9,6 +9,20 @@ from app.services.diffie_hellman_service import (
     simulate_full_exchange,
     get_dh_parameters,
 )
+from app.services.sha256_service import (
+    compute_sha256_text,
+    compute_sha256_file_stream,
+    compare_sha256_integrity,
+)
+from app.services.md5_service import (
+    compute_md5_text,
+    compute_md5_file_stream,
+    compare_md5_integrity,
+)
+from app.services.des_service import (
+    encrypt_des_cbc,
+    decrypt_des_cbc,
+)
 
 __all__ = [
     "get_all_algorithms",
@@ -24,6 +38,14 @@ __all__ = [
     "derive_shared_secret",
     "simulate_full_exchange",
     "get_dh_parameters",
+    "compute_sha256_text",
+    "compute_sha256_file_stream",
+    "compare_sha256_integrity",
+    "compute_md5_text",
+    "compute_md5_file_stream",
+    "compare_md5_integrity",
+    "encrypt_des_cbc",
+    "decrypt_des_cbc",
 ]
 
 

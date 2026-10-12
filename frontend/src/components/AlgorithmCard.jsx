@@ -67,6 +67,21 @@ export default function AlgorithmCard({ algorithm }) {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
                 Active (MODP)
               </span>
+            ) : algorithm.id === 'sha-256' ? (
+              <span className="text-emerald-400 font-medium font-mono flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
+                Active (SHA-256)
+              </span>
+            ) : algorithm.id === 'md5' ? (
+              <span className="text-amber-400 font-medium font-mono flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-subtle"></span>
+                Active (MD5 Legacy)
+              </span>
+            ) : algorithm.id === 'des' ? (
+              <span className="text-orange-400 font-medium font-mono flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse-subtle"></span>
+                Active (DES Legacy)
+              </span>
             ) : (
               <span className="text-blue-400 font-medium">Layout Ready</span>
             )}

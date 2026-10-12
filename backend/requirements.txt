@@ -7,3 +7,5 @@ pydantic-settings>=2.4.0
 python-dotenv>=1.0.0
 alembic>=1.13.0
 cryptography>=43.0.0
+python-multipart>=0.0.9
+pycryptodome>=3.20.0

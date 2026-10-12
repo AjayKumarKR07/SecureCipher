@@ -25,6 +25,29 @@ from app.schemas.diffie_hellman import (
     DHSimulationResponse,
     DHSimulationPartyInfo,
 )
+from app.schemas.sha256 import (
+    SHA256TextRequest,
+    SHA256TextResponse,
+    SHA256FileResponse,
+    SHA256CompareRequest,
+    SHA256CompareResponse,
+)
+from app.schemas.md5 import (
+    MD5TextRequest,
+    MD5TextResponse,
+    MD5FileResponse,
+    MD5CompareRequest,
+    MD5CompareResponse,
+    MD5_SECURITY_WARNING,
+)
+from app.schemas.des import (
+    DESEncryptRequest,
+    DESEncryptResponse,
+    DESDecryptRequest,
+    DESDecryptResponse,
+    DES_SECURITY_WARNING,
+    DES_TAMPER_WARNING,
+)
 
 __all__ = [
     "HealthResponse",
@@ -50,6 +73,23 @@ __all__ = [
     "DHDeriveSecretResponse",
     "DHSimulationResponse",
     "DHSimulationPartyInfo",
+    "SHA256TextRequest",
+    "SHA256TextResponse",
+    "SHA256FileResponse",
+    "SHA256CompareRequest",
+    "SHA256CompareResponse",
+    "MD5TextRequest",
+    "MD5TextResponse",
+    "MD5FileResponse",
+    "MD5CompareRequest",
+    "MD5CompareResponse",
+    "MD5_SECURITY_WARNING",
+    "DESEncryptRequest",
+    "DESEncryptResponse",
+    "DESDecryptRequest",
+    "DESDecryptResponse",
+    "DES_SECURITY_WARNING",
+    "DES_TAMPER_WARNING",
 ]
 
 

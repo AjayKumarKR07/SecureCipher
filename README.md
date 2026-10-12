@@ -84,9 +84,15 @@ SecureCipher/
 │   ├── app/
 │   │   ├── api/
 │   │   │   ├── endpoints/
+│   │   │   │   ├── aes.py
 │   │   │   │   ├── algorithms.py
+│   │   │   │   ├── des.py
+│   │   │   │   ├── diffie_hellman.py
 │   │   │   │   ├── health.py
-│   │   │   │   └── history.py
+│   │   │   │   ├── history.py
+│   │   │   │   ├── md5.py
+│   │   │   │   ├── rsa.py
+│   │   │   │   └── sha256.py
 │   │   │   └── router.py
 │   │   ├── core/
 │   │   │   └── config.py
@@ -96,15 +102,33 @@ SecureCipher/
 │   │   ├── models/
 │   │   │   └── history.py
 │   │   ├── schemas/
+│   │   │   ├── aes.py
 │   │   │   ├── algorithm.py
+│   │   │   ├── des.py
+│   │   │   ├── diffie_hellman.py
 │   │   │   ├── health.py
-│   │   │   └── history.py
+│   │   │   ├── history.py
+│   │   │   ├── md5.py
+│   │   │   ├── rsa.py
+│   │   │   └── sha256.py
 │   │   ├── services/
+│   │   │   ├── aes_service.py
 │   │   │   ├── algorithm_service.py
-│   │   │   └── history_service.py
+│   │   │   ├── des_service.py
+│   │   │   ├── diffie_hellman_service.py
+│   │   │   ├── history_service.py
+│   │   │   ├── md5_service.py
+│   │   │   ├── rsa_service.py
+│   │   │   └── sha256_service.py
 │   │   └── main.py
 │   ├── tests/
-│   │   └── test_api.py
+│   │   ├── test_aes.py
+│   │   ├── test_api.py
+│   │   ├── test_des.py
+│   │   ├── test_diffie_hellman.py
+│   │   ├── test_md5.py
+│   │   ├── test_rsa.py
+│   │   └── test_sha256.py
 │   ├── .env.example
 │   ├── alembic.ini
 │   ├── pytest.ini
@@ -246,6 +270,14 @@ All API routes are mounted under the `/api` prefix:
 | `POST` | `/api/diffie-hellman/generate-keypair` | Generates independent DH keypair (RFC 3526 MODP Group 14, 2048-bit) | `200 OK` / `400 Bad Request` |
 | `POST` | `/api/diffie-hellman/derive-secret` | Derives shared secret from peer public key and expands via HKDF-SHA256 | `200 OK` / `400 Bad Request` |
 | `POST` | `/api/diffie-hellman/simulate-exchange` | Executes complete independent Alice & Bob agreement simulation | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/sha256/hash-text` | Computes 256-bit deterministic digest for UTF-8 text (NIST FIPS 180-4) | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/sha256/hash-file` | Chunk-streamed multipart file hashing with 50 MB limit and O(1) RAM | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/sha256/compare` | Analyzes integrity match, Hamming distance, and avalanche bit flip | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/md5/hash-text` | Computes 128-bit digest for UTF-8 text (RFC 1321 legacy demo) | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/md5/hash-file` | Chunk-streamed multipart file MD5 hashing with 50 MB limit | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/md5/compare` | Compares two inputs or verifies text against 32-hex MD5 checksum | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/des/encrypt` | Encrypts UTF-8 text with legacy DES-CBC, fresh 8-byte IV, and PKCS#7 | `200 OK` / `400 Bad Request` |
+| `POST` | `/api/des/decrypt` | Decrypts DES-CBC ciphertext payload and warns of unauthenticated mode | `200 OK` / `400 Bad Request` |
 
 
 ---

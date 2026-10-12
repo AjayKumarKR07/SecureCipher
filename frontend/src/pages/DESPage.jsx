@@ -1,16 +1,101 @@
 import React, { useState } from 'react';
-import { Lock, Unlock, AlertTriangle, Info, Cpu, Check } from 'lucide-react';
+import {
+  Lock,
+  Unlock,
+  AlertTriangle,
+  Cpu,
+  Copy,
+  Check,
+  RefreshCw,
+  Sparkles,
+  ShieldAlert,
+  ArrowRight,
+  ShieldCheck,
+  Scale,
+  Hash,
+  AlertCircle,
+  CheckCircle2,
+} from 'lucide-react';
+import { encryptDES, decryptDES } from '../services/api';
 
-export default function DESPage() {
+export default function DESPage({ onOperationSuccess }) {
   const [activeTab, setActiveTab] = useState('encrypt');
-  const [desMode, setDesMode] = useState('CBC');
-  const [notice, setNotice] = useState('');
 
-  const handleAction = (e) => {
-    e.preventDefault();
-    setNotice(
-      `Educational Foundation: DES ${activeTab} pipeline requested in ${desMode} mode. DES is implemented strictly as a historical pedagogical comparison to demonstrate Feistel networks and small key space vulnerabilities.`
-    );
+  // Encryption State
+  const [encPlaintext, setEncPlaintext] = useState('Historical Feistel block transformation test');
+  const [encKey, setEncKey] = useState('DESKEY56');
+  const [encResult, setEncResult] = useState(null);
+  const [encLoading, setEncLoading] = useState(false);
+  const [encError, setEncError] = useState('');
+
+  // Decryption State
+  const [decCiphertext, setDecCiphertext] = useState('');
+  const [decIv, setDecIv] = useState('');
+  const [decKey, setDecKey] = useState('DESKEY56');
+  const [decResult, setDecResult] = useState(null);
+  const [decLoading, setDecLoading] = useState(false);
+  const [decError, setDecError] = useState('');
+
+  // Clipboard copy state
+  const [copiedKey, setCopiedKey] = useState('');
+
+  const handleCopy = (text, key) => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(''), 2000);
+  };
+
+  // 1. Encryption Handler
+  const handleEncrypt = async (e) => {
+    if (e) e.preventDefault();
+    if (encKey.length !== 8) {
+      setEncError('DES key must be exactly 8 ASCII characters (64-bit with 56 effective bits).');
+      return;
+    }
+    setEncLoading(true);
+    setEncError('');
+    try {
+      const res = await encryptDES(encPlaintext, encKey);
+      setEncResult(res);
+      if (onOperationSuccess) onOperationSuccess();
+    } catch (err) {
+      setEncError(err.message || 'DES encryption failed');
+    } finally {
+      setEncLoading(false);
+    }
+  };
+
+  // 2. Decryption Handler
+  const handleDecrypt = async (e) => {
+    if (e) e.preventDefault();
+    if (decKey.length !== 8) {
+      setDecError('DES key must be exactly 8 ASCII characters (64-bit with 56 effective bits).');
+      return;
+    }
+    setDecLoading(true);
+    setDecError('');
+    try {
+      const res = await decryptDES(decCiphertext, decKey, decIv);
+      setDecResult(res);
+      if (onOperationSuccess) onOperationSuccess();
+    } catch (err) {
+      setDecError(err.message || 'DES decryption failed');
+    } finally {
+      setDecLoading(false);
+    }
+  };
+
+  // Quick transfer from encrypt to decrypt
+  const handleTransferToDecrypt = () => {
+    if (encResult) {
+      setDecCiphertext(encResult.ciphertext);
+      setDecIv(encResult.iv);
+      setDecKey(encKey);
+      setActiveTab('decrypt');
+      setDecResult(null);
+      setDecError('');
+    }
   };
 
   return (
@@ -27,114 +112,341 @@ export default function DESPage() {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 m-0">
-            FIPS 46-3 Historical Block Cipher | 16-round Feistel Network with 56-bit key
+            FIPS 46-3 Legacy Feistel Cipher | 64-bit blocks with 56-bit key in CBC mode
           </p>
         </div>
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-rose-950/40 text-rose-300 border border-rose-500/30">
-            Deprecated (56-bit)
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-rose-950/40 text-rose-300 border border-rose-500/30 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse-subtle"></span>
+            EDUCATIONAL ONLY
+          </span>
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-amber-950/40 text-amber-300 border border-amber-500/30">
+            Withdrawn 2005
           </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-orange-950/40 text-orange-300 border border-orange-500/30">
-            Feistel Cipher
+            56-bit Key Space
           </span>
         </div>
       </div>
 
-      {/* Warning */}
+      {/* Prominent Educational Warning */}
       <div className="rounded-xl border border-rose-500/40 bg-rose-950/20 p-4 flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-rose-200/90 leading-relaxed">
-          <strong className="text-rose-300">Historical Cryptographic Context:</strong> DES was standardized in 1977 but officially withdrawn by NIST in 2005. Its 56-bit key space (2⁵⁶ ≈ 7.2×10¹⁶ keys) can be brute-forced in hours by modern hardware. SecureCipher includes DES to demonstrate the historical evolution towards AES.
+        <div className="text-xs text-rose-200/90 leading-relaxed space-y-1">
+          <div>
+            <strong className="text-rose-300">HISTORICAL CIPHER ADVISORY:</strong> DES is cryptographically obsolete and was officially withdrawn by NIST in 2005. Its small 56-bit key space (2⁵⁶ ≈ 7.2×10¹⁶ keys) can be exhaustively brute-forced in hours by modern hardware.
+          </div>
+          <div className="text-[11px] text-rose-300/80">
+            <strong>Unauthenticated CBC Mode:</strong> CBC mode provides NO cryptographic integrity or authentication and is vulnerable to bit-flipping attacks. <strong>NEVER</strong> use DES to protect sensitive or production data. SecureCipher implements DES strictly for academic Feistel network analysis and comparative study against AES.
+          </div>
         </div>
       </div>
 
-      {/* Main Grid */}
+      {/* Tabs */}
+      <div className="flex border-b border-slate-800 gap-2">
+        <button
+          onClick={() => {
+            setActiveTab('encrypt');
+            setEncError('');
+          }}
+          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+            activeTab === 'encrypt'
+              ? 'border-orange-500 text-orange-300 bg-orange-950/20'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+          }`}
+        >
+          <Lock className="w-3.5 h-3.5" />
+          <span>DES-CBC Encryption</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('decrypt');
+            setDecError('');
+          }}
+          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+            activeTab === 'decrypt'
+              ? 'border-amber-500 text-amber-300 bg-amber-950/20'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+          }`}
+        >
+          <Unlock className="w-3.5 h-3.5" />
+          <span>DES-CBC Decryption</span>
+        </button>
+      </div>
+
+      {/* Main Form Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
-          <div className="flex rounded-lg bg-slate-900 p-1 border border-slate-800">
-            <button
-              onClick={() => { setActiveTab('encrypt'); setNotice(''); }}
-              className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
-                activeTab === 'encrypt' ? 'bg-orange-600 text-white shadow' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Encrypt (DES)
-            </button>
-            <button
-              onClick={() => { setActiveTab('decrypt'); setNotice(''); }}
-              className={`flex-1 py-2 text-xs font-semibold rounded-md transition-all ${
-                activeTab === 'decrypt' ? 'bg-amber-600 text-white shadow' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Decrypt (DES)
-            </button>
-          </div>
+          {/* TAB 1: ENCRYPTION */}
+          {activeTab === 'encrypt' && (
+            <form onSubmit={handleEncrypt} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Plaintext Message
+                </label>
+                <textarea
+                  rows={3}
+                  value={encPlaintext}
+                  onChange={(e) => setEncPlaintext(e.target.value)}
+                  placeholder="Enter UTF-8 message to encrypt with DES-CBC..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+                />
+              </div>
 
-          <form onSubmit={handleAction} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Block Cipher Mode
-              </label>
-              <select
-                value={desMode}
-                onChange={(e) => setDesMode(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+              <div>
+                <div className="flex items-center justify-between text-xs mb-1.5">
+                  <label className="text-xs font-medium text-slate-300">
+                    56-Bit Secret Key (Exactly 8 ASCII characters)
+                  </label>
+                  <span
+                    className={`font-mono text-[11px] ${
+                      encKey.length === 8 ? 'text-emerald-400' : 'text-rose-400'
+                    }`}
+                  >
+                    {encKey.length} / 8 chars
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  value={encKey}
+                  maxLength={8}
+                  onChange={(e) => setEncKey(e.target.value)}
+                  placeholder="e.g. DESKEY56"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  64-bit representation where 8 bits are parity bits, leaving 56 effective key bits.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={encLoading || encKey.length !== 8}
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
               >
-                <option value="CBC">CBC (Cipher Block Chaining)</option>
-                <option value="ECB">ECB (Electronic Codebook - Educational Insecure)</option>
-              </select>
-            </div>
+                {encLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Executing 16 Feistel Rounds...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>Encrypt with DES-CBC (Educational)</span>
+                  </>
+                )}
+              </button>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                56-Bit Secret Key (8 characters / 64-bit with parity)
-              </label>
-              <input
-                type="text"
-                defaultValue="DESKEY56"
-                maxLength={8}
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
-              />
-            </div>
+              {encError && (
+                <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-3 text-xs text-rose-300 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <span>{encError}</span>
+                </div>
+              )}
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Payload
-              </label>
-              <textarea
-                rows={3}
-                defaultValue="Historical Feistel block transformation test"
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
-              />
-            </div>
+              {/* Encryption Result Output */}
+              {encResult && (
+                <div className="p-4 rounded-lg bg-slate-900/90 border border-orange-500/40 space-y-3">
+                  <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                    <span className="text-orange-300 font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-orange-400" />
+                      DES-CBC Ciphertext Output:
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      {encResult.execution_duration_ms} ms
+                    </span>
+                  </div>
 
-            <button
-              type="submit"
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              <Lock className="w-4 h-4" />
-              <span>Simulate DES {activeTab === 'encrypt' ? 'Encryption' : 'Decryption'} (Preview)</span>
-            </button>
-          </form>
+                  {/* Ciphertext */}
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                      <span>Ciphertext (Base64):</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(encResult.ciphertext, 'enc-ct')}
+                        className="text-orange-400 hover:text-orange-300 text-[11px] flex items-center gap-1"
+                      >
+                        {copiedKey === 'enc-ct' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedKey === 'enc-ct' ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
+                    <div className="font-mono text-xs text-orange-200 bg-slate-950 p-2.5 rounded border border-slate-800 break-all select-all font-bold">
+                      {encResult.ciphertext}
+                    </div>
+                  </div>
 
-          {notice && (
-            <div className="rounded-lg bg-orange-950/40 border border-orange-500/30 p-3 text-xs text-orange-200">
-              {notice}
-            </div>
+                  {/* Initialization Vector */}
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                      <span>Fresh Random IV (Base64 - 8 bytes):</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(encResult.iv, 'enc-iv')}
+                        className="text-orange-400 hover:text-orange-300 text-[11px] flex items-center gap-1"
+                      >
+                        {copiedKey === 'enc-iv' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedKey === 'enc-iv' ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
+                    <div className="font-mono text-xs text-amber-200 bg-slate-950 p-2.5 rounded border border-slate-800 break-all select-all">
+                      {encResult.iv}
+                    </div>
+                  </div>
+
+                  {/* Security Notice on Result */}
+                  <div className="p-2.5 rounded bg-amber-950/30 border border-amber-500/30 text-[11px] text-amber-300/90 flex items-center justify-between">
+                    <span>
+                      <strong>Authentication Status:</strong> None (CBC mode does not verify integrity).
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleTransferToDecrypt}
+                      className="px-2 py-1 rounded bg-orange-600 hover:bg-orange-500 text-white text-[11px] font-medium flex items-center gap-1 shadow transition-colors"
+                    >
+                      <span>Transfer to Decrypt</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </form>
+          )}
+
+          {/* TAB 2: DECRYPTION */}
+          {activeTab === 'decrypt' && (
+            <form onSubmit={handleDecrypt} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  Ciphertext (Base64)
+                </label>
+                <textarea
+                  rows={3}
+                  value={decCiphertext}
+                  onChange={(e) => setDecCiphertext(e.target.value)}
+                  placeholder="Paste Base64-encoded ciphertext..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    Initialization Vector (IV - Base64)
+                  </label>
+                  <input
+                    type="text"
+                    value={decIv}
+                    onChange={(e) => setDecIv(e.target.value)}
+                    placeholder="Paste 8-byte Base64 IV..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between text-xs mb-1.5">
+                    <label className="text-xs font-medium text-slate-300">
+                      Secret Key (8 chars)
+                    </label>
+                    <span
+                      className={`font-mono text-[11px] ${
+                        decKey.length === 8 ? 'text-emerald-400' : 'text-rose-400'
+                      }`}
+                    >
+                      {decKey.length} / 8 chars
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    value={decKey}
+                    maxLength={8}
+                    onChange={(e) => setDecKey(e.target.value)}
+                    placeholder="e.g. DESKEY56"
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={decLoading || !decCiphertext || !decIv || decKey.length !== 8}
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                {decLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Inverting 16 Feistel Rounds...</span>
+                  </>
+                ) : (
+                  <>
+                    <Unlock className="w-4 h-4" />
+                    <span>Decrypt DES Ciphertext</span>
+                  </>
+                )}
+              </button>
+
+              {decError && (
+                <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-3 text-xs text-rose-300 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                  <span>{decError}</span>
+                </div>
+              )}
+
+              {/* Decryption Result Output */}
+              {decResult && (
+                <div className="p-4 rounded-lg bg-slate-900/90 border border-amber-500/40 space-y-3">
+                  <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                    <span className="text-amber-300 font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      Decrypted Plaintext Output:
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] text-slate-400">
+                        {decResult.execution_duration_ms} ms
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(decResult.plaintext, 'dec-pt')}
+                        className="text-amber-400 hover:text-amber-300 text-[11px] flex items-center gap-1"
+                      >
+                        {copiedKey === 'dec-pt' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                        <span>{copiedKey === 'dec-pt' ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="font-mono text-xs text-white bg-slate-950 p-3 rounded border border-slate-800 break-all select-all font-semibold">
+                    {decResult.plaintext}
+                  </div>
+
+                  {/* CBC Tamper Warning */}
+                  <div className="p-3 rounded bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <div className="space-y-0.5">
+                      <div className="font-semibold text-amber-300">
+                        Zero Authentication Notice (is_authenticated: false):
+                      </div>
+                      <div className="text-[11px] text-amber-300/80">
+                        {decResult.tamper_warning}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </form>
           )}
         </div>
 
-        {/* Technical Anatomy */}
+        {/* Technical Anatomy Side Panel */}
         <div className="space-y-4">
-          <div className="glass-panel rounded-xl p-5 border border-slate-800">
-            <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+          <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+            <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
               <Cpu className="w-4 h-4 text-orange-400" />
-              <span>DES Structure</span>
+              <span>DES Architecture</span>
             </h3>
-            <ul className="space-y-2.5 text-xs text-slate-300">
+            <ul className="space-y-2 text-xs text-slate-300">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
-                <span><strong>Block Size:</strong> 64 bits (half-blocks L and R of 32 bits each)</span>
+                <span><strong>Block Size:</strong> 64 bits (split into L₀ and R₀ 32-bit halves)</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
@@ -142,14 +454,108 @@ export default function DESPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
-                <span><strong>Rounds:</strong> 16 Feistel rounds with 8 non-linear S-boxes</span>
+                <span><strong>Feistel Rounds:</strong> 16 iterative rounds with 8 non-linear S-boxes</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
-                <span><strong>Evolution:</strong> Succeeded by 3DES (112/168 bits) and AES (128/256 bits)</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1 shrink-0"></span>
+                <span><strong>Exhaustive Brute Force:</strong> 2⁵⁶ keys cracked in hours</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                <span><strong>Sweet32 Risk:</strong> 64-bit blocks leak collisions after ~32 GB</span>
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+
+      {/* Comprehensive DES vs AES Comparison Section */}
+      <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+        <div className="flex items-center gap-2">
+          <Scale className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-sm font-bold text-white tracking-tight uppercase font-mono">
+            Cryptographic Comparison: Legacy DES vs Modern AES
+          </h2>
+        </div>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          The transition from DES to AES highlights the shift from 20th-century electromechanical hardware constraints to 21st-century software efficiency, large mathematical key spaces, and authenticated encryption.
+        </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border border-slate-800 rounded-lg overflow-hidden">
+            <thead className="bg-slate-900/90 text-slate-300 font-mono text-[11px]">
+              <tr>
+                <th className="p-3 border-b border-slate-800">Cryptographic Metric</th>
+                <th className="p-3 border-b border-slate-800 text-orange-400 font-bold">DES (Legacy Standard)</th>
+                <th className="p-3 border-b border-slate-800 text-emerald-400 font-bold">AES (Current Gold Standard)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60 font-sans text-xs">
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-medium text-white">NIST Standardization</td>
+                <td className="p-3 text-slate-300">FIPS 46-3 (1977, Withdrawn 2005)</td>
+                <td className="p-3 text-emerald-300">FIPS 197 (2001, Active Standard)</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-medium text-white">Effective Key Length</td>
+                <td className="p-3 text-rose-400 font-mono font-bold">56 bits (2⁵⁶ ≈ 7.2 × 10¹⁶ keys)</td>
+                <td className="p-3 text-emerald-400 font-mono font-bold">128, 192, or 256 bits (2²⁵⁶ ≈ 1.15 × 10⁷⁷ keys)</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-medium text-white">Cipher Block Size</td>
+                <td className="p-3 text-amber-300 font-mono">64 bits (Sweet32 vulnerability)</td>
+                <td className="p-3 text-emerald-300 font-mono">128 bits (Immune to Sweet32 collisions)</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-medium text-white">Mathematical Structure</td>
+                <td className="p-3 text-slate-300">16-round Feistel network</td>
+                <td className="p-3 text-slate-300">Substitution-Permutation Network (SPN in GF(2⁸))</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-medium text-white">Mode of Operation</td>
+                <td className="p-3 text-rose-300">CBC (Unauthenticated, bit-flipping risk)</td>
+                <td className="p-3 text-emerald-300">GCM (Galois/Counter Mode - AEAD authenticated)</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-medium text-white">Brute-Force Feasibility</td>
+                <td className="p-3 text-rose-400 font-semibold">Trivial: Cracked in under 24 hours</td>
+                <td className="p-3 text-emerald-400 font-semibold">Computationally impossible with known physics</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Educational & Architectural Panels */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <Cpu className="w-4 h-4 text-orange-400" />
+            <span>Feistel Network</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            DES processes data by dividing 64 bits into two 32-bit halves: L(i) = R(i-1) and R(i) = L(i-1) ⊕ F(R(i-1), K(i)). Decryption is identical to encryption with reversed subkeys.
+          </p>
+        </div>
+
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <ShieldAlert className="w-4 h-4 text-rose-400" />
+            <span>EFF Deep Crack (1999)</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            In 1999, the Electronic Frontier Foundation (EFF) built "Deep Crack" for $250,000, which decrypted a DES message in 22 hours, proving 56-bit keys were fundamentally insecure.
+          </p>
+        </div>
+
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <ShieldCheck className="w-4 h-4 text-indigo-400" />
+            <span>Audit & Privacy Policy</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            <strong>Zero-Knowledge Storage:</strong> The PostgreSQL audit log only records operation type and latency. Plaintexts, DES keys, and ciphertexts are <strong>never stored or logged</strong>.
+          </p>
         </div>
       </div>
     </div>

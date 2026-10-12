@@ -1,25 +1,140 @@
 import React, { useState } from 'react';
-import { Hash, Copy, Check, Info, Cpu, Sparkles } from 'lucide-react';
+import {
+  Hash,
+  Copy,
+  Check,
+  Cpu,
+  Sparkles,
+  FileText,
+  Upload,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw,
+  Sliders,
+  ShieldCheck,
+  Scale,
+  FileCheck,
+  Flame,
+} from 'lucide-react';
+import { hashSHA256Text, hashSHA256File, compareSHA256 } from '../services/api';
 
-export default function SHA256Page() {
+export default function SHA256Page({ onOperationSuccess }) {
+  // Tabs: 'text' | 'file' | 'compare'
+  const [activeTab, setActiveTab] = useState('text');
+
+  // Text Hashing State
   const [inputText, setInputText] = useState('SecureCipher College Mini-Project Cryptography');
-  const [copied, setCopied] = useState(false);
-  const [notice, setNotice] = useState('');
+  const [textResult, setTextResult] = useState(null);
+  const [textLoading, setTextLoading] = useState(false);
+  const [textError, setTextError] = useState('');
+  const [copiedKey, setCopiedKey] = useState('');
 
-  // Sample static reference digest for educational layout
-  const mockDigest = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+  // File Hashing State
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileExpectedHash, setFileExpectedHash] = useState('');
+  const [fileResult, setFileResult] = useState(null);
+  const [fileLoading, setFileLoading] = useState(false);
+  const [fileError, setFileError] = useState('');
 
-  const handleCompute = (e) => {
-    e.preventDefault();
-    setNotice(
-      'Educational Foundation: SHA-256 compression pipeline triggered. The backend hashing service (FIPS 180-4) will return live digests across strings and files in Phase 2.'
-    );
+  // Comparison State
+  const [compareInputA, setCompareInputA] = useState('The quick brown fox jumps over the lazy dog.');
+  const [compareInputB, setCompareInputB] = useState('The quick brown fox jumps over the lazy dog,');
+  const [compareMode, setCompareMode] = useState('text_vs_text'); // 'text_vs_text' | 'text_vs_hash'
+  const [compareResult, setCompareResult] = useState(null);
+  const [compareLoading, setCompareLoading] = useState(false);
+  const [compareError, setCompareError] = useState('');
+
+  // Clipboard helper
+  const handleCopy = (text, key) => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(''), 2000);
   };
 
-  const copyDigest = () => {
-    navigator.clipboard?.writeText(mockDigest);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  // 1. Text Hash Handler
+  const handleHashText = async (e) => {
+    if (e) e.preventDefault();
+    setTextLoading(true);
+    setTextError('');
+    try {
+      const res = await hashSHA256Text(inputText);
+      setTextResult(res);
+      if (onOperationSuccess) onOperationSuccess();
+    } catch (err) {
+      setTextError(err.message || 'Failed to compute SHA-256 digest');
+    } finally {
+      setTextLoading(false);
+    }
+  };
+
+  // Test vector presets for text
+  const applyTextPreset = (presetText) => {
+    setInputText(presetText);
+    setTextResult(null);
+    setTextError('');
+  };
+
+  // 2. File Hash Handler
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setFileResult(null);
+      setFileError('');
+    }
+  };
+
+  const handleHashFile = async (e) => {
+    if (e) e.preventDefault();
+    if (!selectedFile) {
+      setFileError('Please select a file to hash.');
+      return;
+    }
+    setFileLoading(true);
+    setFileError('');
+    try {
+      const res = await hashSHA256File(selectedFile);
+      setFileResult(res);
+      if (onOperationSuccess) onOperationSuccess();
+    } catch (err) {
+      setFileError(err.message || 'Failed to hash uploaded file');
+    } finally {
+      setFileLoading(false);
+    }
+  };
+
+  // 3. Compare Handler
+  const handleCompare = async (e) => {
+    if (e) e.preventDefault();
+    setCompareLoading(true);
+    setCompareError('');
+    try {
+      const res = await compareSHA256(compareInputA, compareInputB, compareMode);
+      setCompareResult(res);
+      if (onOperationSuccess) onOperationSuccess();
+    } catch (err) {
+      setCompareError(err.message || 'Failed to compare SHA-256 digests');
+    } finally {
+      setCompareLoading(false);
+    }
+  };
+
+  const applyAvalanchePreset = () => {
+    setCompareMode('text_vs_text');
+    setCompareInputA('The quick brown fox jumps over the lazy dog.');
+    setCompareInputB('The quick brown fox jumps over the lazy dog,');
+    setCompareResult(null);
+    setCompareError('');
+  };
+
+  // Helper formatting for file size
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
@@ -36,12 +151,13 @@ export default function SHA256Page() {
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-400 m-0">
-            NIST FIPS 180-4 Standard | Deterministic 256-bit (32-byte) digital fingerprint
+            NIST FIPS 180-4 Standard | Deterministic 256-bit (64-hex character) digital fingerprint
           </p>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30">
-            SHA-2 Family
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
+            FIPS 180-4 Active
           </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-purple-950/40 text-purple-300 border border-purple-500/30">
             256-bit Output
@@ -49,90 +165,561 @@ export default function SHA256Page() {
         </div>
       </div>
 
-      {/* Educational Notice */}
-      <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4 flex items-start gap-3">
-        <Info className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-emerald-200/90 leading-relaxed">
-          <strong className="text-emerald-300">Phase 1 Foundation Layout:</strong> Interactive hash generator layout is mapped below. The backend hashlib/cryptography service with multi-part stream hashing for large files will be connected in Phase 2.
-        </div>
+      {/* Mode Selector Tabs */}
+      <div className="flex border-b border-slate-800 gap-2">
+        <button
+          onClick={() => setActiveTab('text')}
+          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+            activeTab === 'text'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          <span>Text Hashing</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('file')}
+          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+            activeTab === 'file'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+          }`}
+        >
+          <Upload className="w-3.5 h-3.5" />
+          <span>File Stream Hashing</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('compare')}
+          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+            activeTab === 'compare'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
+              : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+          }`}
+        >
+          <Scale className="w-3.5 h-3.5" />
+          <span>Integrity & Avalanche Comparison</span>
+        </button>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
-          <form onSubmit={handleCompute} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Input String or Payload
-              </label>
+      {/* TAB 1: TEXT HASHING */}
+      {activeTab === 'text' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-white">UTF-8 Text Payload</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-slate-400">NIST Presets:</span>
+                <button
+                  type="button"
+                  onClick={() => applyTextPreset('')}
+                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors"
+                >
+                  Empty String
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTextPreset('abc')}
+                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors"
+                >
+                  "abc"
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    applyTextPreset('abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq')
+                  }
+                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors"
+                >
+                  Long Pattern
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleHashText} className="space-y-4">
               <textarea
                 rows={4}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Enter text to generate SHA-256 hash digest..."
+                placeholder="Enter UTF-8 text string to compute SHA-256 digest..."
                 className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
               />
+
+              <button
+                type="submit"
+                disabled={textLoading}
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                {textLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Computing SHA-256 Digest...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>Compute SHA-256 Digest</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {textError && (
+              <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-3 text-xs text-rose-300 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <span>{textError}</span>
+              </div>
+            )}
+
+            {textResult && (
+              <div className="p-4 rounded-lg bg-slate-900/90 border border-emerald-500/40 space-y-3">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                  <span className="text-emerald-300 font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    SHA-256 Hex Digest (64 characters):
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[11px] text-slate-400">
+                      {textResult.byte_length} bytes | {textResult.execution_duration_ms} ms
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(textResult.digest, 'text-digest')}
+                      className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-[11px]"
+                    >
+                      {copiedKey === 'text-digest' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedKey === 'text-digest' ? 'Copied' : 'Copy'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="font-mono text-xs text-emerald-300 bg-slate-950 p-3 rounded border border-slate-800 break-all select-all font-bold tracking-wider">
+                  {textResult.digest}
+                </div>
+
+                {/* Byte Breakdown */}
+                <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-mono pt-1">
+                  <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                    <span className="text-slate-400 block">Output Bits:</span>
+                    <span className="text-emerald-400 font-bold">256 bits</span>
+                  </div>
+                  <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                    <span className="text-slate-400 block">Byte Length:</span>
+                    <span className="text-emerald-400 font-bold">32 bytes</span>
+                  </div>
+                  <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                    <span className="text-slate-400 block">Hex Digits:</span>
+                    <span className="text-emerald-400 font-bold">64 nibbles</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Side Specifications */}
+          <div className="space-y-4">
+            <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+              <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+                <Cpu className="w-4 h-4 text-emerald-400" />
+                <span>SHA-256 Engine Specs</span>
+              </h3>
+              <ul className="space-y-2 text-xs text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
+                  <span><strong>Digest Size:</strong> 256 bits (32 bytes / 64 hex characters)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
+                  <span><strong>Block Size:</strong> 512-bit message blocks (64 rounds)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
+                  <span><strong>Standard:</strong> NIST FIPS 180-4 standard</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
+                  <span><strong>Pre-image Security:</strong> 256 bits (unfeasible to invert)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
+                  <span><strong>Collision Security:</strong> 128 bits against birthday attacks</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: FILE STREAM HASHING */}
+      {activeTab === 'file' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-slate-800 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs font-semibold text-white">Streamed File Integrity Checksum</h3>
+                <p className="text-[11px] text-slate-400">
+                  Files are streamed in 64 KB chunks directly through hashlib.sha256 (O(1) memory footprint).
+                </p>
+              </div>
+              <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-800">
+                Max 50 MB
+              </span>
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Compute SHA-256 Digest (Preview)</span>
-            </button>
-          </form>
+            <form onSubmit={handleHashFile} className="space-y-4">
+              {/* File Upload Drop Zone */}
+              <div className="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-xl p-6 text-center transition-colors bg-slate-900/40">
+                <input
+                  type="file"
+                  id="sha256-file-input"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="sha256-file-input"
+                  className="cursor-pointer flex flex-col items-center justify-center gap-2"
+                >
+                  <Upload className="w-8 h-8 text-emerald-400" />
+                  <span className="text-xs font-medium text-white">
+                    {selectedFile ? selectedFile.name : 'Click to browse or drop file here'}
+                  </span>
+                  <span className="text-[11px] text-slate-400">
+                    {selectedFile
+                      ? `${formatBytes(selectedFile.size)} | Ready to stream`
+                      : 'Any file format supported (Binary, Images, Executables, Documents)'}
+                  </span>
+                </label>
+              </div>
 
-          {/* Digest Output Mockup */}
-          <div className="p-4 rounded-lg bg-slate-900/90 border border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-              <span>SHA-256 Checksum (Hexadecimal):</span>
+              {/* Optional Checksum Comparison Input */}
+              <div>
+                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                  Optional: Expected SHA-256 Checksum (for automatic verification)
+                </label>
+                <input
+                  type="text"
+                  value={fileExpectedHash}
+                  onChange={(e) => setFileExpectedHash(e.target.value.trim().toLowerCase())}
+                  placeholder="Paste 64-hex character expected checksum to verify integrity..."
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                />
+              </div>
+
               <button
-                onClick={copyDigest}
-                className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-[11px]"
+                type="submit"
+                disabled={fileLoading || !selectedFile}
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
               >
-                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copied ? 'Copied' : 'Copy'}</span>
+                {fileLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Streaming and Hashing File...</span>
+                  </>
+                ) : (
+                  <>
+                    <FileCheck className="w-4 h-4" />
+                    <span>Compute File Checksum</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {fileError && (
+              <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-3 text-xs text-rose-300 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <span>{fileError}</span>
+              </div>
+            )}
+
+            {fileResult && (
+              <div className="p-4 rounded-lg bg-slate-900/90 border border-emerald-500/40 space-y-3">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                  <span className="text-emerald-300 font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    Computed File Digest:
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[11px] text-slate-400">
+                      {formatBytes(fileResult.file_size_bytes)} | {fileResult.execution_duration_ms} ms
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(fileResult.digest, 'file-digest')}
+                      className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-[11px]"
+                    >
+                      {copiedKey === 'file-digest' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedKey === 'file-digest' ? 'Copied' : 'Copy'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="font-mono text-xs text-emerald-300 bg-slate-950 p-3 rounded border border-slate-800 break-all select-all font-bold tracking-wider">
+                  {fileResult.digest}
+                </div>
+
+                {/* Optional Checksum Match Banner */}
+                {fileExpectedHash && (
+                  <div
+                    className={`p-3 rounded-lg border text-xs flex items-center justify-between ${
+                      fileResult.digest === fileExpectedHash
+                        ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300'
+                        : 'bg-rose-950/40 border-rose-500/50 text-rose-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {fileResult.digest === fileExpectedHash ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                      )}
+                      <span>
+                        {fileResult.digest === fileExpectedHash
+                          ? 'Integrity Verified: File matches expected checksum exactly!'
+                          : 'Integrity Failure: File digest differs from expected checksum. The file may be corrupt or altered.'}
+                      </span>
+                    </div>
+                    <span className="font-mono font-bold text-[11px]">
+                      {fileResult.digest === fileExpectedHash ? 'MATCH ✓' : 'MISMATCH ✗'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Stream Architecture Card */}
+          <div className="space-y-4">
+            <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+              <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+                <Sliders className="w-4 h-4 text-emerald-400" />
+                <span>Chunk Stream Architecture</span>
+              </h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Rather than buffering entire gigabyte files into server RAM, the backend processes bytes iteratively:
+              </p>
+              <div className="p-3 bg-slate-950 rounded border border-slate-800 font-mono text-[11px] text-slate-300 space-y-1">
+                <div className="text-emerald-400">hasher = hashlib.sha256()</div>
+                <div>while chunk := await file.read(65536):</div>
+                <div className="pl-4 text-indigo-300">hasher.update(chunk)</div>
+                <div className="text-emerald-400">return hasher.hexdigest()</div>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Guarantees $O(1)$ memory consumption and preserves server stability under concurrent uploads.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: INTEGRITY & AVALANCHE COMPARISON */}
+      {activeTab === 'compare' && (
+        <div className="space-y-6">
+          <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-xs font-semibold text-white">Dual-Payload Integrity & Avalanche Analyzer</h3>
+                <p className="text-[11px] text-slate-400">
+                  Calculates SHA-256 for two inputs and computes the exact bit-level Hamming distance.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={applyAvalanchePreset}
+                className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium flex items-center gap-1.5 shadow transition-all self-start sm:self-auto"
+              >
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <span>Load 1-Bit Flip Avalanche Test</span>
               </button>
             </div>
-            <div className="font-mono text-xs text-emerald-300 bg-slate-950 p-2.5 rounded border border-slate-800 break-all select-all">
-              {mockDigest}
-            </div>
-          </div>
 
-          {notice && (
-            <div className="rounded-lg bg-emerald-950/40 border border-emerald-500/30 p-3 text-xs text-emerald-200">
-              {notice}
-            </div>
-          )}
+            <form onSubmit={handleCompare} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Input A */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-slate-300">Input Payload A</label>
+                  <textarea
+                    rows={4}
+                    value={compareInputA}
+                    onChange={(e) => setCompareInputA(e.target.value)}
+                    placeholder="Enter first string..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
+
+                {/* Input B */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-medium text-slate-300">
+                      {compareMode === 'text_vs_hash' ? 'Expected 64-Hex Checksum B' : 'Input Payload B'}
+                    </label>
+                    <select
+                      value={compareMode}
+                      onChange={(e) => setCompareMode(e.target.value)}
+                      className="bg-slate-950 border border-slate-700 rounded text-[11px] text-slate-300 px-2 py-0.5 focus:outline-none focus:border-emerald-500"
+                    >
+                      <option value="text_vs_text">Compare Text vs Text</option>
+                      <option value="text_vs_hash">Verify Text vs Checksum</option>
+                    </select>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={compareInputB}
+                    onChange={(e) => setCompareInputB(e.target.value)}
+                    placeholder={
+                      compareMode === 'text_vs_hash'
+                        ? 'Paste 64-hex character checksum...'
+                        : 'Enter second string...'
+                    }
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={compareLoading}
+                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+              >
+                {compareLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Analyzing Bit-Level Differences...</span>
+                  </>
+                ) : (
+                  <>
+                    <Scale className="w-4 h-4" />
+                    <span>Compare Hashes & Compute Avalanche Effect</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {compareError && (
+              <div className="rounded-lg bg-rose-950/40 border border-rose-500/40 p-3 text-xs text-rose-300 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <span>{compareError}</span>
+              </div>
+            )}
+
+            {compareResult && (
+              <div className="space-y-4 pt-2">
+                {/* Result Verdict Banner */}
+                <div
+                  className={`p-4 rounded-xl border flex items-center justify-between ${
+                    compareResult.is_match
+                      ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300'
+                      : 'bg-amber-950/40 border-amber-500/50 text-amber-300'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 text-xs">
+                    {compareResult.is_match ? (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+                    )}
+                    <span>
+                      {compareResult.is_match
+                        ? 'Integrity Verified: Both inputs produce the exact same 256-bit SHA-256 digest!'
+                        : `Integrity Mismatch: Digests differ by ${compareResult.hamming_distance_bits} bits (${compareResult.bit_difference_percentage}% avalanche bit flip).`}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono bg-slate-950 px-2.5 py-1 rounded border border-slate-800 font-bold">
+                    {compareResult.is_match ? 'IDENTICAL MATCH ✓' : 'DIFFERENT DIGESTS ✗'}
+                  </span>
+                </div>
+
+                {/* Metrics Breakdown */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs">
+                  <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 text-[11px] block">Hamming Distance (Bits):</span>
+                    <span className="text-lg font-bold font-mono text-emerald-400">
+                      {compareResult.hamming_distance_bits} / 256
+                    </span>
+                  </div>
+                  <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 text-[11px] block">Avalanche Bit Flip:</span>
+                    <span className="text-lg font-bold font-mono text-amber-400">
+                      {compareResult.bit_difference_percentage}%
+                    </span>
+                  </div>
+                  <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                    <span className="text-slate-400 text-[11px] block">Execution Duration:</span>
+                    <span className="text-lg font-bold font-mono text-indigo-400">
+                      {compareResult.execution_duration_ms} ms
+                    </span>
+                  </div>
+                </div>
+
+                {/* Side-by-Side Digests */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                  <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                      <span>Digest A:</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(compareResult.hash_a, 'comp-a')}
+                        className="text-emerald-400 hover:text-emerald-300"
+                      >
+                        {copiedKey === 'comp-a' ? 'Copied' : 'Copy'}
+                      </button>
+                    </div>
+                    <div className="p-2 rounded bg-slate-950 text-emerald-300 break-all select-all font-bold">
+                      {compareResult.hash_a}
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                      <span>Digest B:</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(compareResult.hash_b, 'comp-b')}
+                        className="text-emerald-400 hover:text-emerald-300"
+                      >
+                        {copiedKey === 'comp-b' ? 'Copied' : 'Copy'}
+                      </button>
+                    </div>
+                    <div className="p-2 rounded bg-slate-950 text-emerald-300 break-all select-all font-bold">
+                      {compareResult.hash_b}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Educational & Architectural Panels */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <Cpu className="w-4 h-4 text-emerald-400" />
+            <span>Merkle-Damgård Structure</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            SHA-256 divides messages into <strong>512-bit blocks</strong> padded with length encoding. Each block is compressed across 64 iterative rounds utilizing modular additions and bitwise rotations.
+          </p>
         </div>
 
-        {/* Specifications */}
-        <div className="space-y-4">
-          <div className="glass-panel rounded-xl p-5 border border-slate-800">
-            <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-emerald-400" />
-              <span>SHA-256 Properties</span>
-            </h3>
-            <ul className="space-y-2.5 text-xs text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
-                <span><strong>Digest Size:</strong> 256 bits (64 hexadecimal characters)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
-                <span><strong>Block Size:</strong> 512-bit message blocks with 64 processing rounds</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
-                <span><strong>Collision Resistance:</strong> No practical collision found in history</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
-                <span><strong>Avalanche Effect:</strong> 1-bit input flip flips &gt;50% of digest bits</span>
-              </li>
-            </ul>
-          </div>
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <Flame className="w-4 h-4 text-amber-400" />
+            <span>Strict Avalanche Effect</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            A fundamental cryptographic guarantee: flipping even a <strong>single bit</strong> in the input message causes approximately <strong>50% of the output digest bits</strong> to change unpredictably.
+          </p>
+        </div>
+
+        <div className="glass-panel rounded-xl p-5 border border-slate-800 space-y-3">
+          <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
+            <ShieldCheck className="w-4 h-4 text-indigo-400" />
+            <span>Audit & Privacy Policy</span>
+          </h3>
+          <p className="text-xs text-slate-300 leading-relaxed">
+            <strong>Zero-Knowledge Storage:</strong> The backend PostgreSQL audit log only records operation status and latency. Raw input strings and uploaded file contents are <strong>never stored or logged</strong>.
+          </p>
         </div>
       </div>
     </div>

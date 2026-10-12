@@ -113,9 +113,9 @@ export async function fetchAlgorithms() {
           category: 'Cryptographic Hash Function',
           purpose: 'Cryptographic data integrity, digital fingerprints, and message authentication',
           description: 'NIST FIPS 180-4 standard producing a deterministic 256-bit digest.',
-          key_size_info: 'Fixed 256-bit digest',
-          status: 'Foundation Layout Ready (Pending Crypto Implementation)',
-          features: ['Collision resistant', 'Strict avalanche effect', 'Integrity verification'],
+          key_size_info: 'Fixed 256-bit digest (64 hex characters)',
+          status: 'Active (FIPS 180-4 Hashing & Integrity Verification Implemented)',
+          features: ['Collision resistant', 'Strict avalanche effect', 'Chunk-streamed file hashing'],
         },
         {
           id: 'md5',
@@ -123,9 +123,9 @@ export async function fetchAlgorithms() {
           category: 'Legacy Hash Function',
           purpose: 'Educational integrity comparison, legacy checksum verification, and collision analysis',
           description: 'Historical 128-bit hash function included for comparative vulnerability study.',
-          key_size_info: 'Fixed 128-bit digest',
-          status: 'Foundation Layout Ready (Pending Crypto Implementation)',
-          features: ['128-bit digest', 'High execution speed', 'Educational vulnerability study'],
+          key_size_info: 'Fixed 128-bit digest (32 hex characters)',
+          status: 'Active (RFC 1321 Legacy Hash & Educational Collision Analysis)',
+          features: ['128-bit digest', 'High execution speed', 'Collision vulnerability study'],
         },
         {
           id: 'des',
@@ -133,9 +133,9 @@ export async function fetchAlgorithms() {
           category: 'Legacy Symmetric Cipher',
           purpose: 'Historical and educational block cipher analysis and cryptanalysis demonstrations',
           description: '16-round Feistel cipher with 56-bit key, highlighting the evolution towards AES.',
-          key_size_info: '56 effective bits',
-          status: 'Foundation Layout Ready (Pending Crypto Implementation)',
-          features: ['64-bit blocks', '16 Feistel rounds', 'Comparative key-space study'],
+          key_size_info: '56 effective bits (64-bit with parity)',
+          status: 'Active (FIPS 46-3 Legacy Feistel Cipher - Educational Only)',
+          features: ['64-bit blocks', 'DES-CBC with 8-byte IV', 'Educational key-space study'],
         },
       ],
     };
@@ -315,5 +315,154 @@ export async function simulateDHExchange() {
   return data;
 }
 
+/**
+ * Compute SHA-256 Digest for UTF-8 Text
+ */
+export async function hashSHA256Text(text = '') {
+  const response = await fetch(`${API_BASE_URL}/sha256/hash-text`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'SHA-256 text hashing failed');
+  }
+  return data;
+}
 
+/**
+ * Stream and Compute SHA-256 Digest for an Uploaded File
+ */
+export async function hashSHA256File(file) {
+  const formData = new FormData();
+  formData.append('file', file);
 
+  const response = await fetch(`${API_BASE_URL}/sha256/hash-file`, {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'SHA-256 file hashing failed');
+  }
+  return data;
+}
+
+/**
+ * Compare Two Inputs or Verify Text Against an Expected Hash
+ */
+export async function compareSHA256(inputA = '', inputB = '', compareMode = 'text_vs_text') {
+  const response = await fetch(`${API_BASE_URL}/sha256/compare`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      input_a: inputA,
+      input_b: inputB,
+      compare_mode: compareMode,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'SHA-256 comparison failed');
+  }
+  return data;
+}
+
+/**
+ * Compute MD5 Digest for UTF-8 Text (Legacy / Educational)
+ */
+export async function hashMD5Text(text = '') {
+  const response = await fetch(`${API_BASE_URL}/md5/hash-text`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'MD5 text hashing failed');
+  }
+  return data;
+}
+
+/**
+ * Stream and Compute MD5 Digest for an Uploaded File
+ */
+export async function hashMD5File(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${API_BASE_URL}/md5/hash-file`, {
+    method: 'POST',
+    body: formData,
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'MD5 file hashing failed');
+  }
+  return data;
+}
+
+/**
+ * Compare Two Inputs or Verify Text Against an Expected MD5 Hash
+ */
+export async function compareMD5(inputA = '', inputB = '', compareMode = 'text_vs_text') {
+  const response = await fetch(`${API_BASE_URL}/md5/compare`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      input_a: inputA,
+      input_b: inputB,
+      compare_mode: compareMode,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'MD5 comparison failed');
+  }
+  return data;
+}
+
+/**
+ * Encrypt Text using Legacy DES-CBC (Educational Only)
+ */
+export async function encryptDES(plaintext, key) {
+  const response = await fetch(`${API_BASE_URL}/des/encrypt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ plaintext, key }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'DES encryption failed');
+  }
+  return data;
+}
+
+/**
+ * Decrypt Text using Legacy DES-CBC (Educational Only)
+ */
+export async function decryptDES(ciphertext, key, iv) {
+  const response = await fetch(`${API_BASE_URL}/des/decrypt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ciphertext, key, iv }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'DES decryption failed');
+  }
+  return data;
+}
