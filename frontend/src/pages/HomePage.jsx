@@ -27,12 +27,69 @@ import {
   LogOut,
   Bell,
   ChevronDown,
+  HelpCircle,
+  Info,
+  Server,
+  Cpu,
+  Shield,
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import { fetchAlgorithms, fetchHistory } from '../services/api';
 import { formatIndiaTime } from './HistoryPage';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
+
+const faqs = [
+  {
+    id: 1,
+    question: 'What is SecureCipher and how does it protect sensitive data?',
+    category: 'System Overview',
+    answer:
+      'SecureCipher is an enterprise-grade cryptographic laboratory and security platform engineered to demonstrate modern encryption, public-key infrastructure, secure key negotiation, and cryptographic hashing. All computations execute in isolated ephemeral RAM worker processes with strict zero plaintext persistence, returning authenticated ciphertext and verifiable mathematical telemetry.',
+  },
+  {
+    id: 2,
+    question: 'Does SecureCipher retain my passphrases, plaintexts, or private keys?',
+    category: 'Data Privacy',
+    answer:
+      'No. In compliance with strict zero-knowledge principles, SecureCipher never logs or persists user plaintexts, symmetric keys, RSA private keys, Diffie-Hellman exponents, or passphrases to disk or PostgreSQL. Once an operation completes and its result is returned to the client, sensitive memory buffers are wiped. The PostgreSQL database exclusively stores operational metadata (operation type, latency, status code, and timestamp).',
+  },
+  {
+    id: 3,
+    question: 'Why is AES-256-GCM superior to legacy DES?',
+    category: 'Symmetric Ciphers',
+    answer:
+      'DES (Data Encryption Standard) operates on an obsolete 56-bit key space vulnerable to complete brute-force recovery in hours using modern computing hardware. In contrast, AES-256-GCM provides an astronomical 256-bit key space and incorporates Galois/Counter Mode (GCM), which simultaneously ensures data confidentiality and produces an authenticated 128-bit GHASH tag to detect any unauthorized ciphertext modification.',
+  },
+  {
+    id: 4,
+    question: 'What is the distinction between RSA-OAEP and Diffie-Hellman key exchange?',
+    category: 'Asymmetric Cryptography',
+    answer:
+      'RSA-OAEP is an asymmetric trapdoor encryption cipher based on the hardness of prime integer factorization, enabling users to encrypt data directly with a recipient’s public key. Diffie-Hellman (RFC 3526 MODP Group 14) is a key agreement protocol based on the discrete logarithm problem, allowing two parties to derive an identical shared secret over an insecure channel without ever transmitting the secret itself.',
+  },
+  {
+    id: 5,
+    question: 'Why should SHA-256 be chosen over MD5 for cryptographic integrity?',
+    category: 'Cryptographic Hashing',
+    answer:
+      'MD5 generates 128-bit digests and has suffered catastrophic collision attacks since 2004, meaning attackers can generate two distinct files that produce the exact same MD5 digest. SHA-256 generates a 256-bit digest compliant with NIST FIPS 180-4 and provides robust collision resistance, preimage resistance, and a strong avalanche effect where a single bit modification alters ~50% of output bits.',
+  },
+  {
+    id: 6,
+    question: 'How does multi-factor email verification and session security work?',
+    category: 'Authentication',
+    answer:
+      'During registration, SecureCipher generates a cryptographically secure 6-digit one-time passcode (OTP) with an expiration timestamp and dispatches it via SMTP to your email address. Once verified, passwords are protected with modern cryptographic hashing, and all authenticated API communications are guarded by signed JSON Web Tokens (JWT) with optional remember-me persistence.',
+  },
+  {
+    id: 7,
+    question: 'Can I export and inspect the execution history of my operations?',
+    category: 'Audit & Telemetry',
+    answer:
+      'Yes. SecureCipher includes a built-in compliance and reporting engine. From the Audit History page, users can review operational latency metrics in Indian Standard Time (IST), filter by algorithm and status, and generate formatted PDF audit dossiers verifying zero-knowledge operational execution.',
+  },
+];
 
 export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
   const { user, logout } = useAuth();
@@ -43,6 +100,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeWorkflowTab, setActiveWorkflowTab] = useState('encryption');
+  const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -128,12 +186,18 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             >
               How It Works
             </button>
-            <Link
-              to="/about"
+            <button
+              onClick={() => scrollToSection('about')}
               className="px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-950/50 transition-colors"
             >
               About
-            </Link>
+            </button>
+            <button
+              onClick={() => scrollToSection('faq')}
+              className="px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-950/50 transition-colors"
+            >
+              FAQ
+            </button>
             <Link
               to={user ? "/history" : "/register"}
               className="px-4 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-950/50 transition-colors"
@@ -298,19 +362,24 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             >
               How It Works
             </button>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollToSection('faq')}
+              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+            >
+              FAQ
+            </button>
             <Link
               to={user ? "/history" : "/register"}
               onClick={() => setMobileMenuOpen(false)}
               className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               Audit History
-            </Link>
-            <Link
-              to="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
-            >
-              About
             </Link>
 
             {user ? (
@@ -1031,7 +1100,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             </div>
 
             <div className="p-3 rounded-xl bg-[#040d05] border border-emerald-500/15">
-              <span className="text-[10px] font-mono text-slate-400 block">Primacy Timezone</span>
+              <span className="text-[10px] font-mono text-slate-400 block">Privacy Timezone</span>
               <span className="text-xs font-bold text-slate-200 mt-0.5 block">
                 IST (UTC+05:30)
               </span>
@@ -1090,7 +1159,176 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
       </section>
 
       {/* ============================================================== */}
-      {/* 6. MINIMAL CYBER FOOTER                                        */}
+      {/* 6. ABOUT SECTION (Academic Scope & Zero-Knowledge Architecture) */}
+      {/* ============================================================== */}
+      <section id="about" className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 max-w-7xl mx-auto w-full border-t border-emerald-500/15">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#081e0c] border border-emerald-500/30 text-emerald-400 font-mono text-[11px] uppercase tracking-wider mb-4 shadow-sm">
+            <Info className="w-3.5 h-3.5" />
+            <span>[ 04 · SYSTEM ARCHITECTURE & ACADEMIC SCOPE ]</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+            Engineered for Cryptographic Rigor & Zero-Knowledge Security
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto">
+            SecureCipher is developed as an advanced academic laboratory for the Department of Information Science & Engineering capstone curriculum. The platform bridges abstract mathematical primitives with practical full-stack implementation while enforcing strict zero secret persistence.
+          </p>
+        </div>
+
+        {/* 3 Core Architecture Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {/* Pillar 1 */}
+          <div className="rounded-2xl bg-gradient-to-b from-[#081a0c] via-[#051108] to-[#020703] border border-emerald-500/20 p-6 sm:p-7 relative overflow-hidden group hover:border-emerald-400/40 transition-all shadow-xl shadow-black/60">
+            <div className="w-12 h-12 rounded-xl bg-[#06180a] border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5 shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition-transform">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Zero-Knowledge Isolation</h3>
+            <p className="text-xs text-slate-300 leading-relaxed mb-5">
+              Sensitive plaintexts, passwords, RSA private keys, and Diffie-Hellman exponents exist solely within volatile memory buffers during execution and are discarded immediately upon completion.
+            </p>
+            <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
+              <span className="px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20 text-emerald-300">RAM Lifetime Only</span>
+              <span className="px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20 text-emerald-300">Zero Secret Retention</span>
+            </div>
+          </div>
+
+          {/* Pillar 2 */}
+          <div className="rounded-2xl bg-gradient-to-b from-[#081a0c] via-[#051108] to-[#020703] border border-emerald-500/20 p-6 sm:p-7 relative overflow-hidden group hover:border-emerald-400/40 transition-all shadow-xl shadow-black/60">
+            <div className="w-12 h-12 rounded-xl bg-[#06180a] border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5 shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition-transform">
+              <Layers className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Comparative Laboratory</h3>
+            <p className="text-xs text-slate-300 leading-relaxed mb-5">
+              Side-by-side benchmarking of 6 cryptographic primitives spanning authenticated symmetric encryption, trapdoor asymmetric algorithms, Diffie-Hellman key exchange, and collision-resistant hashing.
+            </p>
+            <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
+              <span className="px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20 text-emerald-300">6 Primitives</span>
+              <span className="px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20 text-emerald-300">Microsecond Telemetry</span>
+            </div>
+          </div>
+
+          {/* Pillar 3 */}
+          <div className="rounded-2xl bg-gradient-to-b from-[#081a0c] via-[#051108] to-[#020703] border border-emerald-500/20 p-6 sm:p-7 relative overflow-hidden group hover:border-emerald-400/40 transition-all shadow-xl shadow-black/60">
+            <div className="w-12 h-12 rounded-xl bg-[#06180a] border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5 shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition-transform">
+              <Server className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Three-Tier Architecture</h3>
+            <p className="text-xs text-slate-300 leading-relaxed mb-5">
+              Decoupled enterprise architecture with React 19 single-page frontend, asynchronous FastAPI REST services, and robust PostgreSQL RDBMS audit trail synchronized in IST (UTC+05:30).
+            </p>
+            <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
+              <span className="px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20 text-emerald-300">FastAPI + Vite</span>
+              <span className="px-2 py-0.5 rounded bg-[#040e06] border border-emerald-500/20 text-emerald-300">PostgreSQL Audit</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Cryptographic Standards Specifications Bar */}
+        <div className="rounded-2xl bg-[#040e06] border border-emerald-500/20 p-6 sm:p-8">
+          <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono mb-5 flex items-center gap-2">
+            <Cpu className="w-4 h-4 text-emerald-400" />
+            Core Standards & Mathematical Foundations
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs">
+            <div className="p-3.5 rounded-xl bg-[#020703] border border-emerald-500/15">
+              <span className="text-[10px] font-mono text-slate-400 block mb-1">Symmetric Standard</span>
+              <span className="font-bold text-white block">AES-256-GCM</span>
+              <span className="text-[10px] font-mono text-emerald-400">NIST SP 800-38D</span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-[#020703] border border-emerald-500/15">
+              <span className="text-[10px] font-mono text-slate-400 block mb-1">Asymmetric Standard</span>
+              <span className="font-bold text-white block">RSA-OAEP 2048/4096</span>
+              <span className="text-[10px] font-mono text-emerald-400">RFC 8017 PKCS#1</span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-[#020703] border border-emerald-500/15">
+              <span className="text-[10px] font-mono text-slate-400 block mb-1">Key Agreement</span>
+              <span className="font-bold text-white block">Diffie-Hellman Group 14</span>
+              <span className="text-[10px] font-mono text-emerald-400">RFC 3526 2048-bit</span>
+            </div>
+            <div className="p-3.5 rounded-xl bg-[#020703] border border-emerald-500/15">
+              <span className="text-[10px] font-mono text-slate-400 block mb-1">Secure Digest</span>
+              <span className="font-bold text-white block">SHA-256 Digest</span>
+              <span className="text-[10px] font-mono text-emerald-400">NIST FIPS 180-4</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 7. FREQUENTLY ASKED QUESTIONS (FAQ) SECTION                   */}
+      {/* ============================================================== */}
+      <section id="faq" className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 max-w-5xl mx-auto w-full border-t border-emerald-500/15">
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#081e0c] border border-emerald-500/30 text-emerald-400 font-mono text-[11px] uppercase tracking-wider mb-4 shadow-sm">
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>[ 05 · KNOWLEDGE BASE & AUDIT FAQ ]</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            Everything you need to know about SecureCipher's zero-knowledge security, supported algorithms, mathematical foundations, and audit mechanisms.
+          </p>
+        </div>
+
+        {/* Interactive Accordion List */}
+        <div className="space-y-3.5">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaqIndex === idx;
+            return (
+              <div
+                key={faq.id}
+                className={`rounded-2xl transition-all duration-200 border ${
+                  isOpen
+                    ? 'bg-[#051408] border-emerald-400/50 shadow-lg shadow-emerald-950/60'
+                    : 'bg-[#030a04]/90 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-[#040e06]'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                  className="w-full text-left px-5 sm:px-6 py-4.5 sm:py-5 flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                  aria-expanded={isOpen}
+                >
+                  <div className="flex items-center gap-3.5 flex-1 min-w-0">
+                    <span className="w-6 h-6 rounded-lg bg-[#08220f] border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold flex items-center justify-center shrink-0">
+                      0{idx + 1}
+                    </span>
+                    <span className="text-xs sm:text-sm font-semibold text-white">
+                      {faq.question}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2.5 shrink-0">
+                    <span className="hidden sm:inline-block font-mono text-[10px] text-emerald-400/80 uppercase px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30">
+                      {faq.category}
+                    </span>
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform duration-200 ${
+                        isOpen
+                          ? 'bg-emerald-500/20 text-emerald-300 rotate-180'
+                          : 'bg-[#06180a] text-slate-400'
+                      }`}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                  </div>
+                </button>
+
+                {isOpen && (
+                  <div className="px-5 sm:px-6 pb-5 pt-1 text-xs text-slate-300 leading-relaxed border-t border-emerald-500/15 sm:pl-16">
+                    <p className="m-0 text-slate-300 font-normal">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ============================================================== */}
+      {/* 8. MINIMAL CYBER FOOTER                                        */}
       {/* ============================================================== */}
       <footer className="border-t border-emerald-500/15 py-10 px-4 sm:px-6 lg:px-8 bg-[#020503] mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -1112,8 +1350,21 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             <Link to="/algorithm/md5" className="hover:text-emerald-300 transition-colors">MD5</Link>
             <Link to="/algorithm/des" className="hover:text-emerald-300 transition-colors">DES</Link>
             <span className="text-slate-600">|</span>
-            <Link to="/history" className="hover:text-emerald-300 transition-colors">History</Link>
-            <Link to="/about" className="hover:text-emerald-300 transition-colors">About</Link>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="hover:text-emerald-300 transition-colors cursor-pointer"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollToSection('faq')}
+              className="hover:text-emerald-300 transition-colors cursor-pointer"
+            >
+              FAQ
+            </button>
+            <Link to={user ? "/history" : "/register"} className="hover:text-emerald-300 transition-colors">
+              History
+            </Link>
           </div>
 
           <div className="text-xs font-mono text-slate-400 text-center sm:text-right">
