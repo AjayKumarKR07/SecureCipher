@@ -15,13 +15,13 @@ export default function AboutPage() {
           </h1>
         </div>
         <p className="text-xs sm:text-sm text-slate-400 m-0">
-          College Mini-Project: Multi-Algorithm Cryptography and Secure Data Protection System
+          Multi-Algorithm Cryptography and Secure Data Protection Platform
         </p>
       </div>
 
       {/* Overview Card */}
       <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
-        <h2 className="text-lg font-bold text-white m-0">Project Purpose & Academic Scope</h2>
+        <h2 className="text-lg font-bold text-white m-0">Platform Overview</h2>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed m-0">
           <strong>SecureCipher</strong> is engineered as a full-stack cryptographic laboratory designed to bridge the gap between theoretical cryptography and real-world implementation. The system compares modern enterprise-grade security primitives against historical and legacy algorithms, emphasizing security-by-design standards: zero plaintext persistence, zero key leakage, and end-to-end audit tracking.
         </p>

@@ -180,7 +180,7 @@ export default function ProfileSettingsPage() {
                 {user?.email || 'analyst@securecipher.org'}
               </p>
               <p className="text-[11px] text-slate-500 font-mono">
-                Member ID: #{user?.id || 1} • College Mini-Project Cryptography Workspace
+                Member ID: #{user?.id || 1} • SecureCipher Enterprise Cryptography Workspace
               </p>
             </div>
           </div>

@@ -61,7 +61,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <h1 className="text-sm font-extrabold tracking-tight text-white m-0 flex items-center gap-1">
                 Secure<span className="text-emerald-400">Cipher</span>
               </h1>
-              <p className="text-[10px] text-emerald-500/70 font-mono m-0">College Mini-Project</p>
+              <p className="text-[10px] text-emerald-500/70 font-mono m-0">Enterprise Security Platform</p>
             </div>
           </div>
           <button

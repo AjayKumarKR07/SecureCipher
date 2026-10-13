@@ -25,7 +25,7 @@ export default function SHA256Page({ onOperationSuccess }) {
   const [activeTab, setActiveTab] = useState('text');
 
   // Text Hashing State
-  const [inputText, setInputText] = useState('SecureCipher College Mini-Project Cryptography');
+  const [inputText, setInputText] = useState('SecureCipher Enterprise Cryptography Platform');
   const [textResult, setTextResult] = useState(null);
   const [textLoading, setTextLoading] = useState(false);
   const [textError, setTextError] = useState('');
