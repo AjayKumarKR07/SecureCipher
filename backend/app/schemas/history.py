@@ -29,3 +29,8 @@ class DeleteHistoryResponse(BaseModel):
     deleted_id: int
     message: str
 
+
+class ClearAllHistoryResponse(BaseModel):
+    success: bool
+    deleted_count: int
+    message: str

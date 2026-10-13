@@ -20,7 +20,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
-import { fetchHistory, deleteHistoryItem } from '../services/api';
+import { fetchHistory, deleteHistoryItem, clearAllHistory } from '../services/api';
 import { generateAuditHistoryPDF, generateSingleAuditRecordPDF } from '../utils/historyPdfGenerator';
 /**
  * Format timestamp into Indian Standard Time (IST - UTC+05:30)
@@ -64,6 +64,8 @@ export default function HistoryPage({ dbHealth }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [actionNotice, setActionNotice] = useState(null); // { text, type: 'success' | 'error' }
   const [totalCount, setTotalCount] = useState(0);  // actual total records in DB
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [isClearingAll, setIsClearingAll] = useState(false);
 
   const loadHistory = async () => {
     setLoading(true);
@@ -159,6 +161,22 @@ export default function HistoryPage({ dbHealth }) {
     }, 4500);
   };
 
+  const handleClearAll = async () => {
+    setIsClearingAll(true);
+    try {
+      const res = await clearAllHistory();
+      setItems([]);
+      setTotalCount(0);
+      setShowClearConfirm(false);
+      showNotice(`All ${res.deleted_count} audit records cleared successfully.`, 'success');
+    } catch (err) {
+      showNotice(`Failed to clear history: ${err.message}`, 'error');
+      setShowClearConfirm(false);
+    } finally {
+      setIsClearingAll(false);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header */}
@@ -230,6 +248,17 @@ export default function HistoryPage({ dbHealth }) {
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
               <span>Refresh Audit Trail</span>
             </button>
+
+            <button
+              type="button"
+              onClick={() => setShowClearConfirm(true)}
+              disabled={loading || totalCount === 0}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-rose-950/40 border border-rose-500/40 hover:border-rose-500/70 hover:bg-rose-900/40 text-rose-400 hover:text-rose-300 text-xs font-medium transition-colors disabled:opacity-40"
+              title="Permanently delete all audit records from the database"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Clear All Records</span>
+            </button>
           </div>
 
           {pdfError && (
@@ -240,6 +269,46 @@ export default function HistoryPage({ dbHealth }) {
           )}
         </div>
       </div>
+
+      {/* Clear All Confirmation Modal */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="bg-[#040e06] border border-rose-500/40 rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="p-2 rounded-lg bg-rose-950/60 border border-rose-500/30">
+                <AlertTriangle className="w-5 h-5 text-rose-400" />
+              </span>
+              <h3 className="text-base font-bold text-white m-0">Clear All History?</h3>
+            </div>
+            <p className="text-sm text-slate-300 mb-2">
+              This will permanently delete <span className="text-rose-400 font-bold">{totalCount.toLocaleString()} audit records</span> from the database.
+            </p>
+            <p className="text-xs text-slate-500 mb-5">This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(false)}
+                disabled={isClearingAll}
+                className="flex-1 px-4 py-2 rounded-lg bg-[#030a04] border border-emerald-500/20 text-slate-300 hover:text-white text-sm font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleClearAll}
+                disabled={isClearingAll}
+                className="flex-1 px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {isClearingAll ? (
+                  <><RefreshCw className="w-4 h-4 animate-spin" /> Deleting...</>
+                ) : (
+                  <><Trash2 className="w-4 h-4" /> Delete All</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Action Notification Toast */}
       {actionNotice && (

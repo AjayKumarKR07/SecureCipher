@@ -176,6 +176,20 @@ export async function deleteHistoryItem(id) {
   return data;
 }
 
+/**
+ * Clears ALL operation history records from the database
+ */
+export async function clearAllHistory() {
+  const response = await fetch(`${API_BASE_URL}/history`, {
+    method: 'DELETE',
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'Failed to clear all history');
+  }
+  return data;
+}
+
 
 /**
  * Real AES-256-GCM Text Encryption

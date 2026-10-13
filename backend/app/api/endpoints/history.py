@@ -2,8 +2,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
-from app.schemas.history import OperationHistoryResponse, DeleteHistoryResponse
-from app.services.history_service import get_recent_history, delete_history_item
+from app.schemas.history import OperationHistoryResponse, DeleteHistoryResponse, ClearAllHistoryResponse
+from app.services.history_service import get_recent_history, delete_history_item, clear_all_history
 
 router = APIRouter(tags=["Operation History"])
 
@@ -57,3 +57,23 @@ def delete_operation_history_record(
         message=f"Audit record #{item_id} deleted successfully.",
     )
 
+
+@router.delete("/history", response_model=ClearAllHistoryResponse, summary="Clear All Cryptographic Operation History")
+def clear_all_operation_history(
+    db: Optional[Session] = Depends(get_db),
+) -> ClearAllHistoryResponse:
+    """
+    Permanently deletes ALL cryptographic operation audit records from PostgreSQL.
+    This action is irreversible.
+    """
+    success, deleted_count, error_msg = clear_all_history(db)
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_msg or "Failed to clear audit history",
+        )
+    return ClearAllHistoryResponse(
+        success=True,
+        deleted_count=deleted_count,
+        message=f"Successfully deleted all {deleted_count} audit records.",
+    )

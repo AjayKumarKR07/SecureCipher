@@ -115,3 +115,25 @@ def delete_history_item(db: Optional[Session], item_id: int) -> Tuple[bool, Opti
         return False, str(e)
 
 
+def clear_all_history(db: Optional[Session]) -> tuple:
+    """
+    Deletes ALL audit records from PostgreSQL history.
+    Returns (success, deleted_count, error_message).
+    """
+    if db is None:
+        return False, 0, "Database connection not available"
+
+    try:
+        from sqlalchemy import delete as sa_delete
+        result = db.execute(sa_delete(OperationHistory))
+        db.commit()
+        count = result.rowcount
+        logger.info("Cleared all %s audit records from history", count)
+        return True, count, None
+    except Exception as e:
+        logger.warning("Failed to clear all history: %s", str(e))
+        try:
+            db.rollback()
+        except Exception:
+            pass
+        return False, 0, str(e)
