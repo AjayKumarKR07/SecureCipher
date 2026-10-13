@@ -16,7 +16,8 @@ class OperationHistoryItem(BaseModel):
 
 class OperationHistoryResponse(BaseModel):
     items: List[OperationHistoryItem]
-    total: int
+    total: int           # number of items returned (respects limit)
+    total_count: int = 0  # actual total records in DB (ignores limit)
     database_connected: bool
     message: Optional[str] = None
 

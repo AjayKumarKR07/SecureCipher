@@ -21,10 +21,11 @@ def list_operation_history(
     This endpoint and the underlying persistence layer strictly omit plaintext
     messages, uploaded file contents, passwords, and cryptographic keys.
     """
-    items, db_connected, msg = get_recent_history(db, limit=limit)
+    items, db_connected, msg, total_count = get_recent_history(db, limit=limit)
     return OperationHistoryResponse(
         items=items,
         total=len(items),
+        total_count=total_count,
         database_connected=db_connected,
         message=msg,
     )

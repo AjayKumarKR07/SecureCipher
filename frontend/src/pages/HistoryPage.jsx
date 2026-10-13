@@ -59,11 +59,11 @@ export default function HistoryPage({ dbHealth }) {
   const [pdfError, setPdfError] = useState('');
   const [lastDownloadedUrl, setLastDownloadedUrl] = useState(null);
 
-  // Row-level action states
   const [viewingItem, setViewingItem] = useState(null);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [actionNotice, setActionNotice] = useState(null); // { text, type: 'success' | 'error' }
+  const [totalCount, setTotalCount] = useState(0);  // actual total records in DB
 
   const loadHistory = async () => {
     setLoading(true);
@@ -71,6 +71,7 @@ export default function HistoryPage({ dbHealth }) {
       const data = await fetchHistory(100);
       setItems(data.items || []);
       setStatusMessage(data.message || '');
+      setTotalCount(data.total_count ?? data.total ?? 0);
     } catch (err) {
       console.error('Failed to load history:', err);
     } finally {
@@ -321,7 +322,12 @@ export default function HistoryPage({ dbHealth }) {
             </select>
           </div>
           <span className="text-xs text-slate-400 font-mono">
-            Showing {filteredItems.length} records
+            Showing {filteredItems.length} of {totalCount} total records
+            {totalCount > 100 && (
+              <span className="ml-1 text-amber-400" title="The history page displays the latest 100 entries. Older records exist in the database.">
+                (latest 100 shown)
+              </span>
+            )}
           </span>
         </div>
 

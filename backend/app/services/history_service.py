@@ -1,6 +1,6 @@
 import logging
 from typing import List, Optional, Tuple
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func
 from sqlalchemy.orm import Session
 from app.models.history import OperationHistory
 from app.schemas.history import OperationHistoryItem
@@ -10,19 +10,23 @@ logger = logging.getLogger(__name__)
 
 def get_recent_history(
     db: Optional[Session], limit: int = 10
-) -> Tuple[List[OperationHistoryItem], bool, Optional[str]]:
+) -> Tuple[List[OperationHistoryItem], bool, Optional[str], int]:
     """
     Retrieves recent operation history records without sensitive payloads.
-    Returns (items, database_connected, status_message).
+    Returns (items, database_connected, status_message, total_db_count).
     """
     if db is None:
         return (
             [],
             False,
             "Database connection not established. Configure DATABASE_URL in backend/.env to persist operations.",
+            0,
         )
 
     try:
+        # Get actual total count in the database (ignores limit)
+        total_count = db.scalar(select(func.count()).select_from(OperationHistory)) or 0
+
         stmt = (
             select(OperationHistory)
             .order_by(desc(OperationHistory.created_at))
@@ -40,13 +44,14 @@ def get_recent_history(
             )
             for record in results
         ]
-        return items, True, None
+        return items, True, None, total_count
     except Exception as e:
         logger.warning("Failed to query operation history: %s", str(e))
         return (
             [],
             False,
             "Database query could not be completed. Check database tables and status.",
+            0,
         )
 
 
