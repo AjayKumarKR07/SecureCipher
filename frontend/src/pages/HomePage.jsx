@@ -1368,7 +1368,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
           </div>
 
           <div className="text-xs font-mono text-slate-400 text-center sm:text-right">
-            College Mini-Project | React + FastAPI + PostgreSQL
+            React + FastAPI + PostgreSQL
           </div>
         </div>
       </footer>
