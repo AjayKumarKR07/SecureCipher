@@ -16,7 +16,7 @@ def list_operation_history(
     """
     Returns recent cryptographic operation metadata.
     Initially empty.
-    
+
     SECURITY GUARANTEE:
     This endpoint and the underlying persistence layer strictly omit plaintext
     messages, uploaded file contents, passwords, and cryptographic keys.
@@ -31,7 +31,28 @@ def list_operation_history(
     )
 
 
-@router.delete("/history/{item_id}", response_model=DeleteHistoryResponse, summary="Delete Cryptographic Operation History Record")
+@router.delete("/history", response_model=ClearAllHistoryResponse, summary="Clear All Cryptographic Operation History")
+def clear_all_operation_history(
+    db: Optional[Session] = Depends(get_db),
+) -> ClearAllHistoryResponse:
+    """
+    Permanently deletes ALL cryptographic operation audit records from PostgreSQL.
+    This action is irreversible.
+    """
+    success, deleted_count, error_msg = clear_all_history(db)
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_msg or "Failed to clear audit history",
+        )
+    return ClearAllHistoryResponse(
+        success=True,
+        deleted_count=deleted_count,
+        message=f"Successfully deleted all {deleted_count} audit records.",
+    )
+
+
+@router.delete("/history/{item_id}", response_model=DeleteHistoryResponse, summary="Delete Single Cryptographic Operation History Record")
 def delete_operation_history_record(
     item_id: int,
     db: Optional[Session] = Depends(get_db),
@@ -55,25 +76,4 @@ def delete_operation_history_record(
         success=True,
         deleted_id=item_id,
         message=f"Audit record #{item_id} deleted successfully.",
-    )
-
-
-@router.delete("/history", response_model=ClearAllHistoryResponse, summary="Clear All Cryptographic Operation History")
-def clear_all_operation_history(
-    db: Optional[Session] = Depends(get_db),
-) -> ClearAllHistoryResponse:
-    """
-    Permanently deletes ALL cryptographic operation audit records from PostgreSQL.
-    This action is irreversible.
-    """
-    success, deleted_count, error_msg = clear_all_history(db)
-    if not success:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_msg or "Failed to clear audit history",
-        )
-    return ClearAllHistoryResponse(
-        success=True,
-        deleted_count=deleted_count,
-        message=f"Successfully deleted all {deleted_count} audit records.",
     )
