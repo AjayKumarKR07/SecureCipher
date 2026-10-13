@@ -706,8 +706,6 @@ SecureCipher is developed as a college mini-project for undergraduate Computer S
 
 **Built with love by [Ajay Kumar K R](https://github.com/AjayKumarKR07)**
 
-B.Tech Computer Science — ALS Mini Project Development
-
 React · FastAPI · PostgreSQL · Python Cryptography
 
 </div>
