@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Float, DateTime, func
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, func
+from sqlalchemy.orm import relationship
 from app.db.session import Base
 
 
@@ -18,6 +19,7 @@ class OperationHistory(Base):
     operation_type = Column(String(50), nullable=False, index=True)
     status = Column(String(20), nullable=False, default="success")
     execution_duration_ms = Column(Float, nullable=False, default=0.0)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
     created_at = Column(
         DateTime(timezone=True),
         nullable=False,
@@ -25,5 +27,7 @@ class OperationHistory(Base):
         default=lambda: datetime.now(timezone.utc),
     )
 
+    user = relationship("User", backref="operation_history")
+
     def __repr__(self) -> str:
-        return f"<OperationHistory id={self.id} algo={self.algorithm_name} op={self.operation_type} status={self.status}>"
+        return f"<OperationHistory id={self.id} user_id={self.user_id} algo={self.algorithm_name} op={self.operation_type} status={self.status}>"

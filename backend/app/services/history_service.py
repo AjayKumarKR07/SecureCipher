@@ -1,6 +1,6 @@
 import logging
 from typing import List, Optional, Tuple
-from sqlalchemy import select, desc, func
+from sqlalchemy import select, desc, func, delete as sa_delete
 from sqlalchemy.orm import Session
 from app.models.history import OperationHistory
 from app.schemas.history import OperationHistoryItem
@@ -9,10 +9,16 @@ logger = logging.getLogger(__name__)
 
 
 def get_recent_history(
-    db: Optional[Session], limit: int = 10
+    db: Optional[Session],
+    user_id: Optional[int] = None,
+    limit: int = 20,
+    offset: int = 0,
+    algorithm: Optional[str] = None,
+    status: Optional[str] = None,
 ) -> Tuple[List[OperationHistoryItem], bool, Optional[str], int]:
     """
-    Retrieves recent operation history records without sensitive payloads.
+    Retrieves recent operation history records scoped to the authenticated user.
+    Supports filtering by algorithm and execution status, with offset pagination.
     Returns (items, database_connected, status_message, total_db_count).
     """
     if db is None:
@@ -24,14 +30,31 @@ def get_recent_history(
         )
 
     try:
-        # Get actual total count in the database (ignores limit)
-        total_count = db.scalar(select(func.count()).select_from(OperationHistory)) or 0
+        # Build base filter conditions
+        filters = []
+        if user_id is not None:
+            filters.append(OperationHistory.user_id == user_id)
+        if algorithm and algorithm.strip().upper() != "ALL":
+            filters.append(OperationHistory.algorithm_name.ilike(f"%{algorithm.strip()}%"))
+        if status and status.strip().upper() != "ALL":
+            filters.append(OperationHistory.status == status.strip().lower())
 
+        # Total count matching filters
+        count_stmt = select(func.count()).select_from(OperationHistory)
+        if filters:
+            count_stmt = count_stmt.where(*filters)
+        total_count = db.scalar(count_stmt) or 0
+
+        # Query items with pagination
         stmt = (
             select(OperationHistory)
             .order_by(desc(OperationHistory.created_at))
-            .limit(limit)
+            .offset(max(0, offset))
+            .limit(min(max(1, limit), 100))
         )
+        if filters:
+            stmt = stmt.where(*filters)
+
         results = db.scalars(stmt).all()
         items = [
             OperationHistoryItem(
@@ -41,6 +64,7 @@ def get_recent_history(
                 status=record.status,
                 execution_duration_ms=record.execution_duration_ms,
                 created_at=record.created_at,
+                user_id=record.user_id,
             )
             for record in results
         ]
@@ -61,9 +85,11 @@ def record_audit_operation(
     operation_type: str,
     status: str,
     duration_ms: float,
+    user_id: Optional[int] = None,
 ) -> None:
     """
     Persists safe operational execution metadata to PostgreSQL history.
+    Associates the audit record with the authenticated user if present.
     
     SECURITY GUARANTEE:
     Plaintext, private keys, public keys, passphrases, derived keys, and ciphertexts
@@ -78,6 +104,7 @@ def record_audit_operation(
             operation_type=operation_type,
             status=status,
             execution_duration_ms=round(duration_ms, 2),
+            user_id=user_id,
         )
         db.add(audit_entry)
         db.commit()
@@ -89,9 +116,13 @@ def record_audit_operation(
             pass
 
 
-def delete_history_item(db: Optional[Session], item_id: int) -> Tuple[bool, Optional[str]]:
+def delete_history_item(
+    db: Optional[Session],
+    item_id: int,
+    user_id: Optional[int] = None,
+) -> Tuple[bool, Optional[str]]:
     """
-    Deletes a single audit record from PostgreSQL history by ID.
+    Deletes a single audit record from PostgreSQL history by ID, enforcing user ownership.
     Returns (success, error_message).
     """
     if db is None:
@@ -102,9 +133,14 @@ def delete_history_item(db: Optional[Session], item_id: int) -> Tuple[bool, Opti
         if not record:
             return False, f"Audit record #{item_id} not found"
 
+        # Enforce user authorization: record must belong to current user
+        if user_id is not None and record.user_id != user_id:
+            logger.warning("Unauthorized delete attempt: User %s attempted to delete record #%s owned by %s", user_id, item_id, record.user_id)
+            return False, f"Audit record #{item_id} not found"
+
         db.delete(record)
         db.commit()
-        logger.info("Deleted audit record #%s", item_id)
+        logger.info("Deleted audit record #%s for user %s", item_id, user_id)
         return True, None
     except Exception as e:
         logger.warning("Failed to delete audit record #%s: %s", item_id, str(e))
@@ -115,23 +151,30 @@ def delete_history_item(db: Optional[Session], item_id: int) -> Tuple[bool, Opti
         return False, str(e)
 
 
-def clear_all_history(db: Optional[Session]) -> tuple:
+def clear_all_history(
+    db: Optional[Session],
+    user_id: Optional[int] = None,
+) -> tuple:
     """
-    Deletes ALL audit records from PostgreSQL history.
+    Deletes audit records belonging EXCLUSIVELY to the authenticated user.
+    Prevents cross-user deletion.
     Returns (success, deleted_count, error_message).
     """
     if db is None:
         return False, 0, "Database connection not available"
 
+    if user_id is None:
+        return False, 0, "Authentication required to clear audit history"
+
     try:
-        from sqlalchemy import delete as sa_delete
-        result = db.execute(sa_delete(OperationHistory))
+        stmt = sa_delete(OperationHistory).where(OperationHistory.user_id == user_id)
+        result = db.execute(stmt)
         db.commit()
         count = result.rowcount
-        logger.info("Cleared all %s audit records from history", count)
+        logger.info("Cleared %s audit records for user id=%s", count, user_id)
         return True, count, None
     except Exception as e:
-        logger.warning("Failed to clear all history: %s", str(e))
+        logger.warning("Failed to clear history for user %s: %s", user_id, str(e))
         try:
             db.rollback()
         except Exception:

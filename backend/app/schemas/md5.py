@@ -11,7 +11,8 @@ class MD5TextRequest(BaseModel):
     """Payload for text MD5 hashing."""
     text: str = Field(
         default="",
-        description="The UTF-8 text string to be hashed (empty string is supported as a standard RFC 1321 test vector).",
+        max_length=500000,
+        description="The UTF-8 text string to be hashed (empty string is supported as a standard RFC 1321 test vector, max 500KB).",
     )
 
 
@@ -49,11 +50,13 @@ class MD5CompareRequest(BaseModel):
     """Request payload for comparing two inputs or verifying against an expected MD5 hash."""
     input_a: str = Field(
         default="",
-        description="First input text or payload",
+        max_length=500000,
+        description="First input text or payload (max 500KB)",
     )
     input_b: str = Field(
         default="",
-        description="Second input text or expected 32-hexadecimal checksum",
+        max_length=500000,
+        description="Second input text or expected 32-hexadecimal checksum (max 500KB)",
     )
     compare_mode: str = Field(
         default="text_vs_text",

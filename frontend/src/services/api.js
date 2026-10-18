@@ -1,9 +1,36 @@
 /**
  * SecureCipher Frontend API Client
- * Connects to the FastAPI backend endpoints with fallback handling.
+ * Connects to the FastAPI backend endpoints with token-based authentication and fallback handling.
  */
 
 const API_BASE_URL = '/api';
+
+/**
+ * Authentication token storage and retrieval utilities
+ */
+export function getAuthToken() {
+  return localStorage.getItem('securecipher_token') || sessionStorage.getItem('securecipher_token');
+}
+
+export function setAuthToken(token, remember = false) {
+  if (remember) {
+    localStorage.setItem('securecipher_token', token);
+    sessionStorage.removeItem('securecipher_token');
+  } else {
+    sessionStorage.setItem('securecipher_token', token);
+    localStorage.removeItem('securecipher_token');
+  }
+}
+
+export function clearAuthToken() {
+  localStorage.removeItem('securecipher_token');
+  sessionStorage.removeItem('securecipher_token');
+}
+
+export function getAuthHeaders() {
+  const token = getAuthToken();
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+}
 
 /**
  * Checks general backend health
@@ -143,12 +170,34 @@ export async function fetchAlgorithms() {
 }
 
 /**
- * Fetches recent operation history metadata
+ * Fetches user-scoped operation history metadata with optional filtering and pagination
  */
-export async function fetchHistory(limit = 20) {
+export async function fetchHistory(limit = 20, offset = 0, filterAlgo = 'ALL', filterStatus = 'ALL') {
   try {
-    const response = await fetch(`${API_BASE_URL}/history?limit=${limit}`);
+    const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+    if (filterAlgo && filterAlgo !== 'ALL') {
+      params.append('algorithm', filterAlgo);
+    }
+    if (filterStatus && filterStatus !== 'ALL') {
+      params.append('status', filterStatus);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/history?${params.toString()}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
+
     if (!response.ok) {
+      if (response.status === 401) {
+        return {
+          items: [],
+          total: 0,
+          total_count: 0,
+          database_connected: false,
+          message: 'Please sign in to view your account audit history.',
+        };
+      }
       throw new Error(`HTTP error: ${response.status}`);
     }
     return await response.json();
@@ -156,6 +205,7 @@ export async function fetchHistory(limit = 20) {
     return {
       items: [],
       total: 0,
+      total_count: 0,
       database_connected: false,
       message: err.message,
     };
@@ -163,11 +213,14 @@ export async function fetchHistory(limit = 20) {
 }
 
 /**
- * Deletes a single operation history record by ID
+ * Deletes a single operation history record by ID (authorized to current user)
  */
 export async function deleteHistoryItem(id) {
   const response = await fetch(`${API_BASE_URL}/history/${id}`, {
     method: 'DELETE',
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   const data = await response.json();
   if (!response.ok) {
@@ -177,11 +230,14 @@ export async function deleteHistoryItem(id) {
 }
 
 /**
- * Clears ALL operation history records from the database
+ * Clears ALL operation history records belonging to the authenticated user
  */
 export async function clearAllHistory() {
   const response = await fetch(`${API_BASE_URL}/history`, {
     method: 'DELETE',
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   const data = await response.json();
   if (!response.ok) {
@@ -199,6 +255,7 @@ export async function encryptAES(plaintext, passphrase) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ plaintext, passphrase }),
   });
@@ -217,6 +274,7 @@ export async function decryptAES({ passphrase, nonce, salt, ciphertext, tag }) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ passphrase, nonce, salt, ciphertext, tag }),
   });
@@ -235,6 +293,7 @@ export async function generateRSAKeys(keySize = 2048) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ key_size: parseInt(keySize, 10) }),
   });
@@ -253,6 +312,7 @@ export async function encryptRSA(plaintext, publicKeyPem) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
       plaintext,
@@ -274,6 +334,7 @@ export async function decryptRSA(ciphertext, privateKeyPem) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
       ciphertext,
@@ -295,6 +356,7 @@ export async function generateDHKeypair(partyName = 'Party') {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ party_name: partyName }),
   });
@@ -313,6 +375,7 @@ export async function deriveDHSecret(privateKeyPem, peerPublicKeyPem, info = 'Se
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
       private_key_pem: privateKeyPem,
@@ -335,6 +398,7 @@ export async function simulateDHExchange() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
   });
   const data = await response.json();
@@ -352,6 +416,7 @@ export async function hashSHA256Text(text = '') {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ text }),
   });
@@ -371,6 +436,9 @@ export async function hashSHA256File(file) {
 
   const response = await fetch(`${API_BASE_URL}/sha256/hash-file`, {
     method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: formData,
   });
   const data = await response.json();
@@ -388,6 +456,7 @@ export async function compareSHA256(inputA = '', inputB = '', compareMode = 'tex
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
       input_a: inputA,
@@ -410,6 +479,7 @@ export async function hashMD5Text(text = '') {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ text }),
   });
@@ -429,6 +499,9 @@ export async function hashMD5File(file) {
 
   const response = await fetch(`${API_BASE_URL}/md5/hash-file`, {
     method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: formData,
   });
   const data = await response.json();
@@ -446,6 +519,7 @@ export async function compareMD5(inputA = '', inputB = '', compareMode = 'text_v
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({
       input_a: inputA,
@@ -468,6 +542,7 @@ export async function encryptDES(plaintext, key) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ plaintext, key }),
   });
@@ -486,6 +561,7 @@ export async function decryptDES(ciphertext, key, iv) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ ciphertext, key, iv }),
   });
@@ -499,25 +575,6 @@ export async function decryptDES(ciphertext, key, iv) {
 /* =========================================================================
    AUTHENTICATION & EMAIL VERIFICATION API METHODS
    ========================================================================= */
-
-export function getAuthToken() {
-  return localStorage.getItem('securecipher_token') || sessionStorage.getItem('securecipher_token');
-}
-
-export function setAuthToken(token, remember = false) {
-  if (remember) {
-    localStorage.setItem('securecipher_token', token);
-    sessionStorage.removeItem('securecipher_token');
-  } else {
-    sessionStorage.setItem('securecipher_token', token);
-    localStorage.removeItem('securecipher_token');
-  }
-}
-
-export function clearAuthToken() {
-  localStorage.removeItem('securecipher_token');
-  sessionStorage.removeItem('securecipher_token');
-}
 
 /**
  * Step 1: Request Email Verification OTP
@@ -672,5 +729,3 @@ export async function changePassword({ currentPassword, newPassword }) {
   }
   return data;
 }
-
-

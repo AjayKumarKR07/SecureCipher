@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from app.models.user import User
+from app.api.endpoints.auth import get_optional_current_user
 from app.schemas.md5 import (
     MD5TextRequest,
     MD5TextResponse,
@@ -28,6 +30,7 @@ router = APIRouter(prefix="/md5", tags=["MD5 Hashing (Legacy)"])
 )
 def hash_text_endpoint(
     payload: MD5TextRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> MD5TextResponse:
     """
@@ -45,6 +48,7 @@ def hash_text_endpoint(
             detail="Text payload must not be null.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         digest, byte_len = compute_md5_text(payload.text)
@@ -56,6 +60,7 @@ def hash_text_endpoint(
             operation_type="hash_text",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return MD5TextResponse(
@@ -72,6 +77,7 @@ def hash_text_endpoint(
             operation_type="hash_text",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -83,10 +89,11 @@ def hash_text_endpoint(
     "/hash-file",
     response_model=MD5FileResponse,
     status_code=status.HTTP_200_OK,
-    summary="Stream and compute MD5 digest of an uploaded file",
+    summary="Stream and compute MD5 digest of an uploaded file (Legacy)",
 )
 async def hash_file_endpoint(
     file: UploadFile = File(...),
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> MD5FileResponse:
     """
@@ -102,6 +109,7 @@ async def hash_file_endpoint(
             detail="Valid file with filename must be provided.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         digest, file_size_bytes = await compute_md5_file_stream(file)
@@ -113,6 +121,7 @@ async def hash_file_endpoint(
             operation_type="hash_file",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return MD5FileResponse(
@@ -131,6 +140,7 @@ async def hash_file_endpoint(
             operation_type="hash_file",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise
     except Exception as e:
@@ -141,6 +151,7 @@ async def hash_file_endpoint(
             operation_type="hash_file",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -156,6 +167,7 @@ async def hash_file_endpoint(
 )
 def compare_endpoint(
     payload: MD5CompareRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> MD5CompareResponse:
     """
@@ -171,6 +183,7 @@ def compare_endpoint(
             detail=f"Invalid compare_mode. Supported modes are: {', '.join(valid_modes)}",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         result = compare_md5_integrity(
@@ -186,6 +199,7 @@ def compare_endpoint(
             operation_type="compare",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return MD5CompareResponse(
@@ -206,6 +220,7 @@ def compare_endpoint(
             operation_type="compare",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise
     except Exception as e:
@@ -216,6 +231,7 @@ def compare_endpoint(
             operation_type="compare",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

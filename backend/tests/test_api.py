@@ -59,16 +59,13 @@ def test_single_algorithm_not_found():
     assert response.status_code == 404
 
 
-def test_history():
+def test_history_unauthenticated():
     response = client.get("/api/history")
-    assert response.status_code == 200
-    data = response.json()
-    assert "items" in data
-    assert "total" in data
-    assert isinstance(data["items"], list)
+    assert response.status_code == 401
+    assert "detail" in response.json()
 
 
-def test_delete_history_item_not_found():
+def test_delete_history_item_unauthenticated():
     response = client.delete("/api/history/99999999")
-    assert response.status_code in (404, 400)
+    assert response.status_code == 401
 

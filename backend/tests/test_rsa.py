@@ -163,26 +163,37 @@ def test_rsa_empty_inputs():
 
 def test_rsa_audit_history_no_secrets():
     """Verify that RSA key generation, encryption, and decryption are logged without secrets."""
-    keys = client.post("/api/rsa/generate-keys", json={"key_size": 2048}).json()
-    enc = client.post(
-        "/api/rsa/encrypt",
-        json={"plaintext": "Audited RSA Payload", "public_key_pem": keys["public_key_pem"]},
-    ).json()
-    client.post(
-        "/api/rsa/decrypt",
-        json={"ciphertext": enc["ciphertext"], "private_key_pem": keys["private_key_pem"]},
-    )
+    from app.api.endpoints.auth import get_current_user, get_optional_current_user
+    from app.models.user import User
 
-    history_res = client.get("/api/history")
-    assert history_res.status_code == 200
-    items = history_res.json()["items"]
+    mock_user = User(id=1, email="rsa_analyst@securecipher.org", full_name="RSA Analyst", is_active=True, is_verified=True)
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_optional_current_user] = lambda: mock_user
 
-    rsa_records = [r for r in items if "RSA" in r["algorithm_name"]]
-    assert len(rsa_records) >= 3
+    try:
+        keys = client.post("/api/rsa/generate-keys", json={"key_size": 2048}).json()
+        enc = client.post(
+            "/api/rsa/encrypt",
+            json={"plaintext": "Audited RSA Payload", "public_key_pem": keys["public_key_pem"]},
+        ).json()
+        client.post(
+            "/api/rsa/decrypt",
+            json={"ciphertext": enc["ciphertext"], "private_key_pem": keys["private_key_pem"]},
+        )
 
-    for r in rsa_records:
-        assert r["operation_type"] in ("key_generation", "encryption", "decryption")
-        for key in r.keys():
-            assert "private" not in key.lower()
-            assert "plaintext" not in key.lower()
-            assert "ciphertext" not in key.lower()
+        history_res = client.get("/api/history")
+        assert history_res.status_code == 200
+        items = history_res.json()["items"]
+
+        rsa_records = [r for r in items if "RSA" in r["algorithm_name"]]
+        assert len(rsa_records) >= 3
+
+        for r in rsa_records:
+            assert r["operation_type"] in ("key_generation", "encryption", "decryption")
+            for key in r.keys():
+                assert "private" not in key.lower()
+                assert "plaintext" not in key.lower()
+                assert "ciphertext" not in key.lower()
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(get_optional_current_user, None)

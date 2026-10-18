@@ -6,7 +6,8 @@ class SHA256TextRequest(BaseModel):
     """Payload for text SHA-256 hashing."""
     text: str = Field(
         default="",
-        description="The UTF-8 text string to be hashed (empty string is supported as a standard NIST test vector).",
+        max_length=500000,
+        description="The UTF-8 text string to be hashed (empty string is supported as a standard NIST test vector, max 500KB).",
     )
 
 
@@ -42,11 +43,13 @@ class SHA256CompareRequest(BaseModel):
     """Request payload for comparing two inputs or verifying against an expected hash."""
     input_a: str = Field(
         default="",
-        description="First input text or payload",
+        max_length=500000,
+        description="First input text or payload (max 500KB)",
     )
     input_b: str = Field(
         default="",
-        description="Second input text or expected hexadecimal checksum",
+        max_length=500000,
+        description="Second input text or expected hexadecimal checksum (max 500KB)",
     )
     compare_mode: str = Field(
         default="text_vs_text",

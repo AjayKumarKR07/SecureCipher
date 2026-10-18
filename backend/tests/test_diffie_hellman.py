@@ -193,41 +193,52 @@ def test_dh_empty_inputs():
 
 def test_dh_audit_history_no_secrets():
     """Verify PostgreSQL operation history logs DH operations while strictly omitting all keys and secrets."""
-    # Perform a DH simulation
-    sim_resp = client.post("/api/diffie-hellman/simulate-exchange")
-    assert sim_resp.status_code == 200
-    data = sim_resp.json()
-    alice_priv = data["alice"]["private_key_pem"]
-    derived_b64 = data["alice_derived_key_b64"]
+    from app.api.endpoints.auth import get_current_user, get_optional_current_user
+    from app.models.user import User
 
-    # Query history via API
-    hist_resp = client.post(
-        "/api/diffie-hellman/generate-keypair",
-        json={"party_name": "AuditParty"},
-    )
-    assert hist_resp.status_code == 200
+    mock_user = User(id=1, email="dh_analyst@securecipher.org", full_name="DH Analyst", is_active=True, is_verified=True)
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_optional_current_user] = lambda: mock_user
 
-    api_hist = client.get("/api/history")
-    assert api_hist.status_code == 200
-    records = api_hist.json()["items"]
+    try:
+        # Perform a DH simulation
+        sim_resp = client.post("/api/diffie-hellman/simulate-exchange")
+        assert sim_resp.status_code == 200
+        data = sim_resp.json()
+        alice_priv = data["alice"]["private_key_pem"]
+        derived_b64 = data["alice_derived_key_b64"]
 
-    dh_records = [r for r in records if r["algorithm_name"] == "Diffie-Hellman"]
-    assert len(dh_records) > 0
+        # Query history via API
+        hist_resp = client.post(
+            "/api/diffie-hellman/generate-keypair",
+            json={"party_name": "AuditParty"},
+        )
+        assert hist_resp.status_code == 200
 
-    # Ensure none of the audit history entries contain private keys or secrets
-    db_gen = get_db()
-    db = next(db_gen)
-    if db:
-        db_records = db.query(OperationHistory).filter(OperationHistory.algorithm_name == "Diffie-Hellman").all()
-        for rec in db_records:
-            # OperationHistory model only contains:
-            # id, algorithm_name, operation_type, status, execution_duration_ms, created_at
-            assert hasattr(rec, "algorithm_name")
-            assert hasattr(rec, "operation_type")
-            assert not hasattr(rec, "private_key")
-            assert not hasattr(rec, "shared_secret")
-            assert not hasattr(rec, "derived_key")
-            # Verify string representation doesn't leak secrets
-            rec_str = str(rec.__dict__)
-            assert alice_priv not in rec_str
-            assert derived_b64 not in rec_str
+        api_hist = client.get("/api/history")
+        assert api_hist.status_code == 200
+        records = api_hist.json()["items"]
+
+        dh_records = [r for r in records if r["algorithm_name"] == "Diffie-Hellman"]
+        assert len(dh_records) > 0
+
+        # Ensure none of the audit history entries contain private keys or secrets
+        db_gen = get_db()
+        db = next(db_gen)
+        if db:
+            db_records = db.query(OperationHistory).filter(OperationHistory.algorithm_name == "Diffie-Hellman").all()
+            for rec in db_records:
+                # OperationHistory model only contains:
+                # id, algorithm_name, operation_type, status, execution_duration_ms, created_at
+                assert hasattr(rec, "algorithm_name")
+                assert hasattr(rec, "operation_type")
+                assert not hasattr(rec, "private_key")
+                assert not hasattr(rec, "shared_secret")
+                assert not hasattr(rec, "derived_key")
+                # Verify string representation doesn't leak secrets
+                rec_str = str(rec.__dict__)
+                assert alice_priv not in rec_str
+                assert derived_b64 not in rec_str
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(get_optional_current_user, None)

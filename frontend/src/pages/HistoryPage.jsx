@@ -22,6 +22,7 @@ import {
 import StatusBadge from '../components/StatusBadge';
 import { fetchHistory, deleteHistoryItem, clearAllHistory } from '../services/api';
 import { generateAuditHistoryPDF, generateSingleAuditRecordPDF } from '../utils/historyPdfGenerator';
+import { useAuth } from '../context/AuthContext';
 /**
  * Format timestamp into Indian Standard Time (IST - UTC+05:30)
  * Example: "2026-10-12 06:17:57 PM IST"
@@ -50,6 +51,7 @@ export function formatIndiaTime(dateInput) {
 }
 
 export default function HistoryPage({ dbHealth }) {
+  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterAlgo, setFilterAlgo] = useState('ALL');
@@ -105,6 +107,7 @@ export default function HistoryPage({ dbHealth }) {
         filterAlgo,
         dbHealth,
         totalMatchingRecords: filteredItems.length,
+        user,
       });
 
       if (res && res.blobUrl) {
@@ -124,7 +127,7 @@ export default function HistoryPage({ dbHealth }) {
   // Row Action 1: Download Single-Record PDF
   const handleDownloadSingleReport = (item) => {
     try {
-      generateSingleAuditRecordPDF(item);
+      generateSingleAuditRecordPDF(item, user);
       showNotice(`Audit #${item.id} PDF report downloaded successfully.`, 'success');
     } catch (err) {
       console.error('Failed to download single report:', err);

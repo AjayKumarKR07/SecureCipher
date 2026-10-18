@@ -12,6 +12,7 @@ from app.core.security import (
     hash_otp,
     verify_otp,
 )
+from app.core.config import settings
 from app.services.email_service import (
     is_smtp_configured,
     get_missing_smtp_config,
@@ -132,9 +133,18 @@ def request_registration_otp(
             resend_cooldown_seconds=RESEND_COOLDOWN_SECONDS,
         )
 
-    # If SMTP is not configured, explain what is missing instead of pretending verification succeeded
+    # In production mode, never expose dev OTP
+    is_prod = settings.ENVIRONMENT.lower() == "production"
+    if is_prod:
+        logger.error("Production alert: SMTP unconfigured on server. Disallowing OTP generation.")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Email verification service is temporarily unavailable. Please configure SMTP credentials.",
+        )
+
+    # If SMTP is not configured in development, explain what is missing and provide dev OTP
     missing = get_missing_smtp_config()
-    logger.info("Email delivery is not configured on server. Missing: %s", missing)
+    logger.info("Email delivery is not configured on server (development mode). Missing: %s", missing)
 
     return RequestOTPResponse(
         status="smtp_unconfigured",
@@ -222,8 +232,15 @@ def verify_otp_and_create_user(
 
     # Verify OTP against stored hash
     if not verify_otp(otp, normalized_email, otp_record.hashed_otp):
+        if otp_record.attempts >= MAX_VERIFICATION_ATTEMPTS:
+            otp_record.is_used = True
         db.commit()
-        remaining = MAX_VERIFICATION_ATTEMPTS - otp_record.attempts
+        remaining = max(0, MAX_VERIFICATION_ATTEMPTS - otp_record.attempts)
+        if remaining == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Maximum verification attempts exceeded (5). This code has been invalidated. Please request a new code.",
+            )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid verification code. {remaining} attempt(s) remaining.",

@@ -13,8 +13,8 @@ class KDFParameters(BaseModel):
 
 
 class AESEncryptRequest(BaseModel):
-    plaintext: str = Field(..., min_length=1, description="Plaintext string to encrypt")
-    passphrase: str = Field(..., min_length=1, description="User passphrase for key derivation")
+    plaintext: str = Field(..., min_length=1, max_length=100000, description="Plaintext string to encrypt (max 100KB)")
+    passphrase: str = Field(..., min_length=1, max_length=1024, description="User passphrase for key derivation (max 1KB)")
 
 
 class AESEncryptResponse(BaseModel):
@@ -28,11 +28,11 @@ class AESEncryptResponse(BaseModel):
 
 
 class AESDecryptRequest(BaseModel):
-    passphrase: str = Field(..., min_length=1, description="User passphrase for key derivation")
-    nonce: str = Field(..., min_length=1, description="Base64-encoded 12-byte nonce")
-    salt: str = Field(..., min_length=1, description="Base64-encoded 16-byte random salt")
-    ciphertext: str = Field(..., min_length=1, description="Base64-encoded encrypted payload")
-    tag: str = Field(..., min_length=1, description="Base64-encoded 16-byte authentication tag")
+    passphrase: str = Field(..., min_length=1, max_length=1024, description="User passphrase for key derivation")
+    nonce: str = Field(..., min_length=1, max_length=64, description="Base64-encoded 12-byte nonce")
+    salt: str = Field(..., min_length=1, max_length=64, description="Base64-encoded 16-byte random salt")
+    ciphertext: str = Field(..., min_length=1, max_length=200000, description="Base64-encoded encrypted payload")
+    tag: str = Field(..., min_length=1, max_length=64, description="Base64-encoded 16-byte authentication tag")
 
 
 class AESDecryptResponse(BaseModel):

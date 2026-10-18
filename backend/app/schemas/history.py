@@ -10,6 +10,7 @@ class OperationHistoryItem(BaseModel):
     status: str
     execution_duration_ms: float
     created_at: datetime
+    user_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 

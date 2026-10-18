@@ -241,7 +241,7 @@ function getWorkflowSteps(algorithmName, operationType, status) {
       },
       {
         step: 5,
-        title: 'Zero-Knowledge Audit Registration',
+        title: 'Privacy-Preserving Audit Registration',
         detail: `Execution telemetry (Algorithm: ${algorithmName}, Op: hash_file, Status: ${status}, Latency ms, UTC Timestamp) is written to PostgreSQL without saving file contents.`,
       },
     ];
@@ -405,7 +405,7 @@ function getWorkflowSteps(algorithmName, operationType, status) {
       },
       {
         step: 5,
-        title: 'Zero-Knowledge Audit Recording',
+        title: 'Privacy-Preserving Audit Recording',
         detail: 'Agreement latency and status logged in PostgreSQL without storing private exponents or shared secrets.',
       },
     ];
@@ -451,7 +451,7 @@ function getWorkflowSteps(algorithmName, operationType, status) {
  * Generate a publication-quality single-record audit execution dossier
  * for a specific PostgreSQL audit record.
  */
-export function generateSingleAuditRecordPDF(item) {
+export function generateSingleAuditRecordPDF(item, user = null) {
   if (!item) {
     throw new Error('No audit record provided for PDF report generation.');
   }
@@ -542,7 +542,7 @@ export function generateSingleAuditRecordPDF(item) {
   doc.setFontSize(6.8);
   doc.setTextColor(...PALETTE.slate400);
   doc.text(`Generated: ${dateStr}`, pageWidth - margin - 5, currentY + 12, { align: 'right' });
-  doc.text('Audit Engine: PostgreSQL Persistence', pageWidth - margin - 5, currentY + 17, { align: 'right' });
+  doc.text(user?.email ? `User: ${user.email}` : 'Audit Engine: PostgreSQL Persistence', pageWidth - margin - 5, currentY + 17, { align: 'right' });
 
   currentY += bannerHeight + 4;
 
@@ -557,6 +557,7 @@ export function generateSingleAuditRecordPDF(item) {
 
   const telemetryRows = [
     { label: 'Audit Record ID', value: `#${item.id} (PostgreSQL Primary Key)` },
+    { label: 'Account / User', value: user?.email ? `${user.username || 'User'} (${user.email})` : (item.user_id ? `User ID #${item.user_id}` : 'Authenticated Account Session') },
     { label: 'Cryptographic Algorithm', value: item.algorithm_name || 'N/A' },
     { label: 'Cryptographic Category', value: meta.category },
     { label: 'Operation Performed', value: item.operation_type || 'N/A' },
@@ -571,7 +572,7 @@ export function generateSingleAuditRecordPDF(item) {
     },
     { label: 'Recorded Timestamp (IST / India)', value: `${recordDateStr} (UTC+05:30)` },
     { label: 'Cryptographic Standard', value: meta.standard },
-    { label: 'Data Retention Standard', value: 'Zero-Knowledge Isolation (Ephemeral Execution Only)' },
+    { label: 'Data Retention Standard', value: 'Zero Plaintext Retention (Ephemeral Execution Only)' },
   ];
 
   const tableRowHeight = 6.2;
@@ -765,7 +766,7 @@ export function generateSingleAuditRecordPDF(item) {
     currentY += 15;
   }
 
-  // Zero-Knowledge Privacy Guarantee Card
+  // Privacy-Preserving Guarantee Card
   checkPageBreak(14);
   doc.setFillColor(...PALETTE.slate50);
   doc.setDrawColor(...PALETTE.slate200);
@@ -774,7 +775,7 @@ export function generateSingleAuditRecordPDF(item) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7);
   doc.setTextColor(...PALETTE.slate700);
-  doc.text('CONFIDENTIALITY & ZERO-KNOWLEDGE ASSURANCE:', margin + 4, currentY + 4.5);
+  doc.text('CONFIDENTIALITY & DATA PROTECTION ASSURANCE:', margin + 4, currentY + 4.5);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.7);
@@ -859,6 +860,7 @@ export function generateAuditHistoryPDF({
   filterAlgo = 'ALL',
   dbHealth = null,
   totalMatchingRecords = 0,
+  user = null,
 }) {
   const doc = new jsPDF({
     orientation: 'landscape',
@@ -1013,7 +1015,7 @@ export function generateAuditHistoryPDF({
   doc.setFontSize(6.8);
   doc.setTextColor(...PALETTE.slate400);
   doc.text(`Generated: ${dateStr}`, pageWidth - margin - 5, currentY + 11.5, { align: 'right' });
-  doc.text('Audit Engine: PostgreSQL Persistence Layer', pageWidth - margin - 5, currentY + 16.5, { align: 'right' });
+  doc.text(user?.email ? `Audited Account: ${user.email}` : 'Audit Engine: PostgreSQL Persistence Layer', pageWidth - margin - 5, currentY + 16.5, { align: 'right' });
 
   currentY += bannerHeight + 3.5;
 
@@ -1338,14 +1340,14 @@ export function generateAuditHistoryPDF({
   currentY += 17.5;
 
   // --------------------------------------------------------------------------
-  // 6. SECTION 4: ZERO-KNOWLEDGE SECURITY & PRIVACY STATEMENT
+  // 6. SECTION 4: PRIVACY-PRESERVING DATA PROTECTION & AUDIT POLICY
   // --------------------------------------------------------------------------
   checkLandscapePageBreak(22);
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8.5);
   doc.setTextColor(...PALETTE.slate900);
-  doc.text('4. ZERO-KNOWLEDGE SECURITY & PRIVACY COMPLIANCE STATEMENT', margin, currentY + 3.5);
+  doc.text('4. PRIVACY-PRESERVING DATA PROTECTION & AUDIT POLICY', margin, currentY + 3.5);
   currentY += 5.5;
 
   doc.setFillColor(...PALETTE.emeraldLight);
@@ -1355,13 +1357,13 @@ export function generateAuditHistoryPDF({
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7.2);
   doc.setTextColor(...PALETTE.emerald);
-  doc.text('STRICT ZERO-KNOWLEDGE CONFIDENTIALITY GUARANTEE:', margin + 4, currentY + 4.5);
+  doc.text('STRICT ZERO-PLAINTEXT CONFIDENTIALITY GUARANTEE:', margin + 4, currentY + 4.5);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.8);
   doc.setTextColor(...PALETTE.emerald);
   const privacyText =
-    'In rigorous compliance with cryptographic zero-knowledge principles, the SecureCipher audit persistence layer strictly records only operational execution metadata (Audit ID, Algorithm Name, Operation Type, Execution Status, Latency in Milliseconds, and UTC Timestamp). User plaintext messages, uploaded file contents, secret passphrases, RSA private keys, AES secret keys, Diffie-Hellman private exponents, and database credentials are NEVER persisted to PostgreSQL or rendered in any generated PDF document.';
+    'In compliance with cryptographic privacy and data protection standards, the SecureCipher audit persistence layer strictly records only operational execution metadata (Audit ID, Algorithm Name, Operation Type, Execution Status, Latency in Milliseconds, and UTC Timestamp). User plaintext messages, uploaded file contents, secret passphrases, RSA private keys, AES secret keys, Diffie-Hellman private exponents, and database credentials are NEVER persisted to PostgreSQL or rendered in any generated PDF document.';
   doc.text(doc.splitTextToSize(privacyText, contentWidth - 8), margin + 4, currentY + 8.5);
 
   currentY += 16.5;
@@ -1444,7 +1446,7 @@ export function generateAuditHistoryPDF({
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.8);
   doc.setTextColor(...PALETTE.slate700);
-  const conclusionText = `This operation audit report represents an authoritative snapshot of ${totalCount} cryptographic executions logged in PostgreSQL. The system demonstrated an overall success rate of ${overallSuccessRate}% with a mean benchmark execution latency of ${meanLatency} ms across all active algorithm testbenches. All cryptographic operations complied with zero-knowledge data protection guidelines, confirming robust system health and suitability for academic project evaluation.`;
+  const conclusionText = `This operation audit report represents an authoritative snapshot of ${totalCount} cryptographic executions logged in PostgreSQL. The system demonstrated an overall success rate of ${overallSuccessRate}% with a mean benchmark execution latency of ${meanLatency} ms across all active algorithm testbenches. All cryptographic operations complied with privacy-preserving data protection guidelines, confirming robust system health and suitability for project evaluation.`;
   doc.text(doc.splitTextToSize(conclusionText, contentWidth - 8), margin + 4, currentY + 4.5);
 
   // --------------------------------------------------------------------------

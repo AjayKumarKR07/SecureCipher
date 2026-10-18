@@ -74,6 +74,26 @@ def get_current_user(
     return user
 
 
+def get_optional_current_user(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security_bearer),
+    db: Optional[Session] = Depends(get_db),
+) -> Optional[User]:
+    """
+    Optional dependency: extracts and returns User if a valid Bearer token is present,
+    or None if the caller is unauthenticated or the token is invalid/expired.
+    """
+    if db is None or not credentials or not credentials.credentials:
+        return None
+    try:
+        payload = decode_access_token(credentials.credentials)
+        if not payload or "sub" not in payload:
+            return None
+        user_email = payload["sub"]
+        return db.query(User).filter(User.email == user_email, User.is_active == True).first()
+    except Exception:
+        return None
+
+
 @auth_router.post(
     "/register/request-otp",
     response_model=RequestOTPResponse,

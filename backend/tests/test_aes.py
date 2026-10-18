@@ -199,29 +199,37 @@ def test_aes_empty_input():
 
 def test_aes_audit_history_recorded_without_secrets():
     """Verify that AES operations are logged in history without storing secret payloads."""
-    # Run an encryption
-    client.post(
-        "/api/aes/encrypt",
-        json={"plaintext": "Audit Trail Verification", "passphrase": "AuditPassphrase123"},
-    )
+    from app.api.endpoints.auth import get_current_user, get_optional_current_user
+    from app.models.user import User
 
-    history_res = client.post(
-        "/api/history",
-    ) if client.post("/api/history").status_code == 200 else client.get("/api/history")
-    
-    assert history_res.status_code == 200
-    hist_data = history_res.json()
-    assert hist_data["total"] >= 1
+    mock_user = User(id=1, email="analyst@securecipher.org", full_name="Analyst", is_active=True, is_verified=True)
+    app.dependency_overrides[get_current_user] = lambda: mock_user
+    app.dependency_overrides[get_optional_current_user] = lambda: mock_user
 
-    latest = hist_data["items"][0]
-    assert latest["algorithm_name"] == "AES-256-GCM"
-    assert latest["operation_type"] in ("encryption", "decryption")
-    assert latest["status"] in ("success", "failure")
-    assert "execution_duration_ms" in latest
+    try:
+        # Run an encryption
+        client.post(
+            "/api/aes/encrypt",
+            json={"plaintext": "Audit Trail Verification", "passphrase": "AuditPassphrase123"},
+        )
 
-    # Verify that no secret field exists in the returned items
-    for key in latest.keys():
-        assert "plaintext" not in key
-        assert "key" not in key or key == "algorithm_name"
-        assert "passphrase" not in key
-        assert "ciphertext" not in key
+        history_res = client.get("/api/history")
+        assert history_res.status_code == 200
+        hist_data = history_res.json()
+        assert hist_data["total"] >= 1
+
+        latest = hist_data["items"][0]
+        assert latest["algorithm_name"] == "AES-256-GCM"
+        assert latest["operation_type"] in ("encryption", "decryption")
+        assert latest["status"] in ("success", "failure")
+        assert "execution_duration_ms" in latest
+
+        # Verify that no secret field exists in the returned items
+        for key in latest.keys():
+            assert "plaintext" not in key
+            assert "key" not in key or key == "algorithm_name"
+            assert "passphrase" not in key
+            assert "ciphertext" not in key
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(get_optional_current_user, None)

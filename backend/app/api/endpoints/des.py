@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from app.models.user import User
+from app.api.endpoints.auth import get_optional_current_user
 from app.schemas.des import (
     DESEncryptRequest,
     DESEncryptResponse,
@@ -28,6 +30,7 @@ router = APIRouter(prefix="/des", tags=["DES Cryptography (Legacy)"])
 )
 def encrypt_text_endpoint(
     payload: DESEncryptRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> DESEncryptResponse:
     """
@@ -39,6 +42,7 @@ def encrypt_text_endpoint(
     
     WARNING: EDUCATIONAL / LEGACY ONLY. DES is broken and CBC mode provides NO authentication.
     """
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         result = encrypt_des_cbc(payload.plaintext, payload.key)
@@ -50,6 +54,7 @@ def encrypt_text_endpoint(
             operation_type="encryption",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return DESEncryptResponse(
@@ -70,6 +75,7 @@ def encrypt_text_endpoint(
             operation_type="encryption",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise
     except Exception as e:
@@ -80,6 +86,7 @@ def encrypt_text_endpoint(
             operation_type="encryption",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -95,6 +102,7 @@ def encrypt_text_endpoint(
 )
 def decrypt_text_endpoint(
     payload: DESDecryptRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> DESDecryptResponse:
     """
@@ -104,6 +112,7 @@ def decrypt_text_endpoint(
     - Explicitly sets is_authenticated=False and includes CBC tampering warning.
     - Logs execution duration safely in the database (never stores keys, plaintext, or ciphertext).
     """
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         result = decrypt_des_cbc(payload.ciphertext, payload.key, payload.iv)
@@ -115,6 +124,7 @@ def decrypt_text_endpoint(
             operation_type="decryption",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return DESDecryptResponse(
@@ -133,6 +143,7 @@ def decrypt_text_endpoint(
             operation_type="decryption",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise
     except Exception as e:
@@ -143,6 +154,7 @@ def decrypt_text_endpoint(
             operation_type="decryption",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

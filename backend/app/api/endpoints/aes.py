@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from app.models.user import User
+from app.api.endpoints.auth import get_optional_current_user
 from app.schemas.aes import (
     AESEncryptRequest,
     AESEncryptResponse,
@@ -27,6 +29,7 @@ router = APIRouter(prefix="/aes", tags=["AES Cryptography"])
 )
 def encrypt_text(
     payload: AESEncryptRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> AESEncryptResponse:
     """
@@ -34,7 +37,7 @@ def encrypt_text(
     - Derives a 256-bit key using Scrypt with a fresh 16-byte salt.
     - Encrypts using a fresh random 12-byte nonce.
     - Returns Base64-encoded nonce, salt, ciphertext, and authentication tag.
-    - Logs execution duration safely in the database (never stores keys or plaintext).
+    - Logs execution duration safely in the database associated with authenticated user.
     """
     if not payload.plaintext or not payload.plaintext.strip():
         raise HTTPException(
@@ -47,6 +50,7 @@ def encrypt_text(
             detail="Passphrase cannot be empty or whitespace.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         result = encrypt_aes_256_gcm(payload.plaintext, payload.passphrase)
@@ -59,6 +63,7 @@ def encrypt_text(
             operation_type="encryption",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return AESEncryptResponse(
@@ -78,6 +83,7 @@ def encrypt_text(
             operation_type="encryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -93,6 +99,7 @@ def encrypt_text(
 )
 def decrypt_text(
     payload: AESDecryptRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> AESDecryptResponse:
     """
@@ -108,6 +115,7 @@ def decrypt_text(
             detail="Passphrase cannot be empty or whitespace.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         plaintext = decrypt_aes_256_gcm(
@@ -126,6 +134,7 @@ def decrypt_text(
             operation_type="decryption",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return AESDecryptResponse(
@@ -142,6 +151,7 @@ def decrypt_text(
             operation_type="decryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -155,6 +165,7 @@ def decrypt_text(
             operation_type="decryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

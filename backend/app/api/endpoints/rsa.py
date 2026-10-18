@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from app.models.user import User
+from app.api.endpoints.auth import get_optional_current_user
 from app.schemas.rsa import (
     RSAKeyGenRequest,
     RSAKeyGenResponse,
@@ -29,6 +31,7 @@ router = APIRouter(prefix="/rsa", tags=["RSA Cryptography"])
 )
 def generate_keys(
     payload: RSAKeyGenRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> RSAKeyGenResponse:
     """
@@ -38,6 +41,7 @@ def generate_keys(
     Private keys are generated in-memory and delivered directly to the client.
     They are NEVER stored, cached, or logged on the server.
     """
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         public_pem, private_pem, key_size = generate_rsa_keypair(payload.key_size)
@@ -49,6 +53,7 @@ def generate_keys(
             operation_type="key_generation",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return RSAKeyGenResponse(
@@ -67,6 +72,7 @@ def generate_keys(
             operation_type="key_generation",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -82,6 +88,7 @@ def generate_keys(
 )
 def encrypt_text(
     payload: RSAEncryptRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> RSAEncryptResponse:
     """
@@ -99,6 +106,7 @@ def encrypt_text(
             detail="Public key PEM cannot be empty or whitespace.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         ciphertext_b64, key_size = encrypt_rsa_oaep(payload.plaintext, payload.public_key_pem)
@@ -110,6 +118,7 @@ def encrypt_text(
             operation_type="encryption",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return RSAEncryptResponse(
@@ -127,6 +136,7 @@ def encrypt_text(
             operation_type="encryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -140,6 +150,7 @@ def encrypt_text(
             operation_type="encryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -155,6 +166,7 @@ def encrypt_text(
 )
 def decrypt_text(
     payload: RSADecryptRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> RSADecryptResponse:
     """
@@ -172,6 +184,7 @@ def decrypt_text(
             detail="Private key PEM cannot be empty or whitespace.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         plaintext = decrypt_rsa_oaep(payload.ciphertext, payload.private_key_pem)
@@ -183,6 +196,7 @@ def decrypt_text(
             operation_type="decryption",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return RSADecryptResponse(
@@ -199,6 +213,7 @@ def decrypt_text(
             operation_type="decryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -212,6 +227,7 @@ def decrypt_text(
             operation_type="decryption",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

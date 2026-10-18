@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from app.models.user import User
+from app.api.endpoints.auth import get_optional_current_user
 from app.schemas.sha256 import (
     SHA256TextRequest,
     SHA256TextResponse,
@@ -28,6 +30,7 @@ router = APIRouter(prefix="/sha256", tags=["SHA-256 Hashing"])
 )
 def hash_text_endpoint(
     payload: SHA256TextRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> SHA256TextResponse:
     """
@@ -43,6 +46,7 @@ def hash_text_endpoint(
             detail="Text payload must not be null.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         digest, byte_len = compute_sha256_text(payload.text)
@@ -54,6 +58,7 @@ def hash_text_endpoint(
             operation_type="hash_text",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return SHA256TextResponse(
@@ -70,6 +75,7 @@ def hash_text_endpoint(
             operation_type="hash_text",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -85,6 +91,7 @@ def hash_text_endpoint(
 )
 async def hash_file_endpoint(
     file: UploadFile = File(...),
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> SHA256FileResponse:
     """
@@ -100,6 +107,7 @@ async def hash_file_endpoint(
             detail="Valid file with filename must be provided.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         digest, file_size_bytes = await compute_sha256_file_stream(file)
@@ -111,6 +119,7 @@ async def hash_file_endpoint(
             operation_type="hash_file",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return SHA256FileResponse(
@@ -129,6 +138,7 @@ async def hash_file_endpoint(
             operation_type="hash_file",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise
     except Exception as e:
@@ -139,6 +149,7 @@ async def hash_file_endpoint(
             operation_type="hash_file",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -154,6 +165,7 @@ async def hash_file_endpoint(
 )
 def compare_endpoint(
     payload: SHA256CompareRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> SHA256CompareResponse:
     """
@@ -169,6 +181,7 @@ def compare_endpoint(
             detail=f"Invalid compare_mode. Supported modes are: {', '.join(valid_modes)}",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         result = compare_sha256_integrity(
@@ -184,6 +197,7 @@ def compare_endpoint(
             operation_type="compare",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return SHA256CompareResponse(
@@ -204,6 +218,7 @@ def compare_endpoint(
             operation_type="compare",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise
     except Exception as e:
@@ -214,6 +229,7 @@ def compare_endpoint(
             operation_type="compare",
             status="failed",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

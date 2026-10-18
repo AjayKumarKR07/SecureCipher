@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from app.models.user import User
+from app.api.endpoints.auth import get_optional_current_user
 from app.schemas.diffie_hellman import (
     DHKeyGenRequest,
     DHKeyGenResponse,
@@ -31,6 +33,7 @@ router = APIRouter(prefix="/diffie-hellman", tags=["Diffie-Hellman Key Exchange"
 )
 def generate_keypair(
     payload: DHKeyGenRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> DHKeyGenResponse:
     """
@@ -40,6 +43,7 @@ def generate_keypair(
     Private keys are generated in-memory and delivered to the client.
     They are NEVER stored, cached, or logged on the server.
     """
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         pub_pem, priv_pem, pub_hex = generate_dh_keypair(payload.party_name or "Party")
@@ -51,6 +55,7 @@ def generate_keypair(
             operation_type="key_generation",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return DHKeyGenResponse(
@@ -72,6 +77,7 @@ def generate_keypair(
             operation_type="key_generation",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -87,6 +93,7 @@ def generate_keypair(
 )
 def derive_secret(
     payload: DHDeriveSecretRequest,
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> DHDeriveSecretResponse:
     """
@@ -107,6 +114,7 @@ def derive_secret(
             detail="Peer public key PEM cannot be empty or whitespace.",
         )
 
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         raw_secret, key_b64, key_hex, fingerprint = derive_shared_secret(
@@ -122,6 +130,7 @@ def derive_secret(
             operation_type="key_derivation",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return DHDeriveSecretResponse(
@@ -141,6 +150,7 @@ def derive_secret(
             operation_type="key_derivation",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -155,6 +165,7 @@ def derive_secret(
     summary="Simulate Complete Alice <-> Bob Diffie-Hellman Key Exchange",
 )
 def simulate_exchange(
+    current_user: Optional[User] = Depends(get_optional_current_user),
     db: Optional[Session] = Depends(get_db),
 ) -> DHSimulationResponse:
     """
@@ -169,6 +180,7 @@ def simulate_exchange(
     In real-world decentralized deployments, private keys never leave respective endpoints,
     and public keys must be authenticated against Man-in-the-Middle (MitM) attacks.
     """
+    user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
         sim_data = simulate_full_exchange()
@@ -180,6 +192,7 @@ def simulate_exchange(
             operation_type="key_exchange_simulation",
             status="success",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
 
         return DHSimulationResponse(
@@ -204,6 +217,7 @@ def simulate_exchange(
             operation_type="key_exchange_simulation",
             status="failure",
             duration_ms=duration_ms,
+            user_id=user_id,
         )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

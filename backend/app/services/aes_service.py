@@ -142,35 +142,4 @@ def decrypt_aes_256_gcm(
         raise ValueError("Decryption failed: decrypted data is not valid UTF-8 text.")
 
 
-def record_audit_operation(
-    db: Optional[Session],
-    algorithm_name: str,
-    operation_type: str,
-    status: str,
-    duration_ms: float,
-) -> None:
-    """
-    Persists safe operational execution metadata to PostgreSQL history.
-    
-    SECURITY GUARANTEE:
-    Plaintext, passphrases, derived keys, nonces, and ciphertext payloads
-    are NEVER stored or logged.
-    """
-    if db is None:
-        return
-
-    try:
-        audit_entry = OperationHistory(
-            algorithm_name=algorithm_name,
-            operation_type=operation_type,
-            status=status,
-            execution_duration_ms=round(duration_ms, 2),
-        )
-        db.add(audit_entry)
-        db.commit()
-    except Exception as e:
-        logger.warning("Could not persist audit record to database: %s", str(e))
-        try:
-            db.rollback()
-        except Exception:
-            pass
+from app.services.history_service import record_audit_operation
