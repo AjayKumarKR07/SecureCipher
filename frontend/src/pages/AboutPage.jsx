@@ -5,6 +5,7 @@ import {
   Eye, EyeOff, Cpu, Globe, ShieldCheck, AlertTriangle,
   Zap, RefreshCw, FileText, Users, Activity, BookOpen,
 } from 'lucide-react';
+import ApiDocumentationSection from '../components/ApiDocumentationSection';
 
 const WORKFLOW_STEPS = [
   {
@@ -360,57 +361,8 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* ── REST API Endpoints ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
-        <h2 className="text-lg font-bold text-white m-0 flex items-center gap-2">
-          <Server className="w-5 h-5 text-teal-400" />
-          REST API Endpoint Reference
-        </h2>
-        <div className="overflow-x-auto rounded-lg border border-emerald-500/20">
-          <table className="w-full text-xs font-mono">
-            <thead className="bg-[#030a04] text-slate-400 border-b border-emerald-500/20">
-              <tr>
-                <th className="py-2 px-4 text-left">Method</th>
-                <th className="py-2 px-4 text-left">Endpoint</th>
-                <th className="py-2 px-4 text-left">Description</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-300">
-              {[
-                ['POST', '/api/auth/register',        'Register new user account'],
-                ['POST', '/api/auth/login',           'Authenticate and receive JWT'],
-                ['POST', '/api/aes/encrypt',          'AES-256-GCM text encryption'],
-                ['POST', '/api/aes/decrypt',          'AES-256-GCM text decryption'],
-                ['POST', '/api/des/encrypt',          'DES-CBC text encryption'],
-                ['POST', '/api/des/decrypt',          'DES-CBC text decryption'],
-                ['POST', '/api/rsa/generate-keys',    'Generate RSA key pair'],
-                ['POST', '/api/rsa/encrypt',          'RSA-OAEP encryption'],
-                ['POST', '/api/rsa/sign',             'RSA-PSS digital signature'],
-                ['POST', '/api/dh/generate-params',   'Generate DH parameters'],
-                ['POST', '/api/dh/derive-secret',     'Derive shared DH secret'],
-                ['POST', '/api/sha256/hash-text',     'SHA-256 text hashing'],
-                ['POST', '/api/md5/hash-text',        'MD5 text hashing'],
-                ['GET',  '/api/history',              'Fetch audit history (max 100)'],
-                ['DELETE','/api/history',             'Clear all audit records'],
-                ['DELETE','/api/history/{id}',        'Delete single audit record'],
-                ['GET',  '/api/health',               'API & database health check'],
-              ].map(([method, path, desc]) => (
-                <tr key={path} className="hover:bg-slate-800/20">
-                  <td className="py-2 px-4">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
-                      method === 'GET' ? 'text-emerald-300 border-emerald-500/30 bg-emerald-950/40' :
-                      method === 'POST' ? 'text-teal-300 border-teal-500/30 bg-teal-950/40' :
-                      'text-rose-300 border-rose-500/30 bg-rose-950/40'
-                    }`}>{method}</span>
-                  </td>
-                  <td className="py-2 px-4 text-slate-200">{path}</td>
-                  <td className="py-2 px-4 text-slate-400 font-sans">{desc}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* ── REST API Endpoints Specification ── */}
+      <ApiDocumentationSection />
 
       {/* ── PostgreSQL Setup ── */}
       <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
