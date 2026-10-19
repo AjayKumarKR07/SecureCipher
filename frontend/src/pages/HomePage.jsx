@@ -812,10 +812,10 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             <div className="relative z-10">
               <div className="flex items-center justify-between gap-2 mb-3">
                 <span className="text-[11px] font-mono text-emerald-400 font-semibold uppercase tracking-wider">
-                  [ 05 & 06 · LEGACY ANALYSIS ]
+                  [ 05 & 06 · REAL-TIME ANALYSIS ]
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300">
-                  Educational
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-semibold">
+                  Real-Time Cryptanalysis
                 </span>
               </div>
 
@@ -823,19 +823,21 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
                 MD5 & DES-CBC
               </h3>
               <p className="text-xs font-medium text-emerald-300/90 mb-2.5">
-                Legacy Cryptanalysis Demonstrations
+                Real-Time Vulnerability & Cryptanalysis Workbenches
               </p>
-              <p className="text-xs text-slate-300 leading-relaxed mb-4">
-                Historical algorithms provided strictly for vulnerability study. Compare broken collision resistance in MD5 and brute-force key search in 56-bit DES.
+              <p className="text-xs text-slate-300 leading-relaxed mb-6">
+                Historical algorithms provided strictly for vulnerability study. Real-time comparison of collision generation in MD5 and brute-force key search in 56-bit DES.
               </p>
 
-              {/* Warning badges */}
-              <div className="space-y-2 mb-6">
-                <div className="p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[10px] font-mono text-emerald-200">
-                  <strong>MD5 (RFC 1321):</strong> Collision vulnerable; broken by Wang et al.
+              {/* Specs Box matching Card 3 & 4 */}
+              <div className="p-2.5 rounded-lg bg-[#040e06] border border-emerald-500/20 text-[11px] font-mono text-slate-300 space-y-1 mb-6">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">MD5 Collision:</span>
+                  <span className="text-emerald-300">Vulnerable (&lt; 2³² ops)</span>
                 </div>
-                <div className="p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[10px] font-mono text-emerald-200">
-                  <strong>DES (FIPS 46-3):</strong> 56-bit key space exhausted in hours.
+                <div className="flex justify-between">
+                  <span className="text-slate-400">DES Key Space:</span>
+                  <span className="text-emerald-300">56-bit (Cracked)</span>
                 </div>
               </div>
             </div>
@@ -843,18 +845,20 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             <div className="relative z-10 pt-3 border-t border-emerald-500/15 flex items-center justify-between gap-2">
               <Link
                 to="/algorithm/md5"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white transition-colors group-hover:translate-x-0.5 transition-transform"
+                title="Launch Real-Time MD5 Hash Workbench"
               >
-                <span>MD5 Demo</span>
-                <ArrowRight className="w-3 h-3 text-emerald-400" />
+                <span>Explore MD5</span>
+                <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
               </Link>
               <span className="text-slate-600">|</span>
               <Link
                 to="/algorithm/des"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white transition-colors group-hover:translate-x-0.5 transition-transform"
+                title="Launch Real-Time DES Cipher Workbench"
               >
-                <span>DES Demo</span>
-                <ArrowRight className="w-3 h-3 text-emerald-400" />
+                <span>Real-Time DES</span>
+                <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
               </Link>
             </div>
           </div>
