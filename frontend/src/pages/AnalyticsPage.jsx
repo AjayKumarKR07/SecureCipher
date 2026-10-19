@@ -433,7 +433,7 @@ export default function AnalyticsPage() {
           </div>
           <div>
             <div className="text-2xl font-black text-white tracking-tight">
-              {summary ? summary.total_operations.toLocaleString() : '—'}
+              {summary?.total_operations != null ? summary.total_operations.toLocaleString() : '—'}
             </div>
             <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1">
               <span className="text-emerald-400 font-semibold">{summary?.successful_operations || 0} ok</span>
@@ -457,16 +457,16 @@ export default function AnalyticsPage() {
             <div className="text-2xl font-black tracking-tight flex items-baseline gap-1">
               <span
                 className={
-                  summary?.success_rate === null
+                  summary?.success_rate == null
                     ? 'text-slate-500'
-                    : summary?.success_rate >= 95
+                    : summary.success_rate >= 95
                     ? 'text-emerald-400'
-                    : summary?.success_rate >= 80
+                    : summary.success_rate >= 80
                     ? 'text-amber-400'
                     : 'text-rose-400'
                 }
               >
-                {summary?.success_rate !== null ? `${summary?.success_rate}%` : 'N/A'}
+                {summary?.success_rate != null ? `${summary.success_rate}%` : 'N/A'}
               </span>
             </div>
             <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
@@ -496,7 +496,7 @@ export default function AnalyticsPage() {
                 summary?.failed_operations > 0 ? 'text-rose-400' : 'text-slate-400'
               }`}
             >
-              {summary ? summary.failed_operations.toLocaleString() : '—'}
+              {summary?.failed_operations != null ? summary.failed_operations.toLocaleString() : '—'}
             </div>
             <div className="text-[11px] text-slate-400 mt-1">
               {summary?.failed_operations > 0 ? (
@@ -528,7 +528,9 @@ export default function AnalyticsPage() {
                 summary?.signature_verification_failures > 0 ? 'text-rose-400' : 'text-emerald-400'
               }`}
             >
-              {summary ? summary.signature_verification_failures.toLocaleString() : '—'}
+              {summary?.signature_verification_failures != null
+                ? summary.signature_verification_failures.toLocaleString()
+                : '—'}
             </div>
             <div className="text-[11px] text-slate-400 mt-1">
               {summary?.signature_verification_failures > 0 ? (
@@ -550,12 +552,10 @@ export default function AnalyticsPage() {
           </div>
           <div>
             <div className="text-2xl font-black text-white tracking-tight">
-              {summary?.avg_duration_ms !== null && summary?.avg_duration_ms !== undefined
-                ? `${summary.avg_duration_ms} ms`
-                : '—'}
+              {summary?.avg_duration_ms != null ? `${summary.avg_duration_ms} ms` : '—'}
             </div>
             <div className="text-[11px] text-slate-400 mt-1">
-              {summary?.min_duration_ms !== null && summary?.max_duration_ms !== null ? (
+              {summary?.min_duration_ms != null && summary?.max_duration_ms != null ? (
                 <span>
                   Range: <span className="text-emerald-400">{summary.min_duration_ms}</span> –{' '}
                   <span className="text-amber-400">{summary.max_duration_ms} ms</span>
