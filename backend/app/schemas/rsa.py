@@ -38,6 +38,11 @@ class RSAEncryptResponse(BaseModel):
 class RSADecryptRequest(BaseModel):
     ciphertext: str = Field(..., min_length=1, description="Base64-encoded RSA ciphertext")
     private_key_pem: str = Field(..., min_length=1, description="PEM-encoded RSA private key")
+    private_key_passphrase: Optional[str] = Field(
+        default=None,
+        max_length=1024,
+        description="Optional passphrase for encrypted private key",
+    )
 
 
 class RSADecryptResponse(BaseModel):

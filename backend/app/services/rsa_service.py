@@ -1,6 +1,6 @@
 import base64
 import logging
-from typing import Tuple
+from typing import Tuple, Optional
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import hashes, serialization
 
@@ -86,9 +86,14 @@ def encrypt_rsa_oaep(plaintext: str, public_key_pem: str) -> Tuple[str, int]:
     return ciphertext_b64, key_size
 
 
-def decrypt_rsa_oaep(ciphertext_b64: str, private_key_pem: str) -> str:
+def decrypt_rsa_oaep(
+    ciphertext_b64: str,
+    private_key_pem: str,
+    passphrase: Optional[str] = None,
+) -> str:
     """
     Decrypts an RSA-OAEP (SHA-256) Base64-encoded ciphertext using an RSA private key.
+    Supports optional passphrase for encrypted PKCS#8 PEM keys.
     Returns: plaintext string
     """
     if not ciphertext_b64 or not ciphertext_b64.strip():
@@ -101,10 +106,11 @@ def decrypt_rsa_oaep(ciphertext_b64: str, private_key_pem: str) -> str:
     except Exception:
         raise ValueError("Malformed payload: Invalid Base64 ciphertext.")
 
+    password_bytes = passphrase.encode("utf-8") if passphrase else None
     try:
         loaded_private_key = serialization.load_pem_private_key(
             private_key_pem.strip().encode("utf-8"),
-            password=None,
+            password=password_bytes,
         )
     except Exception as e:
         raise ValueError(f"Invalid RSA private key: could not parse PEM format ({str(e)}).")

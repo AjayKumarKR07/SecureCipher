@@ -212,102 +212,105 @@ async def encrypt_file_endpoint(
     user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
 
-    # Read file in chunks to enforce size limit before memory processing
-    total_bytes = 0
-    chunks = []
-    chunk_size = 64 * 1024
     try:
-        while True:
-            chunk = await file.read(chunk_size)
-            if not chunk:
-                break
-            total_bytes += len(chunk)
-            if total_bytes > max_size:
-                max_mb = max_size // (1024 * 1024)
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"File exceeds maximum allowed size limit of {max_mb} MB.",
-                )
-            chunks.append(chunk)
-        file_bytes = b"".join(chunks)
-    except HTTPException:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_encryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_encryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to read uploaded file: {str(e)}",
-        )
+        # Read file in chunks to enforce size limit before memory processing
+        total_bytes = 0
+        chunks = []
+        chunk_size = 64 * 1024
+        try:
+            while True:
+                chunk = await file.read(chunk_size)
+                if not chunk:
+                    break
+                total_bytes += len(chunk)
+                if total_bytes > max_size:
+                    max_mb = max_size // (1024 * 1024)
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"File exceeds maximum allowed size limit of {max_mb} MB.",
+                    )
+                chunks.append(chunk)
+            file_bytes = b"".join(chunks)
+        except HTTPException:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_encryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_encryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to read uploaded file: {str(e)}",
+            )
 
-    try:
-        container_bytes, download_filename, metadata = encrypt_aes_file(
-            file_bytes=file_bytes,
-            filename=file.filename,
-            passphrase=passphrase,
-            max_file_size=max_size,
-        )
-        duration_ms = (time.perf_counter() - start_time) * 1000
+        try:
+            container_bytes, download_filename, metadata = encrypt_aes_file(
+                file_bytes=file_bytes,
+                filename=file.filename,
+                passphrase=passphrase,
+                max_file_size=max_size,
+            )
+            duration_ms = (time.perf_counter() - start_time) * 1000
 
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_encryption",
-            status="success",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_encryption",
+                status="success",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
 
-        encoded_filename = quote(download_filename)
-        # RFC 6266 / RFC 5987 ASCII fallback
-        ascii_fallback = download_filename.encode("ascii", "replace").decode("ascii").replace("?", "_")
-        if not ascii_fallback or ascii_fallback == ".scipher":
-            ascii_fallback = "encrypted_file.scipher"
+            encoded_filename = quote(download_filename)
+            # RFC 6266 / RFC 5987 ASCII fallback
+            ascii_fallback = download_filename.encode("ascii", "replace").decode("ascii").replace("?", "_")
+            if not ascii_fallback or ascii_fallback == ".scipher":
+                ascii_fallback = "encrypted_file.scipher"
 
-        headers = {
-            "Content-Disposition": f'attachment; filename="{ascii_fallback}"; filename*=UTF-8\'\'{encoded_filename}',
-            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-            "Pragma": "no-cache",
-            "X-Original-Filename": encoded_filename,
-            "X-Encrypted-Size": str(len(container_bytes)),
-            "X-Execution-Duration-Ms": str(round(duration_ms, 2)),
-        }
+            headers = {
+                "Content-Disposition": f'attachment; filename="{ascii_fallback}"; filename*=UTF-8\'\'{encoded_filename}',
+                "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                "Pragma": "no-cache",
+                "X-Original-Filename": encoded_filename,
+                "X-Encrypted-Size": str(len(container_bytes)),
+                "X-Execution-Duration-Ms": str(round(duration_ms, 2)),
+            }
 
-        return Response(
-            content=container_bytes,
-            media_type="application/octet-stream",
-            headers=headers,
-        )
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_encryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
-        )
+            return Response(
+                content=container_bytes,
+                media_type="application/octet-stream",
+                headers=headers,
+            )
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_encryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e),
+            )
+    finally:
+        await file.close()
 
 
 @router.post(
@@ -346,112 +349,115 @@ async def decrypt_file_endpoint(
     user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
 
-    # Read container bytes in chunks
-    total_bytes = 0
-    chunks = []
-    chunk_size = 64 * 1024
     try:
-        while True:
-            chunk = await file.read(chunk_size)
-            if not chunk:
-                break
-            total_bytes += len(chunk)
-            if total_bytes > max_size:
-                max_mb = settings.MAX_FILE_SIZE_BYTES // (1024 * 1024)
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Container exceeds maximum allowed size limit of {max_mb} MB.",
-                )
-            chunks.append(chunk)
-        container_bytes = b"".join(chunks)
-    except HTTPException:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_decryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_decryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to read encrypted container: {str(e)}",
-        )
+        # Read container bytes in chunks
+        total_bytes = 0
+        chunks = []
+        chunk_size = 64 * 1024
+        try:
+            while True:
+                chunk = await file.read(chunk_size)
+                if not chunk:
+                    break
+                total_bytes += len(chunk)
+                if total_bytes > max_size:
+                    max_mb = settings.MAX_FILE_SIZE_BYTES // (1024 * 1024)
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"Container exceeds maximum allowed size limit of {max_mb} MB.",
+                    )
+                chunks.append(chunk)
+            container_bytes = b"".join(chunks)
+        except HTTPException:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_decryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_decryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to read encrypted container: {str(e)}",
+            )
 
-    try:
-        decrypted_bytes, download_filename, metadata = decrypt_aes_file(
-            container_bytes=container_bytes,
-            passphrase=passphrase,
-            max_file_size=max_size,
-        )
-        duration_ms = (time.perf_counter() - start_time) * 1000
+        try:
+            decrypted_bytes, download_filename, metadata = decrypt_aes_file(
+                container_bytes=container_bytes,
+                passphrase=passphrase,
+                max_file_size=max_size,
+            )
+            duration_ms = (time.perf_counter() - start_time) * 1000
 
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_decryption",
-            status="success",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_decryption",
+                status="success",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
 
-        encoded_filename = quote(download_filename)
-        # RFC 6266 / RFC 5987 ASCII fallback
-        ascii_fallback = download_filename.encode("ascii", "replace").decode("ascii").replace("?", "_")
-        if not ascii_fallback or ascii_fallback == ".bin":
-            ascii_fallback = "decrypted_file.bin"
+            encoded_filename = quote(download_filename)
+            # RFC 6266 / RFC 5987 ASCII fallback
+            ascii_fallback = download_filename.encode("ascii", "replace").decode("ascii").replace("?", "_")
+            if not ascii_fallback or ascii_fallback == ".bin":
+                ascii_fallback = "decrypted_file.bin"
 
-        headers = {
-            "Content-Disposition": f'attachment; filename="{ascii_fallback}"; filename*=UTF-8\'\'{encoded_filename}',
-            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-            "Pragma": "no-cache",
-            "X-Original-Filename": encoded_filename,
-            "X-Decrypted-Size": str(len(decrypted_bytes)),
-            "X-Execution-Duration-Ms": str(round(duration_ms, 2)),
-        }
+            headers = {
+                "Content-Disposition": f'attachment; filename="{ascii_fallback}"; filename*=UTF-8\'\'{encoded_filename}',
+                "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                "Pragma": "no-cache",
+                "X-Original-Filename": encoded_filename,
+                "X-Decrypted-Size": str(len(decrypted_bytes)),
+                "X-Execution-Duration-Ms": str(round(duration_ms, 2)),
+            }
 
-        return Response(
-            content=decrypted_bytes,
-            media_type="application/octet-stream",
-            headers=headers,
-        )
-    except ValueError as ve:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_decryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(ve),
-        )
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="AES-256-GCM",
-            operation_type="file_decryption",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Decryption failed. Please verify that the file and passphrase are valid.",
-        )
+            return Response(
+                content=decrypted_bytes,
+                media_type="application/octet-stream",
+                headers=headers,
+            )
+        except ValueError as ve:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_decryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(ve),
+            )
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="AES-256-GCM",
+                operation_type="file_decryption",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Decryption failed. Please verify that the file and passphrase are valid.",
+            )
+    finally:
+        await file.close()

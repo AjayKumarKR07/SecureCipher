@@ -473,7 +473,10 @@ npm run dev
 ### 9.1 Project Conclusion
 The SecureCipher project successfully accomplishes its goal of providing an interactive, verifiable, and strictly secure cryptographic workbench. By pairing NIST-approved modern ciphers (AES-256-GCM, RSA-OAEP, SHA-256) alongside historical ciphers (DES, MD5), the system demonstrates both mathematical theory and real-world implementation realities. Zero-knowledge data persistence ensures compliance with privacy frameworks, and the client-side vector reporting engine provides immediate academic and professional artifacts.
 
-### 9.2 Future Roadmap
+### 9.2 Security Hardening and Verified Audit
+In October 2026, a comprehensive security audit of SecureCipher was conducted, covering authentication, session lifecycle, cryptographic implementations, denial-of-service protections, and audit privacy. All verified findings (including upload file descriptor cleanup, password length upper-bounds, CSV formula injection sanitization, production JWT secret fail-safes, and RSA-OAEP encrypted key support) were remediated and backed by 18 new automated regression tests (205 total passing tests). For the full technical findings and evidence, see [SECURITY_AUDIT_REPORT.md](file:///c:/Users/ajayk/OneDrive/Desktop/CryptoShield-mini/SECURITY_AUDIT_REPORT.md).
+
+### 9.3 Future Roadmap
 - **Post-Quantum Cryptography (PQC):** Integration of NIST FIPS 203 (ML-KEM / Kyber) and FIPS 204 (ML-DSA / Dilithium) lattice-based algorithms.
 - **Hardware Security Module (HSM) Simulation:** PKCS#11 software token integration for emulated smartcard key storage.
 - **WebAssembly Client-Side Execution:** Option to perform encryption directly in the browser using Rust-compiled WebAssembly modules.

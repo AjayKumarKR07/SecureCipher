@@ -6,7 +6,7 @@ from pydantic import BaseModel, EmailStr, Field, ConfigDict
 class RequestOTPRequest(BaseModel):
     full_name: str = Field(..., min_length=2, max_length=100, description="User's full name")
     email: EmailStr = Field(..., description="Valid email address for verification")
-    password: str = Field(..., min_length=8, description="Account password (must meet complexity rules)")
+    password: str = Field(..., min_length=8, max_length=128, description="Account password (must meet complexity rules)")
 
 
 class RequestOTPResponse(BaseModel):
@@ -23,13 +23,13 @@ class RequestOTPResponse(BaseModel):
 class VerifyOTPRegisterRequest(BaseModel):
     full_name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8, max_length=128)
     otp: str = Field(..., min_length=6, max_length=6, description="6-digit verification code")
 
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=1, max_length=128)
     remember_me: Optional[bool] = False
 
 
@@ -57,8 +57,8 @@ class AuthStatusResponse(BaseModel):
 
 
 class ChangePasswordRequest(BaseModel):
-    current_password: str = Field(..., description="Current password for identity confirmation")
-    new_password: str = Field(..., min_length=8, description="New password meeting complexity rules")
+    current_password: str = Field(..., min_length=1, max_length=128, description="Current password for identity confirmation")
+    new_password: str = Field(..., min_length=8, max_length=128, description="New password meeting complexity rules")
 
 
 class UpdateProfileRequest(BaseModel):

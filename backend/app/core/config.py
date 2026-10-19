@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional, Union
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -50,6 +50,22 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v  # type: ignore
         raise ValueError(v)
+
+    @model_validator(mode="after")
+    def validate_production_security(self) -> "Settings":
+        env = self.ENVIRONMENT.lower()
+        if env in ("production", "staging"):
+            default_dev_secret = "securecipher_jwt_super_secret_signing_key_at_least_32_bytes_2026"
+            if self.JWT_SECRET_KEY == default_dev_secret:
+                raise ValueError(
+                    "CRITICAL SECURITY CONFIGURATION ERROR: Default development JWT_SECRET_KEY detected in "
+                    f"{env} environment! You must set a unique, cryptographically strong secret (32+ bytes)."
+                )
+            if len(self.JWT_SECRET_KEY.strip()) < 32:
+                raise ValueError(
+                    f"CRITICAL SECURITY CONFIGURATION ERROR: JWT_SECRET_KEY must be at least 32 characters in {env}."
+                )
+        return self
 
     @property
     def masked_database_url(self) -> str:

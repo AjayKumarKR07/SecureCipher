@@ -187,7 +187,11 @@ def decrypt_text(
     user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
-        plaintext = decrypt_rsa_oaep(payload.ciphertext, payload.private_key_pem)
+        plaintext = decrypt_rsa_oaep(
+            ciphertext_b64=payload.ciphertext,
+            private_key_pem=payload.private_key_pem,
+            passphrase=payload.private_key_passphrase,
+        )
         duration_ms = (time.perf_counter() - start_time) * 1000
 
         record_audit_operation(

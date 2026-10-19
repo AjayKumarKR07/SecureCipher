@@ -20,6 +20,7 @@ import {
   Layers,
   FileCode,
   ShieldAlert,
+  ShieldCheck,
   HardDrive,
   Cpu,
   Trash2,

@@ -212,13 +212,25 @@ def export_analytics(
             },
         )
 
-    # Default: CSV export
+    # Default: CSV export with formula injection sanitization (CWE-1236)
     output = io.StringIO()
     fieldnames = ["id", "algorithm_name", "operation_type", "status", "execution_duration_ms", "created_at"]
     writer = csv.DictWriter(output, fieldnames=fieldnames)
     writer.writeheader()
     for rec in records:
-        writer.writerow(rec)
+        sanitized_rec = {}
+        for k, v in rec.items():
+            if isinstance(v, str) and v:
+                stripped_spaces = v.lstrip(" ")
+                stripped_all = v.lstrip(" \t\r\n\v\f")
+                if (stripped_spaces and stripped_spaces[0] in ("=", "+", "-", "@", "\t", "\r")) or \
+                   (stripped_all and stripped_all[0] in ("=", "+", "-", "@")):
+                    sanitized_rec[k] = f"'{v}"
+                else:
+                    sanitized_rec[k] = v
+            else:
+                sanitized_rec[k] = v
+        writer.writerow(sanitized_rec)
 
     csv_data = output.getvalue()
     return Response(

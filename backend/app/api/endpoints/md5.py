@@ -112,51 +112,54 @@ async def hash_file_endpoint(
     user_id = current_user.id if current_user else None
     start_time = time.perf_counter()
     try:
-        digest, file_size_bytes = await compute_md5_file_stream(file)
-        duration_ms = (time.perf_counter() - start_time) * 1000
+        try:
+            digest, file_size_bytes = await compute_md5_file_stream(file)
+            duration_ms = (time.perf_counter() - start_time) * 1000
 
-        record_audit_operation(
-            db=db,
-            algorithm_name="MD5",
-            operation_type="hash_file",
-            status="success",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
+            record_audit_operation(
+                db=db,
+                algorithm_name="MD5",
+                operation_type="hash_file",
+                status="success",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
 
-        return MD5FileResponse(
-            algorithm="MD5",
-            filename=file.filename,
-            digest=digest,
-            file_size_bytes=file_size_bytes,
-            content_type=file.content_type,
-            execution_duration_ms=round(duration_ms, 3),
-        )
-    except HTTPException:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="MD5",
-            operation_type="hash_file",
-            status="failed",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="MD5",
-            operation_type="hash_file",
-            status="failed",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"MD5 file hashing failed: {str(e)}",
-        )
+            return MD5FileResponse(
+                algorithm="MD5",
+                filename=file.filename,
+                digest=digest,
+                file_size_bytes=file_size_bytes,
+                content_type=file.content_type,
+                execution_duration_ms=round(duration_ms, 3),
+            )
+        except HTTPException:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="MD5",
+                operation_type="hash_file",
+                status="failed",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="MD5",
+                operation_type="hash_file",
+                status="failed",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"MD5 file hashing failed: {str(e)}",
+            )
+    finally:
+        await file.close()
 
 
 @router.post(

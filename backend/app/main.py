@@ -56,6 +56,7 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/docs" if settings.ENVIRONMENT.lower() != "production" else None,
     redoc_url="/redoc" if settings.ENVIRONMENT.lower() != "production" else None,
+    openapi_url="/openapi.json" if settings.ENVIRONMENT.lower() != "production" else None,
 )
 
 # Configure CORS for Vite frontend
@@ -92,7 +93,7 @@ def root_info():
         "service": settings.PROJECT_NAME,
         "description": "Multi-Algorithm Cryptography and Secure Data Protection System",
         "version": settings.VERSION,
-        "docs_url": "/docs",
+        "docs_url": "/docs" if settings.ENVIRONMENT.lower() != "production" else None,
         "api_health": f"{settings.API_V1_STR}/health",
         "api_database": f"{settings.API_V1_STR}/health/database",
         "api_algorithms": f"{settings.API_V1_STR}/algorithms",

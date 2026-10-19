@@ -359,102 +359,105 @@ async def sign_file(
     start_time = time.perf_counter()
     original_filename = file.filename
 
-    # Stream and enforce size limit before loading into memory
-    total_bytes = 0
-    chunks = []
-    chunk_size = 64 * 1024
     try:
-        while True:
-            chunk = await file.read(chunk_size)
-            if not chunk:
-                break
-            total_bytes += len(chunk)
-            if total_bytes > max_size:
-                max_mb = max_size // (1024 * 1024)
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"File exceeds the maximum allowed size of {max_mb} MB for signing.",
-                )
-            chunks.append(chunk)
-        file_bytes = b"".join(chunks)
-    except HTTPException:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_generation",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_generation",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to read uploaded file: {str(e)}",
-        )
+        # Stream and enforce size limit before loading into memory
+        total_bytes = 0
+        chunks = []
+        chunk_size = 64 * 1024
+        try:
+            while True:
+                chunk = await file.read(chunk_size)
+                if not chunk:
+                    break
+                total_bytes += len(chunk)
+                if total_bytes > max_size:
+                    max_mb = max_size // (1024 * 1024)
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"File exceeds the maximum allowed size of {max_mb} MB for signing.",
+                    )
+                chunks.append(chunk)
+            file_bytes = b"".join(chunks)
+        except HTTPException:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_generation",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_generation",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to read uploaded file: {str(e)}",
+            )
 
-    try:
-        signature_b64, sig_len = sign_file_rsa_pss(
-            file_bytes=file_bytes,
-            private_key_pem=private_key_pem,
-            passphrase=private_key_passphrase,
-            max_file_size=max_size,
-        )
-        duration_ms = (time.perf_counter() - start_time) * 1000
+        try:
+            signature_b64, sig_len = sign_file_rsa_pss(
+                file_bytes=file_bytes,
+                private_key_pem=private_key_pem,
+                passphrase=private_key_passphrase,
+                max_file_size=max_size,
+            )
+            duration_ms = (time.perf_counter() - start_time) * 1000
 
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_generation",
-            status="success",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_generation",
+                status="success",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
 
-        return RSAPSSSignFileResponse(
-            algorithm="RSA-PSS-SHA256",
-            digest="SHA-256",
-            signature_base64=signature_b64,
-            signature_byte_length=sig_len,
-            original_filename=original_filename,
-            original_file_size=total_bytes,
-            execution_duration_ms=round(duration_ms, 2),
-        )
-    except ValueError as ve:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_generation",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_generation",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="File signing failed due to an internal error.",
-        )
+            return RSAPSSSignFileResponse(
+                algorithm="RSA-PSS-SHA256",
+                digest="SHA-256",
+                signature_base64=signature_b64,
+                signature_byte_length=sig_len,
+                original_filename=original_filename,
+                original_file_size=total_bytes,
+                execution_duration_ms=round(duration_ms, 2),
+            )
+        except ValueError as ve:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_generation",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+        except Exception:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_generation",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="File signing failed due to an internal error.",
+            )
+    finally:
+        await file.close()
 
 
 # ---------------------------------------------------------------------------
@@ -507,100 +510,103 @@ async def verify_file(
     start_time = time.perf_counter()
     original_filename = file.filename
 
-    # Stream file in chunks, enforce size limit
-    total_bytes = 0
-    chunks = []
-    chunk_size = 64 * 1024
     try:
-        while True:
-            chunk = await file.read(chunk_size)
-            if not chunk:
-                break
-            total_bytes += len(chunk)
-            if total_bytes > max_size:
-                max_mb = max_size // (1024 * 1024)
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"File exceeds the maximum allowed size of {max_mb} MB for verification.",
-                )
-            chunks.append(chunk)
-        file_bytes = b"".join(chunks)
-    except HTTPException:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_verification",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise
-    except Exception as e:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_verification",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to read uploaded file: {str(e)}",
-        )
+        # Stream file in chunks, enforce size limit
+        total_bytes = 0
+        chunks = []
+        chunk_size = 64 * 1024
+        try:
+            while True:
+                chunk = await file.read(chunk_size)
+                if not chunk:
+                    break
+                total_bytes += len(chunk)
+                if total_bytes > max_size:
+                    max_mb = max_size // (1024 * 1024)
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail=f"File exceeds the maximum allowed size of {max_mb} MB for verification.",
+                    )
+                chunks.append(chunk)
+            file_bytes = b"".join(chunks)
+        except HTTPException:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_verification",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise
+        except Exception as e:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_verification",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to read uploaded file: {str(e)}",
+            )
 
-    try:
-        valid, user_message = verify_file_rsa_pss(
-            file_bytes=file_bytes,
-            signature_b64=signature_base64,
-            public_key_pem=public_key_pem,
-            max_file_size=max_size,
-        )
-        duration_ms = (time.perf_counter() - start_time) * 1000
+        try:
+            valid, user_message = verify_file_rsa_pss(
+                file_bytes=file_bytes,
+                signature_b64=signature_base64,
+                public_key_pem=public_key_pem,
+                max_file_size=max_size,
+            )
+            duration_ms = (time.perf_counter() - start_time) * 1000
 
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_verification",
-            status="success" if valid else "failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_verification",
+                status="success" if valid else "failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
 
-        return RSAPSSVerifyFileResponse(
-            valid=valid,
-            status="valid_signature" if valid else "invalid_signature",
-            algorithm="RSA-PSS-SHA256",
-            digest="SHA-256",
-            original_filename=original_filename,
-            original_file_size=total_bytes,
-            message=user_message,
-            execution_duration_ms=round(duration_ms, 2),
-        )
-    except ValueError as ve:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_verification",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
-    except Exception:
-        duration_ms = (time.perf_counter() - start_time) * 1000
-        record_audit_operation(
-            db=db,
-            algorithm_name="RSA-PSS-SHA256",
-            operation_type="file_signature_verification",
-            status="failure",
-            duration_ms=duration_ms,
-            user_id=user_id,
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="File verification failed due to an internal error.",
-        )
+            return RSAPSSVerifyFileResponse(
+                valid=valid,
+                status="valid_signature" if valid else "invalid_signature",
+                algorithm="RSA-PSS-SHA256",
+                digest="SHA-256",
+                original_filename=original_filename,
+                original_file_size=total_bytes,
+                message=user_message,
+                execution_duration_ms=round(duration_ms, 2),
+            )
+        except ValueError as ve:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_verification",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
+        except Exception:
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            record_audit_operation(
+                db=db,
+                algorithm_name="RSA-PSS-SHA256",
+                operation_type="file_signature_verification",
+                status="failure",
+                duration_ms=duration_ms,
+                user_id=user_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="File verification failed due to an internal error.",
+            )
+    finally:
+        await file.close()
