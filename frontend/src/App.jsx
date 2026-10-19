@@ -13,6 +13,7 @@ import SHA256Page from './pages/SHA256Page';
 import MD5Page from './pages/MD5Page';
 import DESPage from './pages/DESPage';
 import HistoryPage from './pages/HistoryPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import AboutPage from './pages/AboutPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -148,6 +149,14 @@ export default function App() {
                   element={
                     <ProtectedRoute>
                       <HistoryPage dbHealth={dbHealth} />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/analytics"
+                  element={
+                    <ProtectedRoute>
+                      <AnalyticsPage dbHealth={dbHealth} />
                     </ProtectedRoute>
                   }
                 />

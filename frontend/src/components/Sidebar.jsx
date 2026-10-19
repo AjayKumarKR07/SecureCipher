@@ -15,6 +15,7 @@ import {
   User,
   FileCheck,
   PenLine,
+  BarChart3,
 } from 'lucide-react';
 
 const navItems = [
@@ -30,6 +31,7 @@ const navItems = [
   { name: 'MD5 Legacy Hash', path: '/algorithm/md5', icon: Fingerprint },
   { name: 'DES Legacy Cipher', path: '/algorithm/des', icon: Lock },
   { type: 'header', label: 'Audit & Info' },
+  { name: 'Security & Analytics', path: '/analytics', icon: BarChart3 },
   { name: 'Operation History', path: '/history', icon: History },
   { name: 'Profile & Settings', path: '/profile', icon: User },
   { name: 'About & Roadmap', path: '/about', icon: Info },

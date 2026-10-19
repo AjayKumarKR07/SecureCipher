@@ -10,6 +10,7 @@ from app.api.endpoints.md5 import router as md5_router
 from app.api.endpoints.des import router as des_router
 from app.api.endpoints.auth import auth_router
 from app.api.endpoints.rsa_pss import router as rsa_pss_router
+from app.api.endpoints.analytics import router as analytics_router
 
 __all__ = [
     "health_router",
@@ -23,6 +24,7 @@ __all__ = [
     "des_router",
     "auth_router",
     "rsa_pss_router",
+    "analytics_router",
 ]
 
 

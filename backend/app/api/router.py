@@ -11,6 +11,7 @@ from app.api.endpoints import (
     des_router,
     auth_router,
     rsa_pss_router,
+    analytics_router,
 )
 
 api_router = APIRouter()
@@ -26,5 +27,6 @@ api_router.include_router(sha256_router)
 api_router.include_router(md5_router)
 api_router.include_router(des_router)
 api_router.include_router(rsa_pss_router)
+api_router.include_router(analytics_router)
 
 

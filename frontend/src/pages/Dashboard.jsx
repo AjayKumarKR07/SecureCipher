@@ -156,6 +156,14 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
               </Link>
 
               <Link
+                to="/analytics"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 hover:text-white text-xs sm:text-sm font-medium border border-emerald-500/40 hover:border-emerald-400 transition-all cursor-pointer"
+              >
+                <Activity className="w-4 h-4 text-emerald-400" />
+                <span>Security & Analytics</span>
+              </Link>
+
+              <Link
                 to="/profile"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white text-xs sm:text-sm font-medium border border-slate-700/60 transition-all cursor-pointer"
               >
@@ -241,7 +249,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
           </div>
           <div className="text-xl font-bold text-white font-mono">7 / 7 Active</div>
           <p className="mt-2 text-[11px] text-emerald-400 font-mono flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5" /> 178/178 Tests Passing (100%)
+            <CheckCircle2 className="w-3.5 h-3.5" /> 187/187 Tests Passing (100%)
           </p>
         </div>
 

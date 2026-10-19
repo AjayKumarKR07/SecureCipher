@@ -5,22 +5,22 @@
 
 **Project Title:** SecureCipher — Multi-Algorithm Cryptography & Secure Data Protection System  
 **System Architecture:** Three-Tier Web Application (React 19 SPA + FastAPI REST API + PostgreSQL RDBMS)  
-**Security Standard:** NIST SP 800-38D (AES-GCM), RFC 8017 (RSA-OAEP), RFC 3526 (DH MODP Group 14), FIPS 180-4 (SHA-256)  
-**Test Suite Status:** 73/73 Tests Passing (100% Core Suite Verification)  
+**Security Standard:** NIST SP 800-38D (AES-GCM), RFC 8017 (RSA-OAEP & RSA-PSS), FIPS 186-4 (Digital Signatures), RFC 3526 (DH MODP Group 14), FIPS 180-4 (SHA-256)  
+**Test Suite Status:** 187/187 Tests Passing (100% Core Suite Verification)  
 **Date of Report:** October 2026  
 
 ---
 
 ## Executive Summary & Abstract
 
-In an era characterized by pervasive data breaches, unauthorized surveillance, and cryptographic degradation, modern software applications necessitate robust data protection mechanisms alongside clear educational transparency. **SecureCipher** is an enterprise-grade cryptographic workbench and security telemetry platform designed to bridge the gap between abstract mathematical cryptographic primitives and real-world software implementation.
+In an era characterized by pervasive data breaches, unauthorized surveillance, and cryptographic degradation, modern software applications necessitate robust data protection mechanisms alongside clear educational transparency. **SecureCipher** is an enterprise-grade cryptographic workbench, digital signature verification suite, and security telemetry platform designed to bridge the gap between abstract mathematical cryptographic primitives and real-world software implementation.
 
-SecureCipher integrates six cryptographic algorithms spanning three foundational domains:
-1. **Authenticated Symmetric Encryption:** AES-256-GCM (NIST FIPS 197 / SP 800-38D) paired with Scrypt Key Derivation Function (KDF).
-2. **Asymmetric Public-Key Cryptography:** RSA-OAEP (RFC 8017) with 2048-bit and 3072-bit modulus options.
+SecureCipher integrates comprehensive cryptographic capabilities spanning four foundational domains:
+1. **Authenticated Symmetric Encryption:** AES-256-GCM (NIST FIPS 197 / SP 800-38D) paired with Scrypt Key Derivation Function (KDF) and AES File Crypto.
+2. **Asymmetric Public-Key Cryptography & Digital Signatures:** RSA-OAEP (RFC 8017) encryption/decryption, paired with RSA-PSS (FIPS 186-4 / RFC 8017) Probabilistic Signature Scheme supporting text and file signing/verification with SHA-256 digests and MGF1 masking.
 3. **Cryptographic Key Exchange:** Diffie-Hellman Key Agreement (RFC 3526 MODP Group 14) with HKDF-SHA256 derivation.
-4. **Cryptographic Hashing & Digests:** SHA-256 (NIST FIPS 180-4) supporting text and streaming files up to 50 MB.
-5. **Comparative & Historical Cryptanalysis:** MD5 (RFC 1321) and DES-CBC (FIPS 46-3) for educational collision and brute-force vulnerability demonstrations.
+4. **Cryptographic Hashing & Historical Cryptanalysis:** SHA-256 (NIST FIPS 180-4) alongside legacy MD5 (RFC 1321) and DES-CBC (FIPS 46-3) for educational collision and brute-force vulnerability demonstrations.
+5. **Security & Performance Analytics Dashboard:** Real-time telemetry, time-series volume aggregation, categorical workload distribution, latency percentiles (p50, p95, p99), heuristic security indicators (signature verification failure bursts, high error ratios), and sanitized audit data export (CSV/JSON).
 
 The system is architected under a strict **Zero-Knowledge Data Persistence** principle: plaintext, passphrases, symmetric keys, and private keys are never stored on persistent disk or transmitted in application telemetry logs. All operational telemetry (execution duration, algorithm parameters, success flags, and non-sensitive metadata) is recorded in PostgreSQL and made available for analytical review and audit logging. The system provides client-side, publication-grade PDF reporting engines utilizing `jsPDF` for single-operation certificates and bulk audit summaries.
 
