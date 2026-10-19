@@ -197,6 +197,17 @@ export async function fetchAlgorithms() {
  * Fetches user-scoped operation history metadata with optional filtering and pagination
  */
 export async function fetchHistory(limit = 20, offset = 0, filterAlgo = 'ALL', filterStatus = 'ALL') {
+  const token = getAuthToken();
+  if (!token) {
+    return {
+      items: [],
+      total: 0,
+      total_count: 0,
+      database_connected: false,
+      message: 'Please sign in to view your account audit history.',
+    };
+  }
+
   try {
     const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
     if (filterAlgo && filterAlgo !== 'ALL') {

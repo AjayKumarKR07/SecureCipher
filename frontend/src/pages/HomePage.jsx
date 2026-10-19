@@ -114,14 +114,21 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
         console.error('Failed loading algorithms:', err);
       }
 
-      try {
-        const histData = await fetchHistory(5);
-        if (isMounted) {
-          setHistoryItems(histData.items || []);
-          setHistoryLoading(false);
+      if (user) {
+        try {
+          const histData = await fetchHistory(5);
+          if (isMounted) {
+            setHistoryItems(histData.items || []);
+            setHistoryLoading(false);
+          }
+        } catch (err) {
+          if (isMounted) {
+            setHistoryLoading(false);
+          }
         }
-      } catch (err) {
+      } else {
         if (isMounted) {
+          setHistoryItems([]);
           setHistoryLoading(false);
         }
       }
@@ -131,7 +138,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
     return () => {
       isMounted = false;
     };
-  }, [backendHealth]);
+  }, [backendHealth, user]);
 
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);

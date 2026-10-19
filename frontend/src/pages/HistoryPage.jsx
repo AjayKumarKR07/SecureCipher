@@ -70,6 +70,13 @@ export default function HistoryPage({ dbHealth }) {
   const [isClearingAll, setIsClearingAll] = useState(false);
 
   const loadHistory = async () => {
+    if (!user) {
+      setItems([]);
+      setStatusMessage('Please sign in to view your account audit history.');
+      setTotalCount(0);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const data = await fetchHistory(100);
@@ -85,7 +92,7 @@ export default function HistoryPage({ dbHealth }) {
 
   useEffect(() => {
     loadHistory();
-  }, []);
+  }, [user]);
 
   const filteredItems = items.filter((item) => {
     if (filterAlgo === 'ALL') return true;
