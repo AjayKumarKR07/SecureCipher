@@ -26,6 +26,7 @@ import {
   Cpu,
   Server,
   Download,
+  PenLine,
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import { fetchAlgorithms, fetchHistory } from '../services/api';
@@ -238,9 +239,9 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
             <span className="text-xs font-medium text-slate-400">Cryptographic Engines</span>
             <Cpu className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-xl font-bold text-white font-mono">6 / 6 Active</div>
+          <div className="text-xl font-bold text-white font-mono">7 / 7 Active</div>
           <p className="mt-2 text-[11px] text-emerald-400 font-mono flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5" /> 73/73 Tests Passing (100%)
+            <CheckCircle2 className="w-3.5 h-3.5" /> 178/178 Tests Passing (100%)
           </p>
         </div>
 
@@ -275,7 +276,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
             </p>
           </div>
           <span className="text-xs font-mono text-emerald-400 px-3 py-1 rounded-full bg-[#06180a] border border-emerald-500/30 self-start sm:self-auto">
-            All 6 Ciphers Ready
+            7 Modules Ready
           </span>
         </div>
 
@@ -365,7 +366,52 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
             </Link>
           </div>
 
-          {/* Card 3: Diffie-Hellman */}
+          {/* Card 2b: RSA-PSS Digital Signatures */}
+          <div className="group rounded-2xl bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-violet-500/8 via-transparent to-transparent rounded-bl-full pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-xl bg-[#06180a] border border-violet-500/40 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
+                  <PenLine className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                  RFC 8017
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-white group-hover:text-violet-300 transition-colors">
+                RSA-PSS Signatures
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Digital signature scheme using RSA-PSS with SHA-256, MGF1, and maximum PSS salt length. Sign and verify messages and files.
+              </p>
+              <div className="mt-4 p-3 rounded-xl bg-[#061408] border border-emerald-500/15 text-[11px] font-mono space-y-1">
+                <div className="flex justify-between text-slate-400">
+                  <span>Key Sizes:</span>
+                  <span className="text-violet-300 font-bold">2048 / 3072 / 4096-bit</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>MGF:</span>
+                  <span className="text-violet-300">MGF1-SHA256 · MAX_SALT</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <Link
+                to="/algorithm/rsa-pss"
+                className="py-2 px-3 rounded-xl bg-[#06180a] hover:bg-violet-500 group-hover:bg-violet-500 text-violet-300 hover:text-white group-hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 border border-violet-500/30 group-hover:border-transparent transition-all"
+              >
+                <span>Sign / Verify</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+              <Link
+                to="/algorithm/rsa-pss"
+                className="py-2 px-3 rounded-xl bg-violet-950/50 hover:bg-violet-400 text-violet-300 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 border border-violet-500/30 hover:border-transparent transition-all"
+              >
+                <span>File Signing</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
           <div className="group rounded-2xl bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
             <div>

@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   User,
   FileCheck,
+  PenLine,
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
   { name: 'AES Encryption', path: '/algorithm/aes', icon: Shield },
   { name: 'AES File Crypto', path: '/algorithm/aes-file', icon: FileCheck },
   { name: 'RSA Encryption', path: '/algorithm/rsa', icon: KeyRound },
+  { name: 'RSA-PSS Signatures', path: '/algorithm/rsa-pss', icon: PenLine },
   { name: 'Diffie-Hellman', path: '/algorithm/diffie-hellman', icon: Repeat },
   { type: 'header', label: 'Hashing & Legacy' },
   { name: 'SHA-256 Hash', path: '/algorithm/sha-256', icon: Hash },

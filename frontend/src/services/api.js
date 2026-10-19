@@ -832,3 +832,124 @@ export async function changePassword({ currentPassword, newPassword }) {
   }
   return data;
 }
+
+/* =========================================================================
+   RSA-PSS DIGITAL SIGNATURES API METHODS
+   Strictly separate from RSA-OAEP encryption — PSS is for signing only.
+   ========================================================================= */
+
+/**
+ * Generate an RSA key pair for use with RSA-PSS digital signatures.
+ * Supports key sizes: 2048, 3072, or 4096 bits.
+ * Returns encrypted private key PEM when passphrase is provided.
+ * SECURITY: Private key is returned once and never stored server-side.
+ */
+export async function generateRSAPSSKeys(keySize = 2048, passphrase = null) {
+  const body = { key_size: parseInt(keySize, 10) };
+  if (passphrase) body.private_key_passphrase = passphrase;
+
+  const response = await fetch(`${API_BASE_URL}/rsa-pss/generate-keys`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA-PSS key generation failed');
+  }
+  return data;
+}
+
+/**
+ * Sign a text message using RSA-PSS-SHA256.
+ * Signs exact UTF-8 bytes without modification.
+ */
+export async function signRSAPSSMessage(message, privateKeyPem, passphrase = null) {
+  const body = { message, private_key_pem: privateKeyPem };
+  if (passphrase) body.private_key_passphrase = passphrase;
+
+  const response = await fetch(`${API_BASE_URL}/rsa-pss/sign`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA-PSS signing failed');
+  }
+  return data;
+}
+
+/**
+ * Verify an RSA-PSS-SHA256 text signature.
+ * Returns { valid, status, message, ... } — does NOT throw for invalid signatures.
+ */
+export async function verifyRSAPSSMessage(message, signatureBase64, publicKeyPem) {
+  const response = await fetch(`${API_BASE_URL}/rsa-pss/verify`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({
+      message,
+      signature_base64: signatureBase64,
+      public_key_pem: publicKeyPem,
+    }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA-PSS verification request failed');
+  }
+  return data;
+}
+
+/**
+ * Sign an uploaded file using RSA-PSS-SHA256.
+ * Returns JSON with signature_base64 and metadata. Original file is unchanged.
+ */
+export async function signRSAPSSFile(file, privateKeyPem, passphrase = null) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('private_key_pem', privateKeyPem);
+  if (passphrase) formData.append('private_key_passphrase', passphrase);
+
+  const response = await fetch(`${API_BASE_URL}/rsa-pss/sign-file`, {
+    method: 'POST',
+    headers: { ...getAuthHeaders() },
+    body: formData,
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA-PSS file signing failed');
+  }
+  return data;
+}
+
+/**
+ * Verify an RSA-PSS-SHA256 file signature.
+ * Returns { valid, status, message, ... } — does NOT throw for invalid signatures.
+ */
+export async function verifyRSAPSSFile(file, signatureBase64, publicKeyPem) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('public_key_pem', publicKeyPem);
+  formData.append('signature_base64', signatureBase64);
+
+  const response = await fetch(`${API_BASE_URL}/rsa-pss/verify-file`, {
+    method: 'POST',
+    headers: { ...getAuthHeaders() },
+    body: formData,
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || 'RSA-PSS file verification request failed');
+  }
+  return data;
+}
