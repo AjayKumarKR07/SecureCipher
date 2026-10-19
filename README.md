@@ -1224,6 +1224,7 @@ All environment variables are read from `backend/.env` by `pydantic-settings`.
 | `SMTP_FROM_EMAIL` | Backend | No | From address on OTP emails | `noreply@yourdomain.com` |
 | `SMTP_FROM_NAME` | Backend | No | Sender name | `SecureCipher Security` |
 | `SMTP_TLS` | Backend | No | Enable STARTTLS | `True` |
+| `DEMO_OTP_ENABLED` | Backend | No | Enable demonstration OTP mode without email service | `false` |
 | `ENVIRONMENT` | Backend | No | Deployment context | `development` |
 
 > **Security note:** `backend/.env` contains secrets. It is listed in `.gitignore` and must **never** be committed. The `.env.example` file contains only safe placeholders.

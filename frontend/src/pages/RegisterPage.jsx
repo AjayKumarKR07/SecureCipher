@@ -41,6 +41,8 @@ export default function RegisterPage() {
   // OTP State
   const [otp, setOtp] = useState('');
   const [devOtpNotice, setDevOtpNotice] = useState(null);
+  const [demoOtpNotice, setDemoOtpNotice] = useState(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [missingConfig, setMissingConfig] = useState(null);
   const [cooldown, setCooldown] = useState(0);
   const [expiresIn, setExpiresIn] = useState(300); // 5 minutes
@@ -133,7 +135,11 @@ export default function RegisterPage() {
       setCooldown(result.data.resend_cooldown_seconds || 60);
       setExpiresIn(result.data.expires_in_seconds || 300);
 
-      if (!result.data.smtp_configured) {
+      const demoActive = Boolean(result.data.demo_mode || result.data.demo_otp);
+      setIsDemoMode(demoActive);
+      setDemoOtpNotice(result.data.demo_otp || null);
+
+      if (!result.data.smtp_configured && !demoActive) {
         setMissingConfig(result.data.missing_config);
         setDevOtpNotice(result.data.dev_otp);
       } else {
@@ -160,7 +166,10 @@ export default function RegisterPage() {
     if (result.success) {
       setCooldown(result.data.resend_cooldown_seconds || 60);
       setExpiresIn(result.data.expires_in_seconds || 300);
-      if (!result.data.smtp_configured) {
+      const demoActive = Boolean(result.data.demo_mode || result.data.demo_otp);
+      setIsDemoMode(demoActive);
+      setDemoOtpNotice(result.data.demo_otp || null);
+      if (!result.data.smtp_configured && !demoActive) {
         setDevOtpNotice(result.data.dev_otp);
       }
     } else {
@@ -546,6 +555,40 @@ export default function RegisterPage() {
               {/* STEP 2: Email OTP Verification */}
               {step === 'verify_otp' && (
                 <form onSubmit={handleVerifyOTP} className="space-y-6">
+                  {/* Explicit Project Demonstration Mode Notice */}
+                  {isDemoMode && demoOtpNotice && (
+                    <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-200 text-xs space-y-2.5 shadow-lg shadow-emerald-950/50">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 font-semibold text-emerald-300">
+                          <Sparkles className="w-4 h-4 text-emerald-400" />
+                          <span>Project Demonstration Mode Active</span>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold tracking-wider uppercase">
+                          Demo OTP
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-emerald-200/80 leading-relaxed">
+                        Email dispatch is bypassed for project demonstration. Your 6-digit verification code was securely generated and hashed directly in PostgreSQL.
+                      </p>
+                      <div className="pt-2 border-t border-emerald-500/20 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] font-mono text-slate-300">Demo Code:</span>
+                          <span className="text-base font-mono font-bold text-emerald-300 tracking-[0.25em] bg-[#020603] px-3 py-1 rounded-lg border border-emerald-500/50 select-all">
+                            {demoOtpNotice}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setOtp(demoOtpNotice)}
+                          className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Auto-Fill</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Unconfigured SMTP Diagnostic Notice (if email server is unconfigured) */}
                   {missingConfig && (
                     <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 text-amber-200 text-xs space-y-2">

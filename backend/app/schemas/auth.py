@@ -18,6 +18,8 @@ class RequestOTPResponse(BaseModel):
     resend_cooldown_seconds: int = 60
     missing_config: Optional[List[str]] = None
     dev_otp: Optional[str] = None
+    demo_otp: Optional[str] = None
+    demo_mode: bool = False
 
 
 class VerifyOTPRegisterRequest(BaseModel):

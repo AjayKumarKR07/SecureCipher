@@ -106,7 +106,25 @@ def request_registration_otp(
     db.add(new_otp)
     db.commit()
 
-    # 5. Dispatch email or report missing configuration
+    # 5. Check Explicit Demo OTP Mode
+    if settings.DEMO_OTP_ENABLED:
+        logger.info("Demo OTP mode is active: issued demo OTP for %s without email dispatch.", normalized_email)
+        return RequestOTPResponse(
+            status="demo_mode",
+            message=(
+                "Project Demonstration Mode is active: a demo verification code has been generated "
+                "for evaluation without email dispatch. Use the code below to complete registration."
+            ),
+            email=normalized_email,
+            smtp_configured=False,
+            demo_mode=True,
+            demo_otp=otp_code,
+            dev_otp=otp_code,
+            expires_in_seconds=OTP_EXPIRY_MINUTES * 60,
+            resend_cooldown_seconds=RESEND_COOLDOWN_SECONDS,
+        )
+
+    # 6. Dispatch email or report missing configuration
     smtp_ready = is_smtp_configured()
     if smtp_ready:
         sent, err_msg = send_verification_email(

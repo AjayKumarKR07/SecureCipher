@@ -69,6 +69,9 @@ class Settings(BaseSettings):
     # Environment
     ENVIRONMENT: str = "development"
 
+    # Explicit Demo OTP Mode for project demonstrations without real email service
+    DEMO_OTP_ENABLED: bool = False
+
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_database_url(cls, v: Optional[str]) -> Optional[str]:
