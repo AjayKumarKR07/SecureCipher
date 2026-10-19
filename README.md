@@ -326,7 +326,7 @@ sequenceDiagram
     API->>AESSvc: encrypt_aes_file(file_bytes, filename, passphrase)
     AESSvc->>AESSvc: salt = os.urandom(16), nonce = os.urandom(12)
     AESSvc->>AESSvc: key = Scrypt(passphrase, salt, N=16384, r=8, p=1)
-    AESSvc->>AESSvc: header = MAGIC + struct.pack('>I', len(meta)) + meta_json
+    AESSvc->>AESSvc: header = MAGIC + 4-byte metadata length + metadata JSON
     AESSvc->>AESSvc: ciphertext_with_tag = AESGCM(key).encrypt(nonce, file_bytes, AAD=header)
     AESSvc-->>API: (container_bytes, filename.scipher, metadata)
     API->>DB: INSERT audit (AES-256-GCM, file_encryption, success)
@@ -335,10 +335,10 @@ sequenceDiagram
     Note over User,API: File Decryption Flow
     User->>API: POST /api/aes/decrypt-file (.scipher file, passphrase)
     API->>AESSvc: decrypt_aes_file(container_bytes, passphrase)
-    AESSvc->>AESSvc: Verify MAGIC == b"SCENC01\0" & header length
-    AESSvc->>AESSvc: Parse & validate JSON metadata (version, salt, nonce)
+    AESSvc->>AESSvc: Verify MAGIC header and metadata length
+    AESSvc->>AESSvc: Parse and validate JSON metadata (version, salt, nonce)
     AESSvc->>AESSvc: key = Scrypt(passphrase, salt, N=16384, r=8, p=1)
-    AESSvc->>AESSvc: AAD = header_bytes; Decrypt & verify 16-byte GCM tag
+    AESSvc->>AESSvc: Decrypt ciphertext with AAD and verify 16-byte GCM tag
     AESSvc-->>API: (decrypted_bytes, safe_original_filename, metadata)
     API->>DB: INSERT audit (AES-256-GCM, file_decryption, success)
     API-->>User: 200 Recovered Binary Stream
