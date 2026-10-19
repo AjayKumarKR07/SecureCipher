@@ -309,13 +309,22 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
                 </div>
               </div>
             </div>
-            <Link
-              to="/algorithm/aes"
-              className="mt-5 w-full py-2.5 px-4 rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-emerald-500/30 group-hover:border-transparent transition-all"
-            >
-              <span>Launch AES Workbench</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <Link
+                to="/algorithm/aes"
+                className="py-2 px-3 rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-1.5 border border-emerald-500/30 group-hover:border-transparent transition-all"
+              >
+                <span>Text Crypto</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+              <Link
+                to="/algorithm/aes-file"
+                className="py-2 px-3 rounded-xl bg-emerald-950/70 hover:bg-emerald-400 text-emerald-300 hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-1.5 border border-emerald-500/40 hover:border-transparent transition-all"
+              >
+                <span>File Crypto</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
           </div>
 
           {/* Card 2: RSA-OAEP */}

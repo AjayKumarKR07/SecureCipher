@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import HomePage from './pages/HomePage';
 import AESPage from './pages/AESPage';
+import AESFileCryptoPage from './pages/AESFileCryptoPage';
 import RSAPage from './pages/RSAPage';
 import DiffieHellmanPage from './pages/DiffieHellmanPage';
 import SHA256Page from './pages/SHA256Page';
@@ -134,6 +135,7 @@ export default function App() {
                 <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><ProfileSettingsPage /></ProtectedRoute>} />
                 <Route path="/algorithm/aes" element={<ProtectedRoute><AESPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
+                <Route path="/algorithm/aes-file" element={<ProtectedRoute><AESFileCryptoPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
                 <Route path="/algorithm/rsa" element={<ProtectedRoute><RSAPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
                 <Route path="/algorithm/diffie-hellman" element={<ProtectedRoute><DiffieHellmanPage onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />
                 <Route path="/algorithm/sha-256" element={<ProtectedRoute><SHA256Page onOperationSuccess={checkTelemetry} /></ProtectedRoute>} />

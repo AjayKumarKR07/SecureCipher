@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     SMTP_FROM_NAME: str = "SecureCipher Security"
     SMTP_TLS: bool = True
 
+    # Maximum file size for file encryption / decryption and hashing (default: 50MB)
+    MAX_FILE_SIZE_BYTES: int = 50 * 1024 * 1024
+
     # Environment
     ENVIRONMENT: str = "development"
 

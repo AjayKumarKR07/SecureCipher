@@ -13,12 +13,14 @@ import {
   X,
   ShieldCheck,
   User,
+  FileCheck,
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { type: 'header', label: 'Symmetric & Asymmetric' },
   { name: 'AES Encryption', path: '/algorithm/aes', icon: Shield },
+  { name: 'AES File Crypto', path: '/algorithm/aes-file', icon: FileCheck },
   { name: 'RSA Encryption', path: '/algorithm/rsa', icon: KeyRound },
   { name: 'Diffie-Hellman', path: '/algorithm/diffie-hellman', icon: Repeat },
   { type: 'header', label: 'Hashing & Legacy' },

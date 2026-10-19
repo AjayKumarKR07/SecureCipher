@@ -286,6 +286,109 @@ export async function decryptAES({ passphrase, nonce, salt, ciphertext, tag }) {
 }
 
 /**
+ * Extracts filename from RFC 6266 / RFC 5987 Content-Disposition header
+ */
+function extractFilenameFromHeader(disposition, fallback = 'download.bin') {
+  if (!disposition) return fallback;
+  const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+  if (utf8Match && utf8Match[1]) {
+    try {
+      return decodeURIComponent(utf8Match[1].trim());
+    } catch {
+      // fallback to basic
+    }
+  }
+  const basicMatch = disposition.match(/filename="?([^";]+)"?/i);
+  if (basicMatch && basicMatch[1]) {
+    return basicMatch[1].trim();
+  }
+  return fallback;
+}
+
+/**
+ * Encrypt arbitrary binary file with AES-256-GCM via streaming upload
+ */
+export async function encryptAESFile(file, passphrase) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('passphrase', passphrase);
+
+  const response = await fetch(`${API_BASE_URL}/aes/encrypt-file`, {
+    method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    let errorMsg = 'File encryption failed';
+    try {
+      const errData = await response.json();
+      errorMsg = errData.detail || errorMsg;
+    } catch {
+      errorMsg = `Server error HTTP ${response.status}`;
+    }
+    throw new Error(errorMsg);
+  }
+
+  const disposition = response.headers.get('content-disposition');
+  const filename = extractFilenameFromHeader(disposition, `${file.name}.scipher`);
+  const blob = await response.blob();
+  const durationMs = parseFloat(response.headers.get('X-Execution-Duration-Ms') || '0');
+
+  return {
+    blob,
+    filename,
+    originalFilename: file.name,
+    size: blob.size,
+    originalSize: file.size,
+    executionDurationMs: durationMs,
+  };
+}
+
+/**
+ * Decrypt and authenticate AES-256-GCM .scipher file
+ */
+export async function decryptAESFile(file, passphrase) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('passphrase', passphrase);
+
+  const response = await fetch(`${API_BASE_URL}/aes/decrypt-file`, {
+    method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    let errorMsg = 'File decryption failed';
+    try {
+      const errData = await response.json();
+      errorMsg = errData.detail || errorMsg;
+    } catch {
+      errorMsg = `Server error HTTP ${response.status}`;
+    }
+    throw new Error(errorMsg);
+  }
+
+  const disposition = response.headers.get('content-disposition');
+  const filename = extractFilenameFromHeader(disposition, 'decrypted_file.bin');
+  const blob = await response.blob();
+  const durationMs = parseFloat(response.headers.get('X-Execution-Duration-Ms') || '0');
+
+  return {
+    blob,
+    filename,
+    size: blob.size,
+    containerSize: file.size,
+    executionDurationMs: durationMs,
+  };
+}
+
+/**
  * Generate RSA Public/Private Keypair
  */
 export async function generateRSAKeys(keySize = 2048) {

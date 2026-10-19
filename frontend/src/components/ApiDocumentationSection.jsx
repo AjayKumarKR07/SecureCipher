@@ -413,6 +413,70 @@ export const API_ENDPOINTS = [
       { code: 400, desc: 'Authentication tag mismatch, wrong passphrase, or tampered payload' },
     ],
   },
+  {
+    id: 'aes-encrypt-file',
+    method: 'POST',
+    path: '/api/aes/encrypt-file',
+    category: 'AES-256-GCM',
+    summary: 'Encrypt Arbitrary Binary File (AES-256-GCM)',
+    description: 'Accepts a multipart file upload (up to 50 MB) and passphrase. Derives a 256-bit Scrypt key, generates a fresh 12-byte nonce, encrypts binary bytes with AES-256-GCM, cryptographically binds the metadata header as Associated Authenticated Data (AAD), and streams a binary .scipher container for download.',
+    auth: 'optional',
+    authDescription: 'Public execution. When Bearer token is provided, audit history record is linked to authenticated user account with zero file or key data saved.',
+    pathParams: [],
+    queryParams: [],
+    headers: [
+      { name: 'Authorization', value: 'Bearer <token> (Optional)', desc: 'User attribution for audit log' },
+      { name: 'Content-Type', value: 'multipart/form-data', desc: 'Binary multipart form-data boundary' },
+    ],
+    requestBody: {
+      file: '(binary file stream, max 50 MB)',
+      passphrase: 'UserSuppliedPassphrase#2026',
+    },
+    responseBody: {
+      '[binary stream]': 'SecureCipher Container (.scipher): [MAGIC (8B)][HEADER_LEN (4B)][METADATA_JSON][CIPHERTEXT + 16B TAG]',
+      'Content-Disposition': 'attachment; filename="document.pdf.scipher"',
+      'Content-Type': 'application/octet-stream',
+      'X-Encrypted-Size': '1048704',
+      'X-Execution-Duration-Ms': '24.15',
+    },
+    statusCodes: [
+      { code: 200, desc: 'Binary encrypted .scipher file stream successfully returned' },
+      { code: 400, desc: 'Empty passphrase, invalid file, or file exceeds 50 MB size limit' },
+      { code: 500, desc: 'Server streaming failure' },
+    ],
+  },
+  {
+    id: 'aes-decrypt-file',
+    method: 'POST',
+    path: '/api/aes/decrypt-file',
+    category: 'AES-256-GCM',
+    summary: 'Authenticate and Decrypt Binary File (AES-256-GCM)',
+    description: 'Accepts a .scipher encrypted file container and passphrase. Validates the magic header (b"SCENC01\\0"), parses authenticated JSON metadata, reconstructs AAD, derives Scrypt key, validates the 16-byte GCM tag, and streams the restored original binary file with safe Content-Disposition filename.',
+    auth: 'optional',
+    authDescription: 'Public execution. When Bearer token is provided, audit history record is linked to authenticated user account with zero file or key data saved.',
+    pathParams: [],
+    queryParams: [],
+    headers: [
+      { name: 'Authorization', value: 'Bearer <token> (Optional)', desc: 'User attribution for audit log' },
+      { name: 'Content-Type', value: 'multipart/form-data', desc: 'Binary multipart form-data boundary' },
+    ],
+    requestBody: {
+      file: '(encrypted .scipher container file)',
+      passphrase: 'UserSuppliedPassphrase#2026',
+    },
+    responseBody: {
+      '[binary stream]': 'Recovered original binary file byte stream (PDF, DOCX, ZIP, PNG, etc.)',
+      'Content-Disposition': 'attachment; filename="document.pdf"',
+      'Content-Type': 'application/octet-stream',
+      'X-Decrypted-Size': '1048576',
+      'X-Execution-Duration-Ms': '22.80',
+    },
+    statusCodes: [
+      { code: 200, desc: 'Original file authenticated and recovered successfully' },
+      { code: 400, desc: 'Authentication tag mismatch, wrong passphrase, corrupted header, or tampered file' },
+      { code: 500, desc: 'Server streaming failure' },
+    ],
+  },
 
   // ── RSA-OAEP ──
   {

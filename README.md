@@ -280,6 +280,85 @@ sequenceDiagram
 
 ---
 
+### AES-256-GCM File Cryptography (.scipher)
+
+**Category:** Authenticated Binary File Encryption
+**Purpose:** End-to-end authenticated encryption of arbitrary binary files (documents, images, PDFs, archives, executables) up to 50 MB.
+
+#### Binary Container Specification (SCENC01)
+
+SecureCipher encapsulates encrypted files in a tamper-proof binary container format (`.scipher`):
+
+```
++-----------------------------------------------------------------------------------+
+| Magic (8 Bytes)    | Header Length (4B) | JSON Metadata Block (Variable Length)  |
+| b"SCENC01\x00"     | Big-Endian uint32  | UTF-8 JSON: salt, nonce, filename, etc. |
++-----------------------------------------------------------------------------------+
+| Ciphertext + GCM Authentication Tag (16 Bytes appended at EOF)                    |
++-----------------------------------------------------------------------------------+
+```
+
+- **Magic Identifier (8 bytes):** `b"SCENC01\x00"` identifies the file as a valid SecureCipher container.
+- **Header Length (4 bytes):** 32-bit big-endian unsigned integer specifying exact UTF-8 byte length of metadata.
+- **JSON Metadata Header:**
+  - `version`: Format version integer (`1`).
+  - `algorithm`: Cryptographic cipher (`"AES-256-GCM"`).
+  - `original_filename`: Sanitized original basename (directory traversal stripped).
+  - `original_file_size`: Integer byte count of plaintext file.
+  - `salt`: Base64-encoded 16-byte Scrypt salt.
+  - `nonce`: Base64-encoded 12-byte CSPRNG nonce.
+  - `kdf`: Scrypt parameters (`N=16384`, `r=8`, `p=1`, `key_length=32`).
+- **Cryptographic Header Binding (AAD):** The entire header bytes `[0 : 12 + header_len]` are supplied as AES-GCM Associated Authenticated Data (AAD). Any modification to metadata, version, salt, nonce, or filename fails GCM tag authentication.
+- **Ciphertext & Tag:** `AESGCM(key).encrypt(nonce, file_bytes, associated_data)` appends the 16-byte GCM authentication tag.
+
+#### File Encryption & Decryption Workflow
+
+```mermaid
+sequenceDiagram
+    participant User as User / Browser
+    participant API as FastAPI Endpoints
+    participant AESSvc as aes_service.py
+    participant DB as PostgreSQL
+
+    Note over User,API: File Encryption Flow
+    User->>API: POST /api/aes/encrypt-file (file multipart, passphrase)
+    API->>API: Enforce 50 MB size limit in 64 KB chunks
+    API->>AESSvc: encrypt_aes_file(file_bytes, filename, passphrase)
+    AESSvc->>AESSvc: salt = os.urandom(16), nonce = os.urandom(12)
+    AESSvc->>AESSvc: key = Scrypt(passphrase, salt, N=16384, r=8, p=1)
+    AESSvc->>AESSvc: header = MAGIC + struct.pack('>I', len(meta)) + meta_json
+    AESSvc->>AESSvc: ciphertext_with_tag = AESGCM(key).encrypt(nonce, file_bytes, AAD=header)
+    AESSvc-->>API: (container_bytes, filename.scipher, metadata)
+    API->>DB: INSERT audit (AES-256-GCM, file_encryption, success)
+    API-->>User: 200 Binary Stream (Content-Disposition: attachment, Cache-Control: no-store)
+
+    Note over User,API: File Decryption Flow
+    User->>API: POST /api/aes/decrypt-file (.scipher file, passphrase)
+    API->>AESSvc: decrypt_aes_file(container_bytes, passphrase)
+    AESSvc->>AESSvc: Verify MAGIC == b"SCENC01\0" & header length
+    AESSvc->>AESSvc: Parse & validate JSON metadata (version, salt, nonce)
+    AESSvc->>AESSvc: key = Scrypt(passphrase, salt, N=16384, r=8, p=1)
+    AESSvc->>AESSvc: AAD = header_bytes; Decrypt & verify 16-byte GCM tag
+    AESSvc-->>API: (decrypted_bytes, safe_original_filename, metadata)
+    API->>DB: INSERT audit (AES-256-GCM, file_decryption, success)
+    API-->>User: 200 Recovered Binary Stream
+```
+
+#### Endpoints
+
+| Method | Path | Request Fields | Response Fields |
+|---|---|---|---|
+| POST | `/api/aes/encrypt-file` | `file` (multipart upload), `passphrase` (Form) | Binary `.scipher` container stream (`application/octet-stream`) |
+| POST | `/api/aes/decrypt-file` | `file` (multipart `.scipher`), `passphrase` (Form) | Recovered original file stream (`application/octet-stream`) |
+
+#### Security Considerations & Limits
+
+- **Memory and Size Limits:** Configured via `MAX_FILE_SIZE_BYTES` (default 50 MB / 52,428,800 bytes). Uploads exceeding this threshold are aborted in 64 KB chunks before in-memory cipher execution.
+- **Zero-Recovery Model:** AES-256-GCM ensures cryptographic authenticity. Losing the passphrase or modifying any byte of the `.scipher` file renders recovery mathematically impossible.
+- **Zero Server-Side Storage:** Plaintext files, decrypted contents, passphrases, and encryption keys are processed in volatile memory only and are never persisted to disk or the database.
+
+---
+
 ### RSA-OAEP
 
 **Category:** Asymmetric Public-Key Encryption  
@@ -501,7 +580,8 @@ All algorithm pages, `/history`, `/dashboard`, and `/profile` require authentica
 | `/login` | `LoginPage.jsx` | No (redirects if already logged in) | Email + password login, "Remember Me" option |
 | `/register` | `RegisterPage.jsx` | No (redirects if already logged in) | Two-step registration: request OTP → verify OTP |
 | `/dashboard` | `Dashboard.jsx` | Yes | Authenticated workspace; live backend/DB health telemetry |
-| `/algorithm/aes` | `AESPage.jsx` | Yes | AES-256-GCM encryption and decryption |
+| `/algorithm/aes` | `AESPage.jsx` | Yes | AES-256-GCM text encryption and decryption |
+| `/algorithm/aes-file` | `AESFileCryptoPage.jsx` | Yes | AES-256-GCM binary file encryption and decryption (.scipher) |
 | `/algorithm/rsa` | `RSAPage.jsx` | Yes | RSA key generation, OAEP encryption and decryption |
 | `/algorithm/diffie-hellman` | `DiffieHellmanPage.jsx` | Yes | DH keypair generation, secret derivation, exchange simulation |
 | `/algorithm/sha-256` | `SHA256Page.jsx` | Yes | SHA-256 text/file hashing and comparison |
@@ -702,7 +782,9 @@ Interactive documentation is available at:
 | Method | Path | Auth | Purpose | Request Body | Response |
 |---|---|---|---|---|---|
 | POST | `/api/aes/encrypt` | No | Encrypt text | `{"plaintext": "...", "passphrase": "..."}` | `{algorithm, nonce, salt, ciphertext, tag, kdf, execution_duration_ms}` |
-| POST | `/api/aes/decrypt` | No | Decrypt + authenticate | `{"passphrase": "...", "nonce": "...", "salt": "...", "ciphertext": "...", "tag": "..."}` | `{algorithm, plaintext, verified, execution_duration_ms}` |
+| POST | `/api/aes/decrypt` | No | Decrypt + authenticate text | `{"passphrase": "...", "nonce": "...", "salt": "...", "ciphertext": "...", "tag": "..."}` | `{algorithm, plaintext, verified, execution_duration_ms}` |
+| POST | `/api/aes/encrypt-file` | No | Encrypt binary file (max 50 MB) | `multipart/form-data`: `file`, `passphrase` | Binary `.scipher` container stream (`application/octet-stream`) |
+| POST | `/api/aes/decrypt-file` | No | Decrypt + authenticate `.scipher` file | `multipart/form-data`: `file`, `passphrase` | Recovered original binary file stream (`application/octet-stream`) |
 
 **Example — Encrypt:**
 ```json
@@ -1165,6 +1247,7 @@ Run a specific test file:
 
 ```powershell
 pytest tests/test_aes.py -v
+pytest tests/test_aes_file.py -v
 pytest tests/test_diffie_hellman.py -v
 ```
 
@@ -1173,7 +1256,8 @@ pytest tests/test_diffie_hellman.py -v
 | Test File | What It Tests |
 |---|---|
 | `test_api.py` | Health endpoint (`GET /api/health`), root endpoint |
-| `test_aes.py` | Round-trip encrypt/decrypt, fresh nonce/salt uniqueness, wrong passphrase rejection, tampered ciphertext/tag rejection, malformed Base64, empty input validation, audit record creation without secrets |
+| `test_aes.py` | Round-trip text encrypt/decrypt, fresh nonce/salt uniqueness, wrong passphrase rejection, tampered ciphertext/tag rejection, malformed Base64, empty input validation, audit record creation without secrets |
+| `test_aes_file.py` | AES-256-GCM arbitrary binary file round-trip (PDF, DOCX, images, binaries), 0-byte file handling, Unicode filenames, path traversal sanitization, Scrypt KDF parameters, AAD metadata tampering rejection, truncated/corrupted container rejection, 50 MB size limit enforcement, zero secret leakage in audit history |
 | `test_rsa.py` | RSA keypair generation (2048), encrypt/decrypt round-trip, wrong key rejection |
 | `test_diffie_hellman.py` | Keypair generation, shared secret derivation, simulation endpoint, key match verification |
 | `test_sha256.py` | Text hashing (NIST vectors), empty input, file hashing, compare modes, avalanche check |
