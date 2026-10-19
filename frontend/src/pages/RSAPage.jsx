@@ -276,7 +276,7 @@ export default function RSAPage({ onOperationSuccess }) {
                   readOnly
                   rows={4}
                   value={generatedKeys.public_key}
-                  className="w-full bg-[#030a04] border border-emerald-500/20 rounded-lg p-2 font-mono text-[11px] text-blue-200/90 select-all focus:outline-none"
+                  className="w-full bg-[#030a04] border border-emerald-500/20 rounded-lg p-2 font-mono text-[11px] text-emerald-200/90 select-all focus:outline-none"
                 />
               </div>
 
@@ -444,7 +444,7 @@ export default function RSAPage({ onOperationSuccess }) {
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       <span>RSA-{encryptResult.key_size} Ciphertext (OAEP-SHA256)</span>
                     </span>
-                    <span className="text-[11px] font-mono text-teal-300 px-2 py-0.5 rounded bg-blue-950 border border-blue-800">
+                    <span className="text-[11px] font-mono text-emerald-300 px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800">
                       {encryptResult.execution_duration_ms} ms
                     </span>
                   </div>
@@ -455,13 +455,13 @@ export default function RSAPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(encryptResult.ciphertext, 'ct')}
-                        className="text-teal-400 hover:text-teal-300 flex items-center gap-1"
+                        className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
                       >
                         {copiedKey === 'ct' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedKey === 'ct' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="p-2.5 rounded bg-[#030a04] font-mono text-xs text-blue-200 border border-emerald-500/20 break-all select-all">
+                    <div className="p-2.5 rounded bg-[#030a04] font-mono text-xs text-emerald-200 border border-emerald-500/20 break-all select-all">
                       {encryptResult.ciphertext}
                     </div>
                   </div>
@@ -470,7 +470,7 @@ export default function RSAPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={handleTransferToDecrypt}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors"
                     >
                       <span>Transfer to Decrypt Tab</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -602,19 +602,19 @@ export default function RSAPage({ onOperationSuccess }) {
             </h3>
             <ul className="space-y-2.5 text-xs text-slate-300">
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Prime Generation:</strong> Primes p and q randomly generated with high-entropy CSPRNG.</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Modulus:</strong> n = p × q, φ(n) = (p - 1)(q - 1).</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Public Exponent:</strong> e = 65537 (Fermat prime F₄, gcd(e, φ(n)) = 1).</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Private Exponent:</strong> d ≡ e⁻¹ (mod φ(n)).</span>
               </li>
             </ul>
@@ -660,7 +660,7 @@ export default function RSAPage({ onOperationSuccess }) {
         algorithmName="RSA-OAEP Public-Key Cryptosystem"
         subtitle="Asymmetric cryptosystem based on prime factorization with randomized OAEP-SHA256 padding for IND-CCA2 security."
         badge="NIST FIPS 186-5 & RFC 8017"
-        themeColor="blue"
+        themeColor="emerald"
         purpose="RSA is an asymmetric cryptosystem where encryption and decryption use mathematically linked, distinct keys. It is primarily used for secure key transport (wrapping symmetric keys like AES), digital certificates, and digital signatures. Anyone with the public key can encrypt data, but only the holder of the matching private key can reverse the mathematical trapdoor and decrypt it."
         diagramSteps={[
           { title: '1. Plaintext + Public Key', subtitle: 'Short message (<= 190B) + SPKI PEM', icon: FileText },

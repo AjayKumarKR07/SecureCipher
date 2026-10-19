@@ -811,10 +811,10 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
 
             <div className="relative z-10">
               <div className="flex items-center justify-between gap-2 mb-3">
-                <span className="text-[11px] font-mono text-amber-400 font-semibold uppercase tracking-wider">
+                <span className="text-[11px] font-mono text-emerald-400 font-semibold uppercase tracking-wider">
                   [ 05 & 06 · LEGACY ANALYSIS ]
                 </span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-500/40 text-amber-300">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300">
                   Educational
                 </span>
               </div>
@@ -822,7 +822,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
               <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
                 MD5 & DES-CBC
               </h3>
-              <p className="text-xs font-medium text-amber-300/90 mb-2.5">
+              <p className="text-xs font-medium text-emerald-300/90 mb-2.5">
                 Legacy Cryptanalysis Demonstrations
               </p>
               <p className="text-xs text-slate-300 leading-relaxed mb-4">
@@ -831,10 +831,10 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
 
               {/* Warning badges */}
               <div className="space-y-2 mb-6">
-                <div className="p-2 rounded-lg bg-amber-950/40 border border-amber-500/30 text-[10px] font-mono text-amber-200">
+                <div className="p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[10px] font-mono text-emerald-200">
                   <strong>MD5 (RFC 1321):</strong> Collision vulnerable; broken by Wang et al.
                 </div>
-                <div className="p-2 rounded-lg bg-rose-950/40 border border-rose-500/30 text-[10px] font-mono text-rose-200">
+                <div className="p-2 rounded-lg bg-emerald-950/40 border border-emerald-500/30 text-[10px] font-mono text-emerald-200">
                   <strong>DES (FIPS 46-3):</strong> 56-bit key space exhausted in hours.
                 </div>
               </div>
@@ -843,18 +843,18 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             <div className="relative z-10 pt-3 border-t border-emerald-500/15 flex items-center justify-between gap-2">
               <Link
                 to="/algorithm/md5"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-300 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white transition-colors"
               >
                 <span>MD5 Demo</span>
-                <ArrowRight className="w-3 h-3 text-amber-400" />
+                <ArrowRight className="w-3 h-3 text-emerald-400" />
               </Link>
               <span className="text-slate-600">|</span>
               <Link
                 to="/algorithm/des"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-300 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 hover:text-white transition-colors"
               >
                 <span>DES Demo</span>
-                <ArrowRight className="w-3 h-3 text-rose-400" />
+                <ArrowRight className="w-3 h-3 text-emerald-400" />
               </Link>
             </div>
           </div>

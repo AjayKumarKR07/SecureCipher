@@ -261,7 +261,7 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                 type="button"
                 onClick={handleRunSimulation}
                 disabled={simulationLoading}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-purple-500 disabled:opacity-50 text-white text-xs font-semibold shadow-lg shadow-emerald-950/40 flex items-center gap-2 transition-all self-start sm:self-auto"
+                className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-950/40 flex items-center gap-2 transition-all self-start sm:self-auto"
               >
                 {simulationLoading ? (
                   <>
@@ -345,12 +345,12 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                 </div>
 
                 {/* Bob Column */}
-                <div className="p-4 rounded-xl bg-blue-950/20 border border-teal-500/30 space-y-3">
+                <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-teal-300 flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
                       <Lock className="w-3.5 h-3.5" /> Party B (Bob)
                     </span>
-                    <span className="text-[11px] font-mono text-teal-400 bg-[#04160d] px-2 py-0.5 rounded border border-blue-800">
+                    <span className="text-[11px] font-mono text-emerald-400 bg-[#04160d] px-2 py-0.5 rounded border border-emerald-800">
                       Private Secret (b) Kept Local
                     </span>
                   </div>
@@ -362,14 +362,14 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                           <button
                             type="button"
                             onClick={() => handleCopy(simulationResult.bob.public_key_pem, 'sim-b-pub')}
-                            className="text-teal-400 hover:text-teal-300 text-[11px] flex items-center gap-1"
+                            className="text-emerald-400 hover:text-emerald-300 text-[11px] flex items-center gap-1"
                           >
                             {copiedKey === 'sim-b-pub' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                             <span>{copiedKey === 'sim-b-pub' ? 'Copied' : 'Copy'}</span>
                           </button>
                         )}
                       </div>
-                      <div className="p-2 rounded bg-[#030a04] border border-emerald-500/20 font-mono text-[11px] text-blue-200/90 break-all select-all max-h-24 overflow-y-auto">
+                      <div className="p-2 rounded bg-[#030a04] border border-emerald-500/20 font-mono text-[11px] text-emerald-200/90 break-all select-all max-h-24 overflow-y-auto">
                         {simulationResult ? simulationResult.bob.public_key_pem : 'Click "Run Protocol Handshake" above to generate Bob\'s 2048-bit key.'}
                       </div>
                     </div>
@@ -557,14 +557,14 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                     value={alicePeerPubKey}
                     onChange={(e) => setAlicePeerPubKey(e.target.value)}
                     placeholder="Bob's public key PEM..."
-                    className="w-full bg-[#030a04] border border-emerald-500/20 rounded p-2 text-[11px] text-blue-200 font-mono focus:outline-none focus:border-emerald-400"
+                    className="w-full bg-[#030a04] border border-emerald-500/20 rounded p-2 text-[11px] text-emerald-200 font-mono focus:outline-none focus:border-emerald-400"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={aliceLoading}
-                  className="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold disabled:opacity-50 text-xs shadow-md transition-all flex items-center justify-center gap-2"
                 >
                   <Unlock className="w-3.5 h-3.5" />
                   <span>Derive Secret as Alice</span>
@@ -633,7 +633,7 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                     value={bobPrivKey}
                     onChange={(e) => setBobPrivKey(e.target.value)}
                     placeholder="Bob's private key PEM (kept secret)..."
-                    className="w-full bg-[#030a04] border border-emerald-500/20 rounded p-2 text-[11px] text-blue-200 font-mono focus:outline-none focus:border-emerald-400"
+                    className="w-full bg-[#030a04] border border-emerald-500/20 rounded p-2 text-[11px] text-emerald-200 font-mono focus:outline-none focus:border-emerald-400"
                   />
                 </div>
 
@@ -684,7 +684,7 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                 <button
                   type="submit"
                   disabled={bobLoading}
-                  className="w-full py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                  className="w-full py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold disabled:opacity-50 text-xs shadow-md transition-all flex items-center justify-center gap-2"
                 >
                   <Unlock className="w-3.5 h-3.5" />
                   <span>Derive Secret as Bob</span>

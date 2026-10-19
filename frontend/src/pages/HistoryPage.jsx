@@ -207,13 +207,13 @@ export default function HistoryPage({ dbHealth }) {
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm border ${
                 pdfDownloaded
                   ? 'bg-emerald-600/30 border-emerald-500/60 text-emerald-200'
-                  : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold border-emerald-500/80 shadow-emerald-950/40 hover:shadow-indigo-900/50'
+                  : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold border-emerald-500/80 shadow-emerald-950/40 hover:shadow-emerald-950/60'
               } disabled:opacity-50`}
               title="Download formatted A4 audit history report PDF directly to your device"
             >
               {pdfGenerating ? (
                 <>
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   <span>Generating PDF...</span>
                 </>
               ) : pdfDownloaded ? (
@@ -223,7 +223,7 @@ export default function HistoryPage({ dbHealth }) {
                 </>
               ) : (
                 <>
-                  <Download className="w-3.5 h-3.5 text-white" />
+                  <Download className="w-3.5 h-3.5" />
                   <span>Download PDF Report</span>
                 </>
               )}
@@ -234,7 +234,7 @@ export default function HistoryPage({ dbHealth }) {
                 href={lastDownloadedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#040e06] border border-emerald-500/40 hover:border-indigo-400 text-emerald-300 hover:text-emerald-200 text-xs font-medium transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#040e06] border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 text-xs font-medium transition-colors"
                 title="View or print the generated PDF report in a new tab"
               >
                 <ExternalLink className="w-3.5 h-3.5" />

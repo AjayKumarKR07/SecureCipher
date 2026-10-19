@@ -573,7 +573,7 @@ export default function ProfileSettingsPage() {
                                 ? 'bg-emerald-400'
                                 : notif.type === 'warning'
                                 ? 'bg-amber-400'
-                                : 'bg-blue-400'
+                                : 'bg-emerald-400'
                             }`}
                           />
                           <h4 className="text-xs font-bold text-white">{notif.title}</h4>

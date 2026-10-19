@@ -376,17 +376,17 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
 
           {/* Card 2b: RSA-PSS Digital Signatures */}
           <div className="group rounded-2xl bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-violet-500/8 via-transparent to-transparent rounded-bl-full pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-[#06180a] border border-violet-500/40 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-[#06180a] border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
                   <PenLine className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   RFC 8017
                 </span>
               </div>
-              <h3 className="text-base font-bold text-white group-hover:text-violet-300 transition-colors">
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
                 RSA-PSS Signatures
               </h3>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
@@ -395,25 +395,25 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
               <div className="mt-4 p-3 rounded-xl bg-[#061408] border border-emerald-500/15 text-[11px] font-mono space-y-1">
                 <div className="flex justify-between text-slate-400">
                   <span>Key Sizes:</span>
-                  <span className="text-violet-300 font-bold">2048 / 3072 / 4096-bit</span>
+                  <span className="text-emerald-300 font-bold">2048 / 3072 / 4096-bit</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>MGF:</span>
-                  <span className="text-violet-300">MGF1-SHA256 · MAX_SALT</span>
+                  <span className="text-emerald-300">MGF1-SHA256 · MAX_SALT</span>
                 </div>
               </div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2">
               <Link
                 to="/algorithm/rsa-pss"
-                className="py-2 px-3 rounded-xl bg-[#06180a] hover:bg-violet-500 group-hover:bg-violet-500 text-violet-300 hover:text-white group-hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 border border-violet-500/30 group-hover:border-transparent transition-all"
+                className="py-2 px-3 rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-1.5 border border-emerald-500/30 group-hover:border-transparent transition-all"
               >
                 <span>Sign / Verify</span>
                 <ArrowRight className="w-3 h-3" />
               </Link>
               <Link
                 to="/algorithm/rsa-pss"
-                className="py-2 px-3 rounded-xl bg-violet-950/50 hover:bg-violet-400 text-violet-300 hover:text-white font-semibold text-xs flex items-center justify-center gap-1.5 border border-violet-500/30 hover:border-transparent transition-all"
+                className="py-2 px-3 rounded-xl bg-emerald-950/70 hover:bg-emerald-400 text-emerald-300 hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-1.5 border border-emerald-500/40 hover:border-transparent transition-all"
               >
                 <span>File Signing</span>
                 <ArrowRight className="w-3 h-3" />
@@ -496,37 +496,37 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
           </div>
 
           {/* Card 5: MD5 Legacy */}
-          <div className="group rounded-2xl bg-[#040e06] border border-amber-500/20 hover:border-amber-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-amber-950/40 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
+          <div className="group rounded-2xl bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-[#140f06] border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-[#06180a] border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
                   <Fingerprint className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   RFC 1321 • DEPRECATED
                 </span>
               </div>
-              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
                 MD5 Legacy Hash
               </h3>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                 128-bit digest provided exclusively for academic collision research and avalanche effect bit divergence comparisons.
               </p>
-              <div className="mt-4 p-3 rounded-xl bg-[#120d04] border border-amber-500/15 text-[11px] font-mono space-y-1">
+              <div className="mt-4 p-3 rounded-xl bg-[#061408] border border-emerald-500/15 text-[11px] font-mono space-y-1">
                 <div className="flex justify-between text-slate-400">
                   <span>Digest Size:</span>
-                  <span className="text-amber-300 font-bold">128 bits (32 hex)</span>
+                  <span className="text-emerald-300 font-bold">128 bits (32 hex)</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Status:</span>
-                  <span className="text-rose-400 font-bold">Collision Vulnerable</span>
+                  <span className="text-emerald-400 font-semibold">Collision Vulnerable</span>
                 </div>
               </div>
             </div>
             <Link
               to="/algorithm/md5"
-              className="mt-5 w-full py-2.5 px-4 rounded-xl bg-[#160f05] hover:bg-amber-500 group-hover:bg-amber-500 text-amber-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-amber-500/30 group-hover:border-transparent transition-all"
+              className="mt-5 w-full py-2.5 px-4 rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-emerald-500/30 group-hover:border-transparent transition-all"
             >
               <span>Launch MD5 Workbench</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -534,37 +534,37 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
           </div>
 
           {/* Card 6: DES-CBC Legacy */}
-          <div className="group rounded-2xl bg-[#040e06] border border-amber-500/20 hover:border-amber-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-amber-950/40 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
+          <div className="group rounded-2xl bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none" />
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-[#140f06] border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-[#06180a] border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
                   <Lock className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                   FIPS 46-3 • HISTORICAL
                 </span>
               </div>
-              <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
+              <h3 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
                 DES-CBC Legacy Cipher
               </h3>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                 16-round Feistel network with 56-bit effective key and PKCS#7 padding for historical cryptanalysis study.
               </p>
-              <div className="mt-4 p-3 rounded-xl bg-[#120d04] border border-amber-500/15 text-[11px] font-mono space-y-1">
+              <div className="mt-4 p-3 rounded-xl bg-[#061408] border border-emerald-500/15 text-[11px] font-mono space-y-1">
                 <div className="flex justify-between text-slate-400">
                   <span>Key Space:</span>
-                  <span className="text-amber-300 font-bold">2^56 keys (Broken)</span>
+                  <span className="text-emerald-300 font-bold">2^56 keys (Broken)</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
                   <span>Block Size:</span>
-                  <span className="text-amber-300">64-bit Feistel</span>
+                  <span className="text-emerald-300">64-bit Feistel</span>
                 </div>
               </div>
             </div>
             <Link
               to="/algorithm/des"
-              className="mt-5 w-full py-2.5 px-4 rounded-xl bg-[#160f05] hover:bg-amber-500 group-hover:bg-amber-500 text-amber-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-amber-500/30 group-hover:border-transparent transition-all"
+              className="mt-5 w-full py-2.5 px-4 rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-emerald-500/30 group-hover:border-transparent transition-all"
             >
               <span>Launch DES Workbench</span>
               <ArrowRight className="w-3.5 h-3.5" />

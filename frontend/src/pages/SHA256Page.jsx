@@ -529,9 +529,9 @@ export default function SHA256Page({ onOperationSuccess }) {
               <button
                 type="button"
                 onClick={applyAvalanchePreset}
-                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-medium flex items-center gap-1.5 shadow transition-all self-start sm:self-auto"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow transition-all self-start sm:self-auto"
               >
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <Flame className="w-3.5 h-3.5" />
                 <span>Load 1-Bit Flip Avalanche Test</span>
               </button>
             </div>
@@ -642,7 +642,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                   </div>
                   <div className="p-3 bg-[#040e06] rounded-lg border border-emerald-500/20">
                     <span className="text-slate-400 text-[11px] block">Avalanche Bit Flip:</span>
-                    <span className="text-lg font-bold font-mono text-amber-400">
+                    <span className="text-lg font-bold font-mono text-emerald-400">
                       {compareResult.bit_difference_percentage}%
                     </span>
                   </div>
@@ -790,7 +790,7 @@ export default function SHA256Page({ onOperationSuccess }) {
 
         <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
           <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-            <Flame className="w-4 h-4 text-amber-400" />
+            <Flame className="w-4 h-4 text-emerald-400" />
             <span>Strict Avalanche Effect</span>
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">

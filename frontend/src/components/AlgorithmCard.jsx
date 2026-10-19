@@ -25,13 +25,7 @@ export default function AlgorithmCard({ algorithm }) {
           <div className="w-10 h-10 rounded-xl bg-[#06180a] border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform shadow-md">
             <IconComponent className="w-5 h-5" />
           </div>
-          <span
-            className={`text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full border ${
-              isLegacy
-                ? 'bg-amber-950/40 text-amber-300 border-amber-500/30'
-                : 'bg-emerald-950/60 text-emerald-300 border-emerald-500/30'
-            }`}
-          >
+          <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full border bg-emerald-950/60 text-emerald-300 border-emerald-500/30">
             {algorithm.category}
           </span>
         </div>
@@ -72,13 +66,13 @@ export default function AlgorithmCard({ algorithm }) {
                 Active (SHA-256)
               </span>
             ) : algorithm.id === 'md5' ? (
-              <span className="text-amber-400 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span className="text-emerald-400 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 MD5 Legacy
               </span>
             ) : algorithm.id === 'des' ? (
-              <span className="text-amber-400 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span className="text-emerald-400 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 DES Feistel
               </span>
             ) : (

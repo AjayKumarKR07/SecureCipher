@@ -857,14 +857,14 @@ const howItWorksSteps = [
     title: 'Sign with Private Key',
     description: 'Hash the message with SHA-256, then apply RSA-PSS padding (MGF1, max salt) and encrypt the hash with the private key to produce a signature.',
     icon: PenLine,
-    color: 'text-blue-400',
+    color: 'text-emerald-400',
   },
   {
     step: 3,
     title: 'Distribute Message + Signature',
     description: 'Share the original message/file and the Base64 signature. Keep the private key secret — never share it.',
     icon: ArrowRight,
-    color: 'text-violet-400',
+    color: 'text-emerald-400',
   },
   {
     step: 4,
@@ -925,10 +925,10 @@ export default function RSAPSSPage({ onOperationSuccess }) {
       </div>
 
       {/* ── Security Warning ── */}
-      <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/8 border border-blue-500/25">
-        <Info className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
-        <div className="text-xs text-blue-200/80 leading-relaxed">
-          <span className="font-semibold text-blue-300">Signature ≠ Encryption: </span>
+      <div className="flex items-start gap-3 p-4 rounded-xl bg-emerald-500/8 border border-emerald-500/25">
+        <Info className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+        <div className="text-xs text-emerald-200/90 leading-relaxed">
+          <span className="font-semibold text-emerald-300">Signature ≠ Encryption: </span>
           RSA-PSS produces a <em>digital signature</em> — it proves a message was signed by the private-key holder and detects tampering. It does <strong>not</strong> encrypt or hide the message content. Use the RSA Encryption module for confidential data.
         </div>
       </div>

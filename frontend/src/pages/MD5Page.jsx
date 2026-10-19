@@ -150,7 +150,7 @@ export default function MD5Page({ onOperationSuccess }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-lg bg-amber-950/60 border border-amber-500/30 text-amber-400">
+            <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/40 text-emerald-400">
               <Fingerprint className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
@@ -162,8 +162,8 @@ export default function MD5Page({ onOperationSuccess }) {
           </p>
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-amber-950/40 text-amber-300 border border-amber-500/30 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-subtle"></span>
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
             RFC 1321 Active
           </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-rose-950/40 text-rose-300 border border-rose-500/30">
@@ -176,13 +176,13 @@ export default function MD5Page({ onOperationSuccess }) {
       </div>
 
       {/* Security Warning & Cryptographic Advisory */}
-      <div className="rounded-xl border border-amber-500/40 bg-amber-950/20 p-4 flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-amber-200/90 leading-relaxed space-y-1">
+      <div className="rounded-xl border border-emerald-500/30 bg-[#040e06] p-4 flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+        <div className="text-xs text-slate-300 leading-relaxed space-y-1">
           <div>
-            <strong className="text-amber-300">Cryptographic Vulnerability Advisory:</strong> MD5 has suffered practical collision attacks (Wang et al., Stevens et al.) with collision finding complexity below 2³² operations.
+            <strong className="text-emerald-300">Cryptographic Vulnerability Advisory:</strong> MD5 has suffered practical collision attacks (Wang et al., Stevens et al.) with collision finding complexity below 2³² operations.
           </div>
-          <div className="text-[11px] text-amber-300/80">
+          <div className="text-[11px] text-slate-400">
             It must <strong>NOT</strong> be used for digital signatures, SSL/TLS certificates, or password hashing. SecureCipher provides MD5 exclusively for legacy checksum verification and comparative cryptanalysis alongside SHA-256.
           </div>
         </div>
@@ -194,7 +194,7 @@ export default function MD5Page({ onOperationSuccess }) {
           onClick={() => setActiveTab('text')}
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'text'
-              ? 'border-amber-500 text-amber-300 bg-amber-950/20'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
@@ -205,7 +205,7 @@ export default function MD5Page({ onOperationSuccess }) {
           onClick={() => setActiveTab('file')}
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'file'
-              ? 'border-amber-500 text-amber-300 bg-amber-950/20'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
@@ -216,7 +216,7 @@ export default function MD5Page({ onOperationSuccess }) {
           onClick={() => setActiveTab('compare')}
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'compare'
-              ? 'border-amber-500 text-amber-300 bg-amber-950/20'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
@@ -263,29 +263,28 @@ export default function MD5Page({ onOperationSuccess }) {
                 </button>
               </div>
             </div>
-
             <form onSubmit={handleHashText} className="space-y-4">
               <textarea
                 rows={4}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Enter UTF-8 text string to compute MD5 digest..."
-                className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
               />
 
               <button
                 type="submit"
                 disabled={textLoading}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {textLoading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
                     <span>Computing MD5 Digest...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-4 h-4 text-slate-950" />
                     <span>Compute MD5 Digest</span>
                   </>
                 )}
@@ -300,10 +299,10 @@ export default function MD5Page({ onOperationSuccess }) {
             )}
 
             {textResult && (
-              <div className="p-4 rounded-lg bg-[#040e06]/90 border border-amber-500/40 space-y-3">
+              <div className="p-4 rounded-lg bg-[#040e06]/90 border border-emerald-500/40 space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                  <span className="text-amber-300 font-bold flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-emerald-300 font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                     MD5 Hex Digest (32 characters):
                   </span>
                   <div className="flex items-center gap-3">
@@ -313,7 +312,7 @@ export default function MD5Page({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(textResult.digest, 'text-digest')}
-                      className="flex items-center gap-1 text-amber-400 hover:text-amber-300 text-[11px]"
+                      className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-[11px]"
                     >
                       {copiedKey === 'text-digest' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedKey === 'text-digest' ? 'Copied' : 'Copy'}</span>
@@ -321,7 +320,7 @@ export default function MD5Page({ onOperationSuccess }) {
                   </div>
                 </div>
 
-                <div className="font-mono text-xs text-amber-300 bg-[#030a04] p-3 rounded border border-emerald-500/20 break-all select-all font-bold tracking-wider">
+                <div className="font-mono text-xs text-emerald-300 bg-[#030a04] p-3 rounded border border-emerald-500/20 break-all select-all font-bold tracking-wider">
                   {textResult.digest}
                 </div>
 
@@ -329,15 +328,15 @@ export default function MD5Page({ onOperationSuccess }) {
                 <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-mono pt-1">
                   <div className="bg-[#030a04] p-2 rounded border border-emerald-500/20">
                     <span className="text-slate-400 block">Output Bits:</span>
-                    <span className="text-amber-400 font-bold">128 bits</span>
+                    <span className="text-emerald-400 font-bold">128 bits</span>
                   </div>
                   <div className="bg-[#030a04] p-2 rounded border border-emerald-500/20">
                     <span className="text-slate-400 block">Byte Length:</span>
-                    <span className="text-amber-400 font-bold">16 bytes</span>
+                    <span className="text-emerald-400 font-bold">16 bytes</span>
                   </div>
                   <div className="bg-[#030a04] p-2 rounded border border-emerald-500/20">
                     <span className="text-slate-400 block">Hex Digits:</span>
-                    <span className="text-amber-400 font-bold">32 nibbles</span>
+                    <span className="text-emerald-400 font-bold">32 nibbles</span>
                   </div>
                 </div>
               </div>
@@ -348,24 +347,24 @@ export default function MD5Page({ onOperationSuccess }) {
           <div className="space-y-4">
             <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
               <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-                <Cpu className="w-4 h-4 text-amber-400" />
+                <Cpu className="w-4 h-4 text-emerald-400" />
                 <span>MD5 Engine Specs</span>
               </h3>
               <ul className="space-y-2 text-xs text-slate-300">
                 <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                   <span><strong>Digest Size:</strong> 128 bits (16 bytes / 32 hex characters)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                   <span><strong>Block Size:</strong> 512-bit message blocks (64 rounds / 4 stages)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                   <span><strong>Standard:</strong> RFC 1321 (Ronald Rivest, 1991)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                   <span><strong>Primary Utility:</strong> File integrity in non-adversarial environments</span>
                 </li>
                 <li className="flex items-start gap-2">
@@ -389,14 +388,14 @@ export default function MD5Page({ onOperationSuccess }) {
                   Files are streamed in 64 KB chunks directly through hashlib.md5 (O(1) memory footprint).
                 </p>
               </div>
-              <span className="text-[11px] font-mono text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800">
+              <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-500/30">
                 Max 50 MB
               </span>
             </div>
 
             <form onSubmit={handleHashFile} className="space-y-4">
               {/* File Upload Drop Zone */}
-              <div className="border-2 border-dashed border-emerald-500/25 hover:border-amber-500/60 rounded-xl p-6 text-center transition-colors bg-[#040e06]/40">
+              <div className="border-2 border-dashed border-emerald-500/25 hover:border-emerald-500/60 rounded-xl p-6 text-center transition-colors bg-[#040e06]/40">
                 <input
                   type="file"
                   id="md5-file-input"
@@ -407,7 +406,7 @@ export default function MD5Page({ onOperationSuccess }) {
                   htmlFor="md5-file-input"
                   className="cursor-pointer flex flex-col items-center justify-center gap-2"
                 >
-                  <Upload className="w-8 h-8 text-amber-400" />
+                  <Upload className="w-8 h-8 text-emerald-400" />
                   <span className="text-xs font-medium text-white">
                     {selectedFile ? selectedFile.name : 'Click to browse or drop file here'}
                   </span>
@@ -429,23 +428,23 @@ export default function MD5Page({ onOperationSuccess }) {
                   value={fileExpectedHash}
                   onChange={(e) => setFileExpectedHash(e.target.value.trim().toLowerCase())}
                   placeholder="Paste 32-hex character expected MD5 checksum to verify integrity..."
-                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={fileLoading || !selectedFile}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {fileLoading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
                     <span>Streaming and Hashing File...</span>
                   </>
                 ) : (
                   <>
-                    <FileCheck className="w-4 h-4" />
+                    <FileCheck className="w-4 h-4 text-slate-950" />
                     <span>Compute MD5 Checksum</span>
                   </>
                 )}
@@ -460,9 +459,9 @@ export default function MD5Page({ onOperationSuccess }) {
             )}
 
             {fileResult && (
-              <div className="p-4 rounded-lg bg-[#040e06]/90 border border-amber-500/40 space-y-3">
+              <div className="p-4 rounded-lg bg-[#040e06]/90 border border-emerald-500/40 space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                  <span className="text-amber-300 font-bold flex items-center gap-1.5">
+                  <span className="text-emerald-300 font-bold flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                     Computed File Digest:
                   </span>
@@ -473,7 +472,7 @@ export default function MD5Page({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(fileResult.digest, 'file-digest')}
-                      className="flex items-center gap-1 text-amber-400 hover:text-amber-300 text-[11px]"
+                      className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 text-[11px]"
                     >
                       {copiedKey === 'file-digest' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       <span>{copiedKey === 'file-digest' ? 'Copied' : 'Copy'}</span>
@@ -481,7 +480,7 @@ export default function MD5Page({ onOperationSuccess }) {
                   </div>
                 </div>
 
-                <div className="font-mono text-xs text-amber-300 bg-[#030a04] p-3 rounded border border-emerald-500/20 break-all select-all font-bold tracking-wider">
+                <div className="font-mono text-xs text-emerald-300 bg-[#030a04] p-3 rounded border border-emerald-500/20 break-all select-all font-bold tracking-wider">
                   {fileResult.digest}
                 </div>
 
@@ -515,21 +514,21 @@ export default function MD5Page({ onOperationSuccess }) {
             )}
           </div>
 
-          {/* Stream Architecture Card */}
+          {/* Stream Architecture Box */}
           <div className="space-y-4">
             <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
               <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-                <Sliders className="w-4 h-4 text-amber-400" />
+                <Sliders className="w-4 h-4 text-emerald-400" />
                 <span>Chunk Stream Architecture</span>
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
                 Processes uploaded files iteratively in memory buffers of 65,536 bytes:
               </p>
               <div className="p-3 bg-[#030a04] rounded border border-emerald-500/20 font-mono text-[11px] text-slate-300 space-y-1">
-                <div className="text-amber-400">hasher = hashlib.md5()</div>
+                <div className="text-emerald-400">hasher = hashlib.md5()</div>
                 <div>while chunk := await file.read(65536):</div>
                 <div className="pl-4 text-emerald-300">hasher.update(chunk)</div>
-                <div className="text-amber-400">return hasher.hexdigest()</div>
+                <div className="text-emerald-400">return hasher.hexdigest()</div>
               </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
                 Prevents memory bottlenecks when hashing large distribution packages or archives.
@@ -553,9 +552,9 @@ export default function MD5Page({ onOperationSuccess }) {
               <button
                 type="button"
                 onClick={applyAvalanchePreset}
-                className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium flex items-center gap-1.5 shadow transition-all self-start sm:self-auto"
+                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all self-start sm:self-auto cursor-pointer"
               >
-                <Flame className="w-3.5 h-3.5 text-yellow-300" />
+                <Flame className="w-3.5 h-3.5 text-slate-950" />
                 <span>Load 1-Bit Flip Avalanche Test</span>
               </button>
             </div>
@@ -570,7 +569,7 @@ export default function MD5Page({ onOperationSuccess }) {
                     value={compareInputA}
                     onChange={(e) => setCompareInputA(e.target.value)}
                     placeholder="Enter first string..."
-                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
 
@@ -583,7 +582,7 @@ export default function MD5Page({ onOperationSuccess }) {
                     <select
                       value={compareMode}
                       onChange={(e) => setCompareMode(e.target.value)}
-                      className="bg-[#030a04] border border-emerald-500/25 rounded text-[11px] text-slate-300 px-2 py-0.5 focus:outline-none focus:border-amber-500"
+                      className="bg-[#030a04] border border-emerald-500/25 rounded text-[11px] text-slate-300 px-2 py-0.5 focus:outline-none focus:border-emerald-500"
                     >
                       <option value="text_vs_text">Compare Text vs Text</option>
                       <option value="text_vs_hash">Verify Text vs Checksum</option>
@@ -598,7 +597,7 @@ export default function MD5Page({ onOperationSuccess }) {
                         ? 'Paste 32-hex character checksum...'
                         : 'Enter second string...'
                     }
-                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
               </div>
@@ -606,16 +605,16 @@ export default function MD5Page({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={compareLoading}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {compareLoading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
                     <span>Analyzing Bit-Level Differences...</span>
                   </>
                 ) : (
                   <>
-                    <Scale className="w-4 h-4" />
+                    <Scale className="w-4 h-4 text-slate-950" />
                     <span>Compare Hashes & Compute Avalanche Effect</span>
                   </>
                 )}
@@ -636,14 +635,14 @@ export default function MD5Page({ onOperationSuccess }) {
                   className={`p-4 rounded-xl border flex items-center justify-between ${
                     compareResult.is_match
                       ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300'
-                      : 'bg-amber-950/40 border-amber-500/50 text-amber-300'
+                      : 'bg-emerald-950/20 border-emerald-500/40 text-emerald-200'
                   }`}
                 >
                   <div className="flex items-center gap-2 text-xs">
                     {compareResult.is_match ? (
                       <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                     ) : (
-                      <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+                      <AlertCircle className="w-5 h-5 text-emerald-400 shrink-0" />
                     )}
                     <span>
                       {compareResult.is_match
@@ -660,13 +659,13 @@ export default function MD5Page({ onOperationSuccess }) {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs">
                   <div className="p-3 bg-[#040e06] rounded-lg border border-emerald-500/20">
                     <span className="text-slate-400 text-[11px] block">Hamming Distance (Bits):</span>
-                    <span className="text-lg font-bold font-mono text-amber-400">
+                    <span className="text-lg font-bold font-mono text-emerald-400">
                       {compareResult.hamming_distance_bits} / 128
                     </span>
                   </div>
                   <div className="p-3 bg-[#040e06] rounded-lg border border-emerald-500/20">
                     <span className="text-slate-400 text-[11px] block">Avalanche Bit Flip:</span>
-                    <span className="text-lg font-bold font-mono text-orange-400">
+                    <span className="text-lg font-bold font-mono text-emerald-300">
                       {compareResult.bit_difference_percentage}%
                     </span>
                   </div>
@@ -686,12 +685,12 @@ export default function MD5Page({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(compareResult.hash_a, 'comp-a')}
-                        className="text-amber-400 hover:text-amber-300"
+                        className="text-emerald-400 hover:text-emerald-300 cursor-pointer"
                       >
                         {copiedKey === 'comp-a' ? 'Copied' : 'Copy'}
                       </button>
                     </div>
-                    <div className="p-2 rounded bg-[#030a04] text-amber-300 break-all select-all font-bold">
+                    <div className="p-2 rounded bg-[#030a04] text-emerald-300 break-all select-all font-bold">
                       {compareResult.hash_a}
                     </div>
                   </div>
@@ -702,12 +701,12 @@ export default function MD5Page({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(compareResult.hash_b, 'comp-b')}
-                        className="text-amber-400 hover:text-amber-300"
+                        className="text-emerald-400 hover:text-emerald-300 cursor-pointer"
                       >
                         {copiedKey === 'comp-b' ? 'Copied' : 'Copy'}
                       </button>
                     </div>
-                    <div className="p-2 rounded bg-[#030a04] text-amber-300 break-all select-all font-bold">
+                    <div className="p-2 rounded bg-[#030a04] text-emerald-300 break-all select-all font-bold">
                       {compareResult.hash_b}
                     </div>
                   </div>
@@ -723,7 +722,7 @@ export default function MD5Page({ onOperationSuccess }) {
         algorithmName="MD5 (Message Digest 5 — Legacy Hash)"
         subtitle="Historical 128-bit one-way hash algorithm designed by Ronald Rivest in 1991, now cryptographically broken."
         badge="RFC 1321 (Deprecated)"
-        themeColor="amber"
+        themeColor="emerald"
         warningBanner="LEGACY ALGORITHM — EDUCATIONAL USE ONLY: MD5 is cryptographically broken due to practical collision vulnerabilities. It must NEVER be used for passwords, digital certificates, or security-sensitive integrity verification."
         purpose="MD5 was historically designed to produce a compact 128-bit (16-byte) checksum to verify data integrity and fingerprint files. While still occasionally found in legacy checksum files (like old .md5 verification files) or non-cryptographic hash tables, it is strictly obsolete for security because practical collisions can be generated in seconds on commodity laptops."
         diagramSteps={[
@@ -815,7 +814,7 @@ export default function MD5Page({ onOperationSuccess }) {
 
         <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
           <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-            <Cpu className="w-4 h-4 text-amber-400" />
+            <Cpu className="w-4 h-4 text-emerald-400" />
             <span>MD5 vs SHA-256</span>
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">

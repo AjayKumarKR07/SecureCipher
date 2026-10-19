@@ -110,7 +110,7 @@ export default function DESPage({ onOperationSuccess }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-lg bg-orange-950/60 border border-orange-500/30 text-orange-400">
+            <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/40 text-emerald-400">
               <Lock className="w-5 h-5" />
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
@@ -126,23 +126,23 @@ export default function DESPage({ onOperationSuccess }) {
             <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse-subtle"></span>
             EDUCATIONAL ONLY
           </span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-amber-950/40 text-amber-300 border border-amber-500/30">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-emerald-950/40 text-emerald-300 border border-emerald-500/30">
             Withdrawn 2005
           </span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-orange-950/40 text-orange-300 border border-orange-500/30">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#06180a] text-emerald-300 border border-emerald-500/30">
             56-bit Key Space
           </span>
         </div>
       </div>
 
       {/* Prominent Educational Warning */}
-      <div className="rounded-xl border border-rose-500/40 bg-rose-950/20 p-4 flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-        <div className="text-xs text-rose-200/90 leading-relaxed space-y-1">
+      <div className="rounded-xl border border-emerald-500/30 bg-[#040e06] p-4 flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+        <div className="text-xs text-slate-300 leading-relaxed space-y-1">
           <div>
-            <strong className="text-rose-300">HISTORICAL CIPHER ADVISORY:</strong> DES is cryptographically obsolete and was officially withdrawn by NIST in 2005. Its small 56-bit key space (2⁵⁶ ≈ 7.2×10¹⁶ keys) can be exhaustively brute-forced in hours by modern hardware.
+            <strong className="text-emerald-300">HISTORICAL CIPHER ADVISORY:</strong> DES is cryptographically obsolete and was officially withdrawn by NIST in 2005. Its small 56-bit key space (2⁵⁶ ≈ 7.2×10¹⁶ keys) can be exhaustively brute-forced in hours by modern hardware.
           </div>
-          <div className="text-[11px] text-rose-300/80">
+          <div className="text-[11px] text-slate-400">
             <strong>Unauthenticated CBC Mode:</strong> CBC mode provides NO cryptographic integrity or authentication and is vulnerable to bit-flipping attacks. <strong>NEVER</strong> use DES to protect sensitive or production data. SecureCipher implements DES strictly for academic Feistel network analysis and comparative study against AES.
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function DESPage({ onOperationSuccess }) {
           }}
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'encrypt'
-              ? 'border-orange-500 text-orange-300 bg-orange-950/20'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
@@ -171,7 +171,7 @@ export default function DESPage({ onOperationSuccess }) {
           }}
           className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
             activeTab === 'decrypt'
-              ? 'border-amber-500 text-amber-300 bg-amber-950/20'
+              ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
           }`}
         >
@@ -195,7 +195,7 @@ export default function DESPage({ onOperationSuccess }) {
                   value={encPlaintext}
                   onChange={(e) => setEncPlaintext(e.target.value)}
                   placeholder="Enter UTF-8 message to encrypt with DES-CBC..."
-                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -218,7 +218,7 @@ export default function DESPage({ onOperationSuccess }) {
                   maxLength={8}
                   onChange={(e) => setEncKey(e.target.value)}
                   placeholder="e.g. DESKEY56"
-                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-orange-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
                 <p className="text-[11px] text-slate-400 mt-1">
                   64-bit representation where 8 bits are parity bits, leaving 56 effective key bits.
@@ -228,16 +228,16 @@ export default function DESPage({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={encLoading || encKey.length !== 8}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {encLoading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
                     <span>Executing 16 Feistel Rounds...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-4 h-4 text-slate-950" />
                     <span>Encrypt with DES-CBC (Educational)</span>
                   </>
                 )}
@@ -252,10 +252,10 @@ export default function DESPage({ onOperationSuccess }) {
 
               {/* Encryption Result Output */}
               {encResult && (
-                <div className="p-4 rounded-lg bg-[#040e06]/90 border border-orange-500/40 space-y-3">
+                <div className="p-4 rounded-lg bg-[#040e06]/90 border border-emerald-500/40 space-y-3">
                   <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                    <span className="text-orange-300 font-bold flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-orange-400" />
+                    <span className="text-emerald-300 font-bold flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                       DES-CBC Ciphertext Output:
                     </span>
                     <span className="text-[11px] text-slate-400">
@@ -270,13 +270,13 @@ export default function DESPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(encResult.ciphertext, 'enc-ct')}
-                        className="text-orange-400 hover:text-orange-300 text-[11px] flex items-center gap-1"
+                        className="text-emerald-400 hover:text-emerald-300 text-[11px] flex items-center gap-1 cursor-pointer"
                       >
                         {copiedKey === 'enc-ct' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedKey === 'enc-ct' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="font-mono text-xs text-orange-200 bg-[#030a04] p-2.5 rounded border border-emerald-500/20 break-all select-all font-bold">
+                    <div className="font-mono text-xs text-emerald-300 bg-[#030a04] p-2.5 rounded border border-emerald-500/20 break-all select-all font-bold">
                       {encResult.ciphertext}
                     </div>
                   </div>
@@ -288,27 +288,27 @@ export default function DESPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(encResult.iv, 'enc-iv')}
-                        className="text-orange-400 hover:text-orange-300 text-[11px] flex items-center gap-1"
+                        className="text-emerald-400 hover:text-emerald-300 text-[11px] flex items-center gap-1 cursor-pointer"
                       >
                         {copiedKey === 'enc-iv' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedKey === 'enc-iv' ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="font-mono text-xs text-amber-200 bg-[#030a04] p-2.5 rounded border border-emerald-500/20 break-all select-all">
+                    <div className="font-mono text-xs text-emerald-300 bg-[#030a04] p-2.5 rounded border border-emerald-500/20 break-all select-all">
                       {encResult.iv}
                     </div>
                   </div>
 
                   {/* Security Notice on Result */}
-                  <div className="p-2.5 rounded bg-amber-950/30 border border-amber-500/30 text-[11px] text-amber-300/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="p-2.5 rounded bg-[#030a04] border border-emerald-500/30 text-[11px] text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span>
-                      <strong>Authentication Status:</strong> None (CBC mode does not verify integrity).
+                      <strong className="text-emerald-300">Authentication Status:</strong> None (CBC mode does not verify integrity).
                     </span>
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={handleTransferToDecrypt}
-                        className="px-2 py-1 rounded bg-orange-600 hover:bg-orange-500 text-white text-[11px] font-medium flex items-center gap-1 shadow transition-colors"
+                        className="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-[11px] font-bold flex items-center gap-1 shadow transition-colors cursor-pointer"
                       >
                         <span>Transfer to Decrypt</span>
                         <ArrowRight className="w-3 h-3" />
@@ -332,7 +332,7 @@ export default function DESPage({ onOperationSuccess }) {
                   value={decCiphertext}
                   onChange={(e) => setDecCiphertext(e.target.value)}
                   placeholder="Paste Base64-encoded ciphertext..."
-                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                 />
               </div>
 
@@ -346,7 +346,7 @@ export default function DESPage({ onOperationSuccess }) {
                     value={decIv}
                     onChange={(e) => setDecIv(e.target.value)}
                     placeholder="Paste 8-byte Base64 IV..."
-                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
 
@@ -369,7 +369,7 @@ export default function DESPage({ onOperationSuccess }) {
                     maxLength={8}
                     onChange={(e) => setDecKey(e.target.value)}
                     placeholder="e.g. DESKEY56"
-                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="w-full bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
                 </div>
               </div>
@@ -377,16 +377,16 @@ export default function DESPage({ onOperationSuccess }) {
               <button
                 type="submit"
                 disabled={decLoading || !decCiphertext || !decIv || decKey.length !== 8}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 disabled:opacity-50 text-white text-xs font-semibold shadow-md transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {decLoading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
                     <span>Inverting 16 Feistel Rounds...</span>
                   </>
                 ) : (
                   <>
-                    <Unlock className="w-4 h-4" />
+                    <Unlock className="w-4 h-4 text-slate-950" />
                     <span>Decrypt DES Ciphertext</span>
                   </>
                 )}
@@ -401,9 +401,9 @@ export default function DESPage({ onOperationSuccess }) {
 
               {/* Decryption Result Output */}
               {decResult && (
-                <div className="p-4 rounded-lg bg-[#040e06]/90 border border-amber-500/40 space-y-3">
+                <div className="p-4 rounded-lg bg-[#040e06]/90 border border-emerald-500/40 space-y-3">
                   <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                    <span className="text-amber-300 font-bold flex items-center gap-1.5">
+                    <span className="text-emerald-300 font-bold flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                       Decrypted Plaintext Output:
                     </span>
@@ -414,7 +414,7 @@ export default function DESPage({ onOperationSuccess }) {
                       <button
                         type="button"
                         onClick={() => handleCopy(decResult.plaintext, 'dec-pt')}
-                        className="text-amber-400 hover:text-amber-300 text-[11px] flex items-center gap-1"
+                        className="text-emerald-400 hover:text-emerald-300 text-[11px] flex items-center gap-1 cursor-pointer"
                       >
                         {copiedKey === 'dec-pt' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedKey === 'dec-pt' ? 'Copied' : 'Copy'}</span>
@@ -427,13 +427,13 @@ export default function DESPage({ onOperationSuccess }) {
                   </div>
 
                   {/* CBC Tamper Warning */}
-                  <div className="p-3 rounded bg-amber-950/40 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <div className="p-3 rounded bg-emerald-950/30 border border-emerald-500/30 text-xs text-slate-300 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <div className="space-y-0.5">
-                      <div className="font-semibold text-amber-300">
+                      <div className="font-semibold text-emerald-300">
                         Zero Authentication Notice (is_authenticated: false):
                       </div>
-                      <div className="text-[11px] text-amber-300/80">
+                      <div className="text-[11px] text-slate-400">
                         {decResult.tamper_warning}
                       </div>
                     </div>
@@ -448,20 +448,20 @@ export default function DESPage({ onOperationSuccess }) {
         <div className="space-y-4">
           <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
             <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-              <Cpu className="w-4 h-4 text-orange-400" />
+              <Cpu className="w-4 h-4 text-emerald-400" />
               <span>DES Architecture</span>
             </h3>
             <ul className="space-y-2 text-xs text-slate-300">
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Block Size:</strong> 64 bits (split into L₀ and R₀ 32-bit halves)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Key Size:</strong> 56 bits effective (8 parity bits discarded)</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Feistel Rounds:</strong> 16 iterative rounds with 8 non-linear S-boxes</span>
               </li>
               <li className="flex items-start gap-2">
@@ -469,7 +469,7 @@ export default function DESPage({ onOperationSuccess }) {
                 <span><strong>Exhaustive Brute Force:</strong> 2⁵⁶ keys cracked in hours</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0"></span>
                 <span><strong>Sweet32 Risk:</strong> 64-bit blocks leak collisions after ~32 GB</span>
               </li>
             </ul>
@@ -482,7 +482,7 @@ export default function DESPage({ onOperationSuccess }) {
         algorithmName="DES (Data Encryption Standard — Legacy Block Cipher)"
         subtitle="Historical 16-round symmetric Feistel cipher operating on 64-bit blocks with a deprecated 56-bit key space."
         badge="NIST FIPS 46-3 (Withdrawn 2005)"
-        themeColor="orange"
+        themeColor="emerald"
         warningBanner="INSECURE LEGACY CIPHER — EDUCATIONAL USE ONLY: DES has a critically small 56-bit key space that can be broken by brute-force in hours. CBC mode provides zero message authentication and is vulnerable to bit-flipping attacks. NEVER use DES for real data."
         purpose="DES was adopted by NBS (now NIST) in 1977 as the first public federal encryption standard for securing financial transactions and government communications. Today, it serves as an essential teaching benchmark in cryptanalysis to demonstrate the Feistel structure, S-box non-linearity, and why 56-bit key spaces are completely vulnerable to modern parallel brute-force attacks."
         diagramSteps={[
@@ -578,7 +578,7 @@ export default function DESPage({ onOperationSuccess }) {
             <thead className="bg-[#040e06]/90 text-slate-300 font-mono text-[11px]">
               <tr>
                 <th className="p-3 border-b border-emerald-500/20">Cryptographic Metric</th>
-                <th className="p-3 border-b border-emerald-500/20 text-orange-400 font-bold">DES (Legacy Standard)</th>
+                <th className="p-3 border-b border-emerald-500/20 text-slate-300 font-bold">DES (Legacy Standard)</th>
                 <th className="p-3 border-b border-emerald-500/20 text-emerald-400 font-bold">AES (Current Gold Standard)</th>
               </tr>
             </thead>
@@ -595,7 +595,7 @@ export default function DESPage({ onOperationSuccess }) {
               </tr>
               <tr className="hover:bg-[#040e06]/40">
                 <td className="p-3 font-medium text-white">Cipher Block Size</td>
-                <td className="p-3 text-amber-300 font-mono">64 bits (Sweet32 vulnerability)</td>
+                <td className="p-3 text-slate-300 font-mono">64 bits (Sweet32 vulnerability)</td>
                 <td className="p-3 text-emerald-300 font-mono">128 bits (Immune to Sweet32 collisions)</td>
               </tr>
               <tr className="hover:bg-[#040e06]/40">
@@ -622,7 +622,7 @@ export default function DESPage({ onOperationSuccess }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-3">
           <h3 className="text-xs font-bold text-white flex items-center gap-2 uppercase font-mono">
-            <Cpu className="w-4 h-4 text-orange-400" />
+            <Cpu className="w-4 h-4 text-emerald-400" />
             <span>Feistel Network</span>
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
