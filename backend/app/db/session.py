@@ -3,7 +3,7 @@ import time
 from typing import Generator, Optional, Tuple, Dict, Any
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker, Session, DeclarativeBase
-from app.core.config import settings
+from app.core.config import settings, normalize_database_url
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +20,19 @@ _SessionLocal = None
 def get_engine():
     global _engine
     if _engine is None and settings.DATABASE_URL:
+        db_url = normalize_database_url(settings.DATABASE_URL)
+        if not db_url:
+            return None
         try:
             # Psycopg 3 engine with pool pre-ping
             _engine = create_engine(
-                settings.DATABASE_URL,
+                db_url,
                 pool_pre_ping=True,
                 echo=False,
                 future=True,
             )
         except Exception as e:
-            logger.error("Failed to initialize database engine: %s", str(e))
+            logger.error("Failed to initialize database engine: %s", type(e).__name__)
             _engine = None
     return _engine
 
@@ -107,7 +110,7 @@ def check_database_connection() -> Dict[str, Any]:
                 "latency_ms": latency,
             }
     except Exception as e:
-        logger.warning("Database connection test failed: %s", str(e))
+        logger.warning("Database connection test failed: %s", type(e).__name__)
         return {
             "status": "disconnected",
             "connected": False,

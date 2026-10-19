@@ -3,7 +3,31 @@
  * Connects to the FastAPI backend endpoints with token-based authentication and fallback handling.
  */
 
-const API_BASE_URL = '/api';
+/**
+ * Normalizes and returns the base API URL for backend requests.
+ * Uses import.meta.env.VITE_API_BASE_URL if configured; otherwise defaults to '/api'
+ * for local development with Vite's dev server proxy.
+ *
+ * Normalizes trailing slashes safely and ensures the path ends with '/api' without duplicating.
+ *
+ * @param {string} [rawUrl] Optional explicit URL string (useful for testing)
+ * @returns {string} Normalized API base URL (e.g. 'https://api.example.com/api' or '/api')
+ */
+export function getApiBaseUrl(rawUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL)) {
+  if (!rawUrl || typeof rawUrl !== 'string' || !rawUrl.trim()) {
+    return '/api';
+  }
+  const trimmed = rawUrl.trim().replace(/\/+$/, '');
+  if (!trimmed) {
+    return '/api';
+  }
+  if (trimmed.endsWith('/api')) {
+    return trimmed;
+  }
+  return `${trimmed}/api`;
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Authentication token storage and retrieval utilities

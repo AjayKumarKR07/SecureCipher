@@ -2,9 +2,7 @@
  * Security & Performance Analytics API Service
  * Handles authenticated requests for metrics, charts, performance, security events, and audit exports.
  */
-import { getAuthHeaders } from './api';
-
-const API_BASE_URL = '/api';
+import { getAuthHeaders, API_BASE_URL } from './api';
 
 /**
  * Convert an object of parameters into a clean URL query string.

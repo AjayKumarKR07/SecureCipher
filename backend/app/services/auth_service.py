@@ -133,10 +133,10 @@ def request_registration_otp(
             resend_cooldown_seconds=RESEND_COOLDOWN_SECONDS,
         )
 
-    # In production mode, never expose dev OTP
-    is_prod = settings.ENVIRONMENT.lower() == "production"
-    if is_prod:
-        logger.error("Production alert: SMTP unconfigured on server. Disallowing OTP generation.")
+    # In production and staging modes, never expose dev OTP
+    is_prod_or_staging = settings.ENVIRONMENT.lower() in ("production", "staging")
+    if is_prod_or_staging:
+        logger.error("%s alert: SMTP unconfigured on server. Disallowing OTP generation.", settings.ENVIRONMENT.capitalize())
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Email verification service is temporarily unavailable. Please configure SMTP credentials.",

@@ -4,6 +4,33 @@ from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def normalize_database_url(url: Optional[str]) -> Optional[str]:
+    """
+    Normalizes PostgreSQL connection URLs for Psycopg 3 compatibility.
+    - Provider URLs using 'postgres://' or 'postgresql://' are converted to 'postgresql+psycopg://'.
+    - 'postgresql+psycopg2://' and 'postgres+psycopg2://' are converted to 'postgresql+psycopg://'.
+    - Already correct 'postgresql+psycopg://' URLs are preserved.
+    - SQLite URLs (e.g. 'sqlite:///:memory:', 'sqlite:///./test.db') and other dialects used by tests are preserved untouched.
+    - None or empty/whitespace strings safely return None.
+    """
+    if not url or not str(url).strip():
+        return None
+    url_str = str(url).strip()
+    if url_str.startswith("postgresql+psycopg://"):
+        return url_str
+    elif url_str.startswith("postgresql+psycopg2://"):
+        return "postgresql+psycopg://" + url_str[len("postgresql+psycopg2://"):]
+    elif url_str.startswith("postgres+psycopg2://"):
+        return "postgresql+psycopg://" + url_str[len("postgres+psycopg2://"):]
+    elif url_str.startswith("postgres+psycopg://"):
+        return "postgresql+psycopg://" + url_str[len("postgres+psycopg://"):]
+    elif url_str.startswith("postgres://"):
+        return "postgresql+psycopg://" + url_str[len("postgres://"):]
+    elif url_str.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url_str[len("postgresql://"):]
+    return url_str
+
+
 class Settings(BaseSettings):
     PROJECT_NAME: str = "SecureCipher"
     VERSION: str = "0.1.0"
@@ -41,6 +68,11 @@ class Settings(BaseSettings):
 
     # Environment
     ENVIRONMENT: str = "development"
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_database_url(cls, v: Optional[str]) -> Optional[str]:
+        return normalize_database_url(v)
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
