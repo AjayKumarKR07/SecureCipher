@@ -217,10 +217,10 @@ export default function AESFileCryptoPage({ onOperationSuccess }) {
       </div>
 
       {/* ── Mode Selection Tabs ── */}
-      <div className="flex items-center gap-3 border-b border-emerald-500/20 pb-3">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 border-b border-emerald-500/20 pb-3">
         <button
           onClick={() => setActiveTab('encrypt')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'encrypt'
               ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-lg shadow-emerald-950/50'
               : 'text-slate-400 hover:text-white hover:bg-[#06180a]/60 border border-transparent'
@@ -231,7 +231,7 @@ export default function AESFileCryptoPage({ onOperationSuccess }) {
         </button>
         <button
           onClick={() => setActiveTab('decrypt')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'decrypt'
               ? 'bg-teal-950/80 text-teal-300 border border-teal-500/40 shadow-lg shadow-teal-950/50'
               : 'text-slate-400 hover:text-white hover:bg-[#06180a]/60 border border-transparent'

@@ -205,13 +205,13 @@ export default function HistoryPage({ dbHealth }) {
           </p>
         </div>
 
-        <div className="flex flex-col sm:items-end gap-1.5 self-start sm:self-auto">
-          <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-col sm:items-end gap-1.5 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
             <button
               type="button"
               onClick={handleDownloadPDF}
               disabled={loading || pdfGenerating}
-              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all shadow-sm border ${
+              className={`inline-flex items-center justify-center gap-2 px-3.5 py-2.5 sm:py-2 rounded-lg text-xs font-semibold transition-all shadow-sm border w-full sm:w-auto min-h-[38px] cursor-pointer ${
                 pdfDownloaded
                   ? 'bg-emerald-600/30 border-emerald-500/60 text-emerald-200'
                   : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold border-emerald-500/80 shadow-emerald-950/40 hover:shadow-emerald-950/60'
@@ -241,7 +241,7 @@ export default function HistoryPage({ dbHealth }) {
                 href={lastDownloadedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#040e06] border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 text-xs font-medium transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-lg bg-[#040e06] border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 text-xs font-medium transition-colors w-full sm:w-auto min-h-[38px]"
                 title="View or print the generated PDF report in a new tab"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -253,7 +253,7 @@ export default function HistoryPage({ dbHealth }) {
               type="button"
               onClick={loadHistory}
               disabled={loading}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/25 text-slate-300 hover:text-white text-xs font-medium transition-colors disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 sm:py-2 rounded-lg bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/25 text-slate-300 hover:text-white text-xs font-medium transition-colors disabled:opacity-50 w-full sm:w-auto min-h-[38px] cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
               <span>Refresh Audit Trail</span>
@@ -263,7 +263,7 @@ export default function HistoryPage({ dbHealth }) {
               type="button"
               onClick={() => setShowClearConfirm(true)}
               disabled={loading || totalCount === 0}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-rose-950/40 border border-rose-500/40 hover:border-rose-500/70 hover:bg-rose-900/40 text-rose-400 hover:text-rose-300 text-xs font-medium transition-colors disabled:opacity-40"
+              className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 sm:py-2 rounded-lg bg-rose-950/40 border border-rose-500/40 hover:border-rose-500/70 hover:bg-rose-900/40 text-rose-400 hover:text-rose-300 text-xs font-medium transition-colors disabled:opacity-40 w-full sm:w-auto min-h-[38px] cursor-pointer"
               title="Permanently delete all audit records from the database"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -424,7 +424,7 @@ export default function HistoryPage({ dbHealth }) {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[700px] text-left text-xs">
               <thead className="bg-[#030a04]/80 text-slate-400 font-mono border-b border-emerald-500/20">
                 <tr>
                   <th className="py-3 px-4">Audit ID</th>
@@ -572,23 +572,23 @@ export default function HistoryPage({ dbHealth }) {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-between gap-2 pt-3 border-t border-emerald-500/20">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-3 border-t border-emerald-500/20">
               <button
                 type="button"
                 onClick={() => {
                   setItemToDelete(viewingItem);
                 }}
-                className="px-3 py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-800/40 text-xs font-medium inline-flex items-center gap-1.5 transition-colors"
+                className="w-full sm:w-auto justify-center px-3 py-2 sm:py-1.5 rounded-lg bg-rose-950/40 hover:bg-rose-900/50 text-rose-300 border border-rose-800/40 text-xs font-medium inline-flex items-center gap-1.5 transition-colors min-h-[36px] cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Delete Record</span>
               </button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => handleDownloadSingleReport(viewingItem)}
-                  className="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-colors shadow-sm"
+                  className="flex-1 sm:flex-initial justify-center px-3.5 py-2 sm:py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 transition-colors shadow-sm min-h-[36px] cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download Report</span>
@@ -596,7 +596,7 @@ export default function HistoryPage({ dbHealth }) {
                 <button
                   type="button"
                   onClick={() => setViewingItem(null)}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors"
+                  className="flex-1 sm:flex-initial justify-center px-3.5 py-2 sm:py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors min-h-[36px] cursor-pointer"
                 >
                   Close
                 </button>

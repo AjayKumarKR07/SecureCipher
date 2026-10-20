@@ -198,20 +198,20 @@ export default function RSAPage({ onOperationSuccess }) {
               Generate genuine cryptographically secure RSA keypairs (e = 65537) via the FastAPI backend.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
             <select
               value={keyGenSize}
               onChange={(e) => setKeyGenSize(e.target.value)}
-              className="bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono"
+              className="w-full sm:w-auto bg-[#040e06] border border-emerald-500/25 rounded-lg px-3 py-2 sm:py-1.5 text-xs text-white focus:outline-none focus:border-emerald-400 font-mono min-h-[38px]"
             >
-              <option value="2048">RSA-2048 (190 bytes max payload)</option>
-              <option value="3072">RSA-3072 (318 bytes max payload)</option>
+              <option value="2048">RSA-2048 (190 bytes max)</option>
+              <option value="3072">RSA-3072 (318 bytes max)</option>
             </select>
             <button
               type="button"
               onClick={handleGenerateKeys}
               disabled={keyGenLoading}
-              className="px-4 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold disabled:opacity-50 text-white text-xs font-semibold shadow-md shadow-blue-950/50 flex items-center gap-1.5 transition-all"
+              className="w-full sm:w-auto justify-center px-4 py-2 sm:py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold disabled:opacity-50 text-xs font-semibold shadow-md shadow-emerald-950/50 flex items-center gap-1.5 transition-all min-h-[38px] cursor-pointer"
             >
               {keyGenLoading ? (
                 <>
@@ -327,10 +327,10 @@ export default function RSAPage({ onOperationSuccess }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-5">
           {/* Tabs: Encrypt / Decrypt */}
-          <div className="flex rounded-lg bg-[#040e06] p-1 border border-emerald-500/20">
+          <div className="flex flex-col sm:flex-row rounded-lg bg-[#040e06] p-1 border border-emerald-500/20 gap-1 sm:gap-0">
             <button
               onClick={() => { setActiveTab('encrypt'); setEncryptError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-semibold rounded-md transition-all min-h-[38px] cursor-pointer ${
                 activeTab === 'encrypt' ? 'bg-teal-500 text-slate-950 font-bold shadow-md' : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -339,7 +339,7 @@ export default function RSAPage({ onOperationSuccess }) {
             </button>
             <button
               onClick={() => { setActiveTab('decrypt'); setDecryptError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-semibold rounded-md transition-all min-h-[38px] cursor-pointer ${
                 activeTab === 'decrypt' ? 'bg-emerald-500 text-slate-950 font-bold shadow-md' : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -466,11 +466,11 @@ export default function RSAPage({ onOperationSuccess }) {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-500/20">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-emerald-500/20">
                     <button
                       type="button"
                       onClick={handleTransferToDecrypt}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                      className="w-full sm:w-auto justify-center px-3 py-2 sm:py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors min-h-[38px] cursor-pointer"
                     >
                       <span>Transfer to Decrypt Tab</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -478,7 +478,7 @@ export default function RSAPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(JSON.stringify(encryptResult, null, 2), 'json')}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-emerald-500/25 flex items-center gap-1.5 transition-colors"
+                      className="w-full sm:w-auto justify-center px-3 py-2 sm:py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-emerald-500/25 flex items-center gap-1.5 transition-colors min-h-[38px] cursor-pointer"
                     >
                       {copiedKey === 'json' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedKey === 'json' ? 'JSON Copied' : 'Copy Complete JSON'}</span>

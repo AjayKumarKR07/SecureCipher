@@ -48,35 +48,33 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-emerald-500/15 bg-[#030804]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-30 h-16 border-b border-emerald-500/15 bg-[#030804]/90 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between gap-2">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#06180a] focus:outline-none"
-          aria-label="Toggle Navigation"
+          className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#06180a] focus:outline-none focus:ring-1 focus:ring-emerald-400/40 min-w-[38px] min-h-[38px] flex items-center justify-center cursor-pointer shrink-0"
+          aria-label="Toggle Navigation Sidebar"
         >
           <Menu className="w-5 h-5 text-emerald-400" />
         </button>
 
-        <Link to="/dashboard" className="flex items-center gap-2.5 group">
-          <div className="relative w-8 h-8 rounded-xl bg-[#06180a] border border-emerald-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:border-emerald-400 transition-all">
+        <Link to="/dashboard" className="flex items-center gap-2 group min-w-0">
+          <div className="relative w-8 h-8 rounded-xl bg-[#06180a] border border-emerald-500/40 p-0.5 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:border-emerald-400 transition-all shrink-0">
             <div className="w-full h-full bg-[#030a04] rounded-[9px] flex items-center justify-center">
               <ShieldCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
             </div>
             <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping opacity-75" />
           </div>
-          <div>
-            <span className="font-extrabold tracking-tight text-white text-base flex items-center gap-1">
-              Secure<span className="text-emerald-400">Cipher</span>
-            </span>
-          </div>
-          <span className="hidden sm:inline-block ml-1 text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 font-bold">
+          <span className="font-extrabold tracking-tight text-white text-sm sm:text-base flex items-center gap-0.5 truncate">
+            Secure<span className="text-emerald-400">Cipher</span>
+          </span>
+          <span className="hidden md:inline-block ml-1 text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 font-bold shrink-0">
             Dashboard
           </span>
         </Link>
       </div>
 
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
         {/* Backend Status Telemetry */}
         <div className="hidden sm:flex items-center gap-2 bg-[#06180a]/80 px-3 py-1.5 rounded-xl border border-emerald-500/20 text-xs font-mono">
           <Activity className="w-3.5 h-3.5 text-emerald-400" />
@@ -110,18 +108,18 @@ export default function Navbar({
           onClick={onRefresh}
           disabled={isRefreshing}
           title="Refresh Backend & Database Health"
-          className="p-2 rounded-xl bg-[#06180a] border border-emerald-500/25 text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-[#06180a] border border-emerald-500/25 text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors disabled:opacity-50 cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
         >
-          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-emerald-400' : 'text-emerald-400'}`} />
+          <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefreshing ? 'animate-spin text-emerald-400' : 'text-emerald-400'}`} />
         </button>
 
         {/* Notifications Icon */}
         <Link
           to="/profile"
           title="Notifications & Activity"
-          className="relative p-2 rounded-xl bg-[#06180a] border border-emerald-500/25 text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors"
+          className="relative p-2 sm:p-2.5 rounded-xl bg-[#06180a] border border-emerald-500/25 text-emerald-300 hover:text-white hover:border-emerald-400/50 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
         >
-          <Bell className="w-4 h-4 text-emerald-400" />
+          <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse border-2 border-black" />
           )}
@@ -132,12 +130,13 @@ export default function Navbar({
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setProfileDropdownOpen((prev) => !prev)}
-              className="flex items-center gap-2 bg-[#06180a] hover:bg-[#08220e] border border-emerald-500/30 hover:border-emerald-400 pl-3 pr-2 py-1.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 sm:gap-2 bg-[#06180a] hover:bg-[#08220e] border border-emerald-500/30 hover:border-emerald-400 px-2 sm:pl-3 sm:pr-2 py-1.5 rounded-xl text-xs transition-all cursor-pointer shadow-sm min-h-[36px]"
+              aria-label="User Account Menu"
             >
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center text-[10px] font-bold text-slate-950">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center text-[10px] font-bold text-slate-950 shrink-0">
                 {user.full_name ? user.full_name[0].toUpperCase() : 'U'}
               </div>
-              <span className="text-emerald-300 font-semibold truncate max-w-[90px]">
+              <span className="hidden sm:inline text-emerald-300 font-semibold truncate max-w-[90px]">
                 {user.full_name.split(' ')[0]}
               </span>
               <ChevronDown className={`w-3.5 h-3.5 text-emerald-400/70 transition-transform ${profileDropdownOpen ? 'rotate-180' : ''}`} />

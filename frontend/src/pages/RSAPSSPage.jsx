@@ -57,7 +57,7 @@ function TabButton({ active, onClick, icon: Icon, label }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 whitespace-nowrap ${
+      className={`flex items-center gap-2 px-3 sm:px-4 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 whitespace-nowrap min-h-[40px] cursor-pointer ${
         active
           ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-md shadow-emerald-950/40'
           : 'text-slate-400 hover:text-emerald-300 hover:bg-emerald-500/10 border border-transparent'

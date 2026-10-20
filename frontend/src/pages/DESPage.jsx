@@ -149,13 +149,13 @@ export default function DESPage({ onOperationSuccess }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-emerald-500/20 gap-2">
+      <div className="flex border-b border-emerald-500/20 gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => {
             setActiveTab('encrypt');
             setEncError('');
           }}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'encrypt'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -169,7 +169,7 @@ export default function DESPage({ onOperationSuccess }) {
             setActiveTab('decrypt');
             setDecError('');
           }}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'decrypt'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'

@@ -16,7 +16,7 @@ export default function AlgorithmCard({ algorithm }) {
   const isLegacy = algorithm.id === 'md5' || algorithm.id === 'des';
 
   return (
-    <div className="rounded-2xl p-6 flex flex-col justify-between bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden group transition-all duration-200">
+    <div className="rounded-2xl p-4 sm:p-6 flex flex-col justify-between bg-[#040e06] border border-emerald-500/20 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-950/40 relative overflow-hidden group transition-all duration-200">
       {/* Decorative gradient corner glow */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 via-transparent to-transparent rounded-bl-full pointer-events-none transition-all group-hover:from-emerald-500/20" />
 
@@ -84,7 +84,7 @@ export default function AlgorithmCard({ algorithm }) {
 
       <Link
         to={algorithm.workbench_path}
-        className="w-full py-2.5 px-4 rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-emerald-500/30 group-hover:border-transparent transition-all cursor-pointer shadow-sm"
+        className="w-full py-2.5 px-4 min-h-[40px] rounded-xl bg-[#06180a] hover:bg-emerald-500 group-hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 group-hover:text-slate-950 font-semibold text-xs flex items-center justify-center gap-2 border border-emerald-500/30 group-hover:border-transparent transition-all cursor-pointer shadow-sm"
       >
         <span>Launch Workbench</span>
         <ArrowRight className="w-3.5 h-3.5" />

@@ -814,7 +814,7 @@ export default function AnalyticsPage() {
 
         {/* Performance Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[640px] text-left text-xs">
             <thead>
               <tr className="border-b border-emerald-500/15 text-slate-400 font-mono text-[11px]">
                 <th className="pb-2 font-semibold">Target</th>

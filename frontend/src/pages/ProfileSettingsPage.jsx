@@ -157,7 +157,7 @@ export default function ProfileSettingsPage() {
         <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
             {/* User Avatar Initial */}
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-emerald-400 via-emerald-600 to-emerald-800 p-0.5 shadow-lg shadow-emerald-950/60 flex items-center justify-center shrink-0">
               <div className="w-full h-full bg-[#030804] rounded-[14px] flex items-center justify-center text-emerald-400 font-extrabold text-2xl sm:text-3xl font-mono">
@@ -167,7 +167,7 @@ export default function ProfileSettingsPage() {
 
             <div className="space-y-1">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
                   {user?.full_name || 'Cryptographic Analyst'}
                 </h1>
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
@@ -187,12 +187,12 @@ export default function ProfileSettingsPage() {
         </div>
 
         {/* Tab Buttons */}
-        <div className="relative z-10 flex items-center gap-2 pt-6 mt-6 border-t border-emerald-500/15 overflow-x-auto">
+        <div className="relative z-10 flex items-center gap-2 pt-6 mt-6 border-t border-emerald-500/15 overflow-x-auto pb-1">
           <button
             onClick={() => setActiveTab('profile')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all min-h-[38px] cursor-pointer ${
               activeTab === 'profile'
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-bold'
                 : 'bg-[#040e06]/60 text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
@@ -202,9 +202,9 @@ export default function ProfileSettingsPage() {
 
           <button
             onClick={() => setActiveTab('password')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+            className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all min-h-[38px] cursor-pointer ${
               activeTab === 'password'
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-bold'
                 : 'bg-[#040e06]/60 text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
@@ -214,9 +214,9 @@ export default function ProfileSettingsPage() {
 
           <button
             onClick={() => setActiveTab('notifications')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer relative ${
+            className={`shrink-0 px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all min-h-[38px] cursor-pointer relative ${
               activeTab === 'notifications'
-                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
+                ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 font-bold'
                 : 'bg-[#040e06]/60 text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
@@ -234,7 +234,7 @@ export default function ProfileSettingsPage() {
       {/* ============================================================== */}
       {activeTab === 'profile' && (
         <div className="grid md:grid-cols-12 gap-6">
-          <div className="md:col-span-8 p-6 sm:p-8 rounded-3xl bg-[#061208]/90 border border-emerald-500/20 space-y-6">
+          <div className="md:col-span-8 p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl bg-[#061208]/90 border border-emerald-500/20 space-y-6">
             <div>
               <h2 className="text-lg font-bold text-white">Profile Information</h2>
               <p className="text-xs text-slate-400 mt-1">

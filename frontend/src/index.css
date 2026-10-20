@@ -7,6 +7,11 @@
     --border-dark: rgba(16, 185, 129, 0.2);
   }
 
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background-color: #030704;
@@ -14,6 +19,11 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, input, select, textarea {
+    touch-action: manipulation;
   }
 
   code, pre, .font-mono {

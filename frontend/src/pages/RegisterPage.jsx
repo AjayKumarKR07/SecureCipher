@@ -254,7 +254,7 @@ export default function RegisterPage() {
       </header>
 
       {/* Main Registration Container */}
-      <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 flex items-center justify-center">
+      <main className="relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 flex items-center justify-center">
         <div className="w-full grid lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Cryptographic Trust & Verification Features */}
           <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-8 rounded-[2.5rem] bg-gradient-to-b from-emerald-950/20 to-[#040e06] border border-emerald-500/15 relative overflow-hidden h-[640px]">
@@ -320,7 +320,7 @@ export default function RegisterPage() {
 
           {/* Right Column: Registration Card */}
           <div className="lg:col-span-7">
-            <div className="p-8 sm:p-10 rounded-[2.5rem] bg-[#040e06]/90 backdrop-blur-xl border border-emerald-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.6)] relative overflow-hidden">
+            <div className="p-5 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2.5rem] bg-[#040e06]/90 backdrop-blur-xl border border-emerald-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.6)] relative overflow-hidden">
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
               {/* Card Header */}
@@ -329,10 +329,10 @@ export default function RegisterPage() {
                   <Sparkles className="w-3 h-3" />
                   Account Registration
                 </div>
-                <h1 className="text-3xl font-extrabold text-white tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                   {step === 'verify_otp' ? 'Verify Your Email' : 'Create Your Account'}
                 </h1>
-                <p className="text-slate-400 text-sm mt-1.5">
+                <p className="text-slate-400 text-xs sm:text-sm mt-1.5">
                   {step === 'verify_otp'
                     ? `Enter the 6-digit verification code sent to ${email}`
                     : 'Join SecureCipher to explore cryptographic tools and security demonstrations.'}
@@ -570,7 +570,7 @@ export default function RegisterPage() {
                       <p className="text-[11px] text-emerald-200/80 leading-relaxed">
                         Email dispatch is bypassed for project demonstration. Your 6-digit verification code was securely generated and hashed directly in PostgreSQL.
                       </p>
-                      <div className="pt-2 border-t border-emerald-500/20 flex items-center justify-between gap-3">
+                      <div className="pt-2 border-t border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-2">
                           <span className="text-[11px] font-mono text-slate-300">Demo Code:</span>
                           <span className="text-base font-mono font-bold text-emerald-300 tracking-[0.25em] bg-[#020603] px-3 py-1 rounded-lg border border-emerald-500/50 select-all">
@@ -580,7 +580,7 @@ export default function RegisterPage() {
                         <button
                           type="button"
                           onClick={() => setOtp(demoOtpNotice)}
-                          className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+                          className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer min-h-[36px]"
                         >
                           <Check className="w-3.5 h-3.5" />
                           <span>Auto-Fill</span>
@@ -601,7 +601,7 @@ export default function RegisterPage() {
                         Missing variables: <strong className="text-amber-100">{missingConfig.join(', ')}</strong>.
                       </p>
                       {devOtpNotice && (
-                        <div className="mt-2 pt-2 border-t border-amber-500/20 flex items-center justify-between">
+                        <div className="mt-2 pt-2 border-t border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                           <span className="text-[11px] font-mono text-amber-400">
                             Development Verification Code:
                           </span>

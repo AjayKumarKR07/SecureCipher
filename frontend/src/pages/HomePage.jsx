@@ -338,10 +338,10 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
           {/* Mobile menu trigger */}
           <button
             onClick={() => setMobileMenuOpen((p) => !p)}
-            className="md:hidden p-2 rounded-lg bg-[#061408] border border-emerald-500/30 text-emerald-300"
+            className="md:hidden p-2 rounded-xl bg-[#061408] border border-emerald-500/30 text-emerald-300 min-w-[42px] min-h-[42px] flex items-center justify-center cursor-pointer active:scale-95 transition-transform"
             aria-label="Toggle Navigation"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5 text-emerald-400" />}
           </button>
         </div>
 
@@ -353,51 +353,51 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
                 setMobileMenuOpen(false);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+              className="block w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection('algorithms')}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+              className="block w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               Algorithms
             </button>
             <button
               onClick={() => scrollToSection('how-it-works')}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+              className="block w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               How It Works
             </button>
             <button
               onClick={() => scrollToSection('about')}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+              className="block w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               About
             </button>
             <button
               onClick={() => scrollToSection('faq')}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+              className="block w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               FAQ
             </button>
             <Link
               to={user ? "/history" : "/register"}
               onClick={() => setMobileMenuOpen(false)}
-              className="block w-full text-left py-2 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
+              className="block w-full text-left py-2.5 px-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-[#081a0b] hover:text-white"
             >
               Audit History
             </Link>
 
             {user ? (
-              <div className="flex items-center justify-between py-2 px-3 rounded-lg bg-[#081a0b] border border-emerald-500/20 text-xs">
-                <span className="text-emerald-300 font-medium">Signed in as {user.full_name}</span>
+              <div className="flex items-center justify-between py-2.5 px-3 rounded-lg bg-[#081a0b] border border-emerald-500/20 text-xs">
+                <span className="text-emerald-300 font-medium truncate max-w-[200px]">Signed in as {user.full_name}</span>
                 <button
                   onClick={() => {
                     logout();
                     setMobileMenuOpen(false);
                   }}
-                  className="text-rose-400 hover:text-rose-300 font-mono text-xs flex items-center gap-1"
+                  className="text-rose-400 hover:text-rose-300 font-mono text-xs flex items-center gap-1 shrink-0 ml-2"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   Sign Out
@@ -408,14 +408,14 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-center py-2 px-3 rounded-lg border border-emerald-500/30 text-emerald-300 hover:bg-emerald-950/40 text-xs font-semibold"
+                  className="block text-center py-2.5 px-3 rounded-lg border border-emerald-500/30 text-emerald-300 hover:bg-emerald-950/40 text-xs font-semibold min-h-[40px] flex items-center justify-center"
                 >
                   Sign In
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block text-center py-2 px-3 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 text-white text-xs font-semibold"
+                  className="block text-center py-2.5 px-3 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 text-white text-xs font-semibold min-h-[40px] flex items-center justify-center"
                 >
                   Register
                 </Link>
@@ -425,7 +425,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             <Link
               to={user ? "/dashboard" : "/register"}
               onClick={() => setMobileMenuOpen(false)}
-              className="block w-full text-center mt-3 py-2 px-4 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold shadow-lg"
+              className="block w-full text-center mt-3 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-bold shadow-lg min-h-[44px] flex items-center justify-center"
             >
               {user ? 'Go to Dashboard' : 'Launch Dashboard'}
             </Link>
@@ -436,9 +436,9 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
       {/* ============================================================== */}
       {/* 2. HERO SECTION (Matching Reference Centered Composition)      */}
       {/* ============================================================== */}
-      <section className="relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 lg:pb-24 max-w-7xl mx-auto w-full">
+      <section className="relative px-3.5 sm:px-6 lg:px-8 pt-6 sm:pt-12 pb-14 lg:pb-24 max-w-7xl mx-auto w-full">
         {/* Large Rounded Container matching the reference design */}
-        <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-b from-[#061609] via-[#040e06] to-[#020703] border border-emerald-500/25 p-8 sm:p-14 lg:p-20 text-center shadow-2xl shadow-black/80">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-[2.5rem] bg-gradient-to-b from-[#061609] via-[#040e06] to-[#020703] border border-emerald-500/25 p-5 sm:p-10 lg:p-20 text-center shadow-2xl shadow-black/80">
           {/* Subtle Ambient Horizon Beam & Radial Light */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-b from-emerald-500/20 via-emerald-600/5 to-transparent blur-3xl opacity-70" />
@@ -449,32 +449,32 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
 
           <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
             {/* Project Subtitle Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#081e0c]/90 border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Multi-Algorithm Cryptography & Secure Data Protection System</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#081e0c]/90 border border-emerald-500/30 text-emerald-300 text-[11px] sm:text-xs font-mono mb-5 sm:mb-6 shadow-sm max-w-full text-center">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span className="truncate">Multi-Algorithm Cryptography System</span>
             </div>
 
             {/* Hero Headline with Decorative Neon-Green Symbol */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6 max-w-3xl">
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.2] mb-5 sm:mb-6 max-w-3xl">
               Secure Your Data.{' '}
-              <span className="inline-flex items-center justify-center align-middle mx-1.5 my-1">
-                <span className="p-1.5 sm:p-2 rounded-full bg-emerald-950/80 border border-emerald-400/60 shadow-lg shadow-emerald-500/20 inline-flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 animate-pulse" />
+              <span className="inline-flex items-center justify-center align-middle mx-1 sm:mx-1.5 my-1">
+                <span className="p-1 sm:p-2 rounded-full bg-emerald-950/80 border border-emerald-400/60 shadow-lg shadow-emerald-500/20 inline-flex items-center justify-center">
+                  <Sparkles className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-emerald-400 animate-pulse" />
                 </span>
               </span>{' '}
               Understand Every Algorithm.
             </h1>
 
             {/* Hero Supporting Paragraph */}
-            <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl mb-8 font-normal">
+            <p className="text-slate-300 text-xs sm:text-base lg:text-lg leading-relaxed max-w-2xl mb-7 sm:mb-8 font-normal">
               Explore modern encryption, public-key cryptography, secure key exchange, and cryptographic hashing through interactive demonstrations designed to make cybersecurity easier to understand.
             </p>
 
             {/* Primary & Secondary Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-3.5 sm:gap-4 mb-12 sm:mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-16 w-full sm:w-auto">
               <button
                 onClick={() => scrollToSection('algorithms')}
-                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/40 transition-all hover:scale-[1.02] cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/40 transition-all hover:scale-[1.02] cursor-pointer min-h-[44px]"
               >
                 <span>Explore Algorithms</span>
                 <ArrowRight className="w-4 h-4 text-slate-950" />
@@ -482,7 +482,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
 
               <button
                 onClick={() => scrollToSection('how-it-works')}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#061609] hover:bg-[#09220e] text-emerald-300 hover:text-white text-sm font-medium border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#061609] hover:bg-[#09220e] text-emerald-300 hover:text-white text-sm font-medium border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer min-h-[44px]"
               >
                 <span>How It Works</span>
               </button>
@@ -1136,7 +1136,7 @@ export default function HomePage({ backendHealth, dbHealth, onRefresh }) {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="w-full min-w-[580px] text-left text-xs">
                 <thead className="bg-[#030904] text-slate-400 font-mono border-b border-emerald-500/15">
                   <tr>
                     <th className="py-2.5 px-3">Audit ID</th>

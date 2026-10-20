@@ -72,9 +72,10 @@ export default function Sidebar({ isOpen, onClose }) {
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#06180a]"
+            className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#06180a] min-w-[38px] min-h-[38px] flex items-center justify-center cursor-pointer"
+            aria-label="Close Navigation Sidebar"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-emerald-400" />
           </button>
         </div>
 
@@ -99,7 +100,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 to={item.path}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all min-h-[40px] ${
                     isActive
                       ? 'bg-[#06180a] text-emerald-300 border border-emerald-500/40 shadow-md shadow-emerald-950/60 font-semibold'
                       : 'text-slate-400 hover:text-emerald-300 hover:bg-[#06180a]/40 border border-transparent'

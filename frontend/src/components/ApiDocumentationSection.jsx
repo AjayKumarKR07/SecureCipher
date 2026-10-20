@@ -1089,15 +1089,15 @@ export default function ApiDocumentationSection() {
   const baseUrl = 'http://127.0.0.1:8000';
 
   return (
-    <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-6">
+    <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-6">
       {/* ── Section Header ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-500/20 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-emerald-500/20 pb-4 sm:pb-5">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400">
-              <Server className="w-5 h-5" />
+            <span className="p-1.5 sm:p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400 shrink-0">
+              <Server className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
-            <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight m-0">
+            <h2 className="text-base sm:text-xl font-bold text-white tracking-tight m-0">
               REST API Documentation & Endpoints Reference
             </h2>
           </div>
@@ -1243,7 +1243,7 @@ export default function ApiDocumentationSection() {
       ) : (
         <div className="overflow-hidden rounded-xl border border-emerald-500/20 bg-[#040e06]/60">
           <div className="overflow-x-auto">
-            <table className="w-full text-xs">
+            <table className="w-full min-w-[580px] text-xs">
               <thead className="bg-[#030a04] text-slate-400 border-b border-emerald-500/20 font-mono text-[11px] uppercase tracking-wider">
                 <tr>
                   <th className="py-3 px-4 text-left w-24">Method</th>

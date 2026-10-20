@@ -170,10 +170,10 @@ export default function SHA256Page({ onOperationSuccess }) {
       </div>
 
       {/* Mode Selector Tabs */}
-      <div className="flex border-b border-emerald-500/20 gap-2">
+      <div className="flex border-b border-emerald-500/20 gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveTab('text')}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'text'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -184,7 +184,7 @@ export default function SHA256Page({ onOperationSuccess }) {
         </button>
         <button
           onClick={() => setActiveTab('file')}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'file'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -195,7 +195,7 @@ export default function SHA256Page({ onOperationSuccess }) {
         </button>
         <button
           onClick={() => setActiveTab('compare')}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'compare'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -210,21 +210,21 @@ export default function SHA256Page({ onOperationSuccess }) {
       {activeTab === 'text' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <span className="text-xs font-semibold text-white">UTF-8 Text Payload</span>
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <span className="text-[11px] text-slate-400">NIST Presets:</span>
                 <button
                   type="button"
                   onClick={() => applyTextPreset('')}
-                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors"
+                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors min-h-[28px] cursor-pointer"
                 >
                   Empty String
                 </button>
                 <button
                   type="button"
                   onClick={() => applyTextPreset('abc')}
-                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors"
+                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors min-h-[28px] cursor-pointer"
                 >
                   "abc"
                 </button>
@@ -233,7 +233,7 @@ export default function SHA256Page({ onOperationSuccess }) {
                   onClick={() =>
                     applyTextPreset('abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq')
                   }
-                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors"
+                  className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-[11px] text-slate-300 font-mono transition-colors min-h-[28px] cursor-pointer"
                 >
                   Long Pattern
                 </button>

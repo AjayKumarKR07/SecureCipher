@@ -200,10 +200,10 @@ export default function AESPage({ onOperationSuccess }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-5">
           {/* Tabs: Encrypt / Decrypt */}
-          <div className="flex rounded-lg bg-[#040e06] p-1 border border-emerald-500/20">
+          <div className="flex flex-col sm:flex-row rounded-lg bg-[#040e06] p-1 border border-emerald-500/20 gap-1 sm:gap-0">
             <button
               onClick={() => { setActiveTab('encrypt'); setEncryptError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-semibold rounded-md transition-all min-h-[38px] cursor-pointer ${
                 activeTab === 'encrypt'
                   ? 'bg-emerald-500 text-slate-950 font-bold shadow-md'
                   : 'text-slate-400 hover:text-white'
@@ -214,7 +214,7 @@ export default function AESPage({ onOperationSuccess }) {
             </button>
             <button
               onClick={() => { setActiveTab('decrypt'); setDecryptError(''); }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-semibold rounded-md transition-all min-h-[38px] cursor-pointer ${
                 activeTab === 'decrypt'
                   ? 'bg-teal-500 text-slate-950 font-bold shadow-md'
                   : 'text-slate-400 hover:text-white'
@@ -376,11 +376,11 @@ export default function AESPage({ onOperationSuccess }) {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-500/20">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-emerald-500/20">
                     <button
                       type="button"
                       onClick={handleTransferToDecrypt}
-                      className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      className="w-full sm:w-auto justify-center px-3 py-2 sm:py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors min-h-[38px] cursor-pointer"
                     >
                       <span>Transfer to Decrypt Tab</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -388,7 +388,7 @@ export default function AESPage({ onOperationSuccess }) {
                     <button
                       type="button"
                       onClick={() => handleCopy(JSON.stringify(encryptResult, null, 2), 'json')}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-emerald-500/25 flex items-center gap-1.5 transition-colors"
+                      className="w-full sm:w-auto justify-center px-3 py-2 sm:py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-emerald-500/25 flex items-center gap-1.5 transition-colors min-h-[38px] cursor-pointer"
                     >
                       {copiedKey === 'json' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedKey === 'json' ? 'JSON Copied' : 'Copy Complete JSON'}</span>
@@ -402,12 +402,12 @@ export default function AESPage({ onOperationSuccess }) {
           {/* TAB 2: DECRYPT */}
           {activeTab === 'decrypt' && (
             <form onSubmit={handleDecrypt} className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                 <span className="text-xs text-slate-400">Provide parameters or paste JSON payload:</span>
                 <button
                   type="button"
                   onClick={handlePasteJSON}
-                  className="text-[11px] text-teal-400 hover:text-teal-300 font-mono flex items-center gap-1"
+                  className="text-[11px] text-teal-400 hover:text-teal-300 font-mono flex items-center gap-1 self-start sm:self-auto cursor-pointer"
                 >
                   <Copy className="w-3 h-3" />
                   <span>Auto-Fill from Clipboard JSON</span>

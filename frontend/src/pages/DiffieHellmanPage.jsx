@@ -218,10 +218,10 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
       </div>
 
       {/* Mode Switcher */}
-      <div className="flex rounded-lg bg-[#040e06] p-1 border border-emerald-500/20 max-w-md">
+      <div className="flex flex-col sm:flex-row rounded-lg bg-[#040e06] p-1 border border-emerald-500/20 max-w-md gap-1 sm:gap-0">
         <button
           onClick={() => setActiveMode('simulation')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-semibold rounded-md transition-all min-h-[38px] cursor-pointer ${
             activeMode === 'simulation'
               ? 'bg-emerald-500 text-slate-950 font-bold shadow-md'
               : 'text-slate-400 hover:text-white'
@@ -232,7 +232,7 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
         </button>
         <button
           onClick={() => setActiveMode('workbench')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-semibold rounded-md transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 text-xs font-semibold rounded-md transition-all min-h-[38px] cursor-pointer ${
             activeMode === 'workbench'
               ? 'bg-emerald-500 text-slate-950 font-bold shadow-md'
               : 'text-slate-400 hover:text-white'
@@ -261,7 +261,7 @@ export default function DiffieHellmanPage({ onOperationSuccess }) {
                 type="button"
                 onClick={handleRunSimulation}
                 disabled={simulationLoading}
-                className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-950/40 flex items-center gap-2 transition-all self-start sm:self-auto"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 text-xs font-bold shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 transition-all min-h-[40px] cursor-pointer self-start sm:self-auto"
               >
                 {simulationLoading ? (
                   <>

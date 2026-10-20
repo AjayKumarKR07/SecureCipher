@@ -149,7 +149,7 @@ export default function HowItWorksSection({
     : [];
 
   return (
-    <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 space-y-7 relative overflow-hidden">
+    <div className="glass-panel rounded-2xl p-4 sm:p-6 lg:p-8 border border-slate-800 space-y-6 sm:space-y-7 relative overflow-hidden">
       {/* Decorative subtle ambient backdrop glow */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 

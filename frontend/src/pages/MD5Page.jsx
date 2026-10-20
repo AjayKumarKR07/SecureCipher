@@ -189,10 +189,10 @@ export default function MD5Page({ onOperationSuccess }) {
       </div>
 
       {/* Mode Selector Tabs */}
-      <div className="flex border-b border-emerald-500/20 gap-2">
+      <div className="flex border-b border-emerald-500/20 gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveTab('text')}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'text'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -203,7 +203,7 @@ export default function MD5Page({ onOperationSuccess }) {
         </button>
         <button
           onClick={() => setActiveTab('file')}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'file'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -214,7 +214,7 @@ export default function MD5Page({ onOperationSuccess }) {
         </button>
         <button
           onClick={() => setActiveTab('compare')}
-          className={`px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all ${
+          className={`shrink-0 px-4 py-2.5 text-xs font-medium border-b-2 flex items-center gap-2 transition-all min-h-[40px] cursor-pointer ${
             activeTab === 'compare'
               ? 'border-emerald-500 text-emerald-300 bg-emerald-950/20'
               : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-[#040e06]/40'
@@ -229,7 +229,7 @@ export default function MD5Page({ onOperationSuccess }) {
       {activeTab === 'text' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-emerald-500/20 space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <span className="text-xs font-semibold text-white">UTF-8 Text Payload</span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="text-[11px] text-slate-400">RFC 1321 Presets:</span>

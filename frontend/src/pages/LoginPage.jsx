@@ -106,7 +106,7 @@ export default function LoginPage() {
       </header>
 
       {/* Main Login Container */}
-      <main className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 flex items-center justify-center">
+      <main className="relative z-10 w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-10 flex items-center justify-center">
         <div className="w-full grid lg:grid-cols-12 gap-8 items-center">
           {/* Left Column: Visual Cyber Graphic (Hidden on mobile) */}
           <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-8 rounded-[2.5rem] bg-gradient-to-b from-emerald-950/20 to-[#040e06] border border-emerald-500/15 relative overflow-hidden h-[540px]">
@@ -152,19 +152,19 @@ export default function LoginPage() {
 
           {/* Right Column: Centered Login Card */}
           <div className="lg:col-span-7">
-            <div className="p-8 sm:p-10 rounded-[2.5rem] bg-[#040e06]/90 backdrop-blur-xl border border-emerald-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.6)] relative overflow-hidden">
+            <div className="p-5 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2.5rem] bg-[#040e06]/90 backdrop-blur-xl border border-emerald-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.6)] relative overflow-hidden">
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
 
               {/* Card Header */}
-              <div className="mb-8">
+              <div className="mb-6 sm:mb-8">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-mono tracking-wider uppercase mb-3">
                   <Sparkles className="w-3 h-3" />
                   Secure Access Gateway
                 </div>
-                <h1 className="text-3xl font-extrabold text-white tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                   Welcome Back
                 </h1>
-                <p className="text-slate-400 text-sm mt-1.5">
+                <p className="text-slate-400 text-xs sm:text-sm mt-1.5">
                   Sign in to your SecureCipher account to access your cryptographic workspace.
                 </p>
               </div>

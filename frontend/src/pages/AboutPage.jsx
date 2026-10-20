@@ -142,13 +142,13 @@ export default function AboutPage() {
   const [expandedAlgo, setExpandedAlgo] = useState(null);
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto w-full min-w-0">
 
       {/* ── Header ── */}
-      <div className="border-b border-emerald-500/20 pb-5">
+      <div className="border-b border-emerald-500/20 pb-4 sm:pb-5">
         <div className="flex items-center gap-2 mb-1">
-          <span className="p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400">
-            <Info className="w-5 h-5" />
+          <span className="p-1.5 sm:p-2 rounded-lg bg-[#06180a] border border-emerald-500/30 text-emerald-400 shrink-0">
+            <Info className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
             About SecureCipher
@@ -160,8 +160,8 @@ export default function AboutPage() {
       </div>
 
       {/* ── Platform Overview ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
-        <h2 className="text-lg font-bold text-white m-0">Platform Overview</h2>
+      <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-4">
+        <h2 className="text-base sm:text-lg font-bold text-white m-0">Platform Overview</h2>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed m-0">
           <strong>SecureCipher</strong> is a full-stack cryptographic workbench that brings enterprise-grade
           security primitives into a single, unified platform. It enables hands-on exploration of six
@@ -170,7 +170,7 @@ export default function AboutPage() {
           persistence principle</span>: sensitive data exists only in volatile memory during execution
           and is never written to disk or database.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 pt-2">
           {[
             { icon: Shield, color: 'emerald', title: 'Symmetric Protection', desc: 'AES-256-GCM (authenticated encryption) vs. legacy DES (56-bit Feistel). Real-time encryption, decryption, and file processing.' },
             { icon: Lock,   color: 'teal',    title: 'Asymmetric & Exchange', desc: 'RSA-4096 public-key cryptography and Diffie-Hellman key exchange with forward secrecy guarantees.' },
@@ -187,9 +187,9 @@ export default function AboutPage() {
       </div>
 
       {/* ── How It Works – Workflow Steps ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-5">
+      <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-5">
         <div>
-          <h2 className="text-lg font-bold text-white m-0">How It Works — End-to-End Workflow</h2>
+          <h2 className="text-base sm:text-lg font-bold text-white m-0">How It Works — End-to-End Workflow</h2>
           <p className="text-xs text-slate-400 mt-1 m-0">
             Six stages from user login to audit-logged cryptographic result
           </p>
@@ -245,9 +245,9 @@ export default function AboutPage() {
       </div>
 
       {/* ── Algorithm Reference Cards ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
+      <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-white m-0">Supported Algorithms — Technical Reference</h2>
+          <h2 className="text-base sm:text-lg font-bold text-white m-0">Supported Algorithms — Technical Reference</h2>
           <p className="text-xs text-slate-400 mt-1 m-0">Click any algorithm card to expand details</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -261,7 +261,7 @@ export default function AboutPage() {
                 onClick={() => setExpandedAlgo(isOpen ? null : algo.name)}
                 className={`rounded-xl border ${c.border} bg-[#040e06]/60 cursor-pointer transition-all hover:bg-[#040e06]/90`}
               >
-                <div className="p-4 flex items-start gap-3">
+                <div className="p-3.5 sm:p-4 flex items-start gap-3">
                   <span className={`p-2 rounded-lg ${c.bg} border ${c.border} ${c.text} flex-shrink-0`}>
                     <Icon className="w-4 h-4" />
                   </span>
@@ -273,14 +273,14 @@ export default function AboutPage() {
                       </span>
                     </div>
                     <div className="text-[11px] text-slate-400 mt-0.5">{algo.category}</div>
-                    <div className="flex gap-3 mt-1.5 text-[10px] font-mono text-slate-500">
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1.5 text-[10px] font-mono text-slate-500">
                       <span>Key: <span className="text-slate-300">{algo.keySize}</span></span>
                       <span>Mode: <span className="text-slate-300">{algo.mode}</span></span>
                     </div>
                   </div>
                 </div>
                 {isOpen && (
-                  <div className="px-4 pb-4 border-t border-slate-700/40 pt-3 space-y-3">
+                  <div className="px-3.5 sm:px-4 pb-4 border-t border-slate-700/40 pt-3 space-y-3">
                     <p className="text-[11px] text-slate-300 leading-relaxed m-0">{algo.desc}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {algo.operations.map((op) => (
@@ -296,18 +296,18 @@ export default function AboutPage() {
       </div>
 
       {/* ── Security Principles ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
-        <h2 className="text-lg font-bold text-white m-0 flex items-center gap-2">
+      <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-4">
+        <h2 className="text-base sm:text-lg font-bold text-white m-0 flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-emerald-400" />
           Security Design Principles
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {SECURITY_PRINCIPLES.map(({ icon: Icon, title, desc, color }) => {
             const c = colorMap[color];
             return (
-              <div key={title} className={`p-4 rounded-xl border ${c.border} bg-[#040e06]/60 space-y-2`}>
+              <div key={title} className={`p-3.5 sm:p-4 rounded-xl border ${c.border} bg-[#040e06]/60 space-y-2`}>
                 <span className={`flex items-center gap-2 ${c.text} font-bold text-xs`}>
-                  <Icon className="w-4 h-4" />{title}
+                  <Icon className="w-4 h-4 shrink-0" />{title}
                 </span>
                 <p className="text-[11px] text-slate-400 leading-relaxed m-0">{desc}</p>
               </div>
@@ -317,9 +317,9 @@ export default function AboutPage() {
       </div>
 
       {/* ── Technology Stack ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
-        <h2 className="text-lg font-bold text-white m-0">Full-Stack Architecture & Technology Stack</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-4">
+        <h2 className="text-base sm:text-lg font-bold text-white m-0">Full-Stack Architecture & Technology Stack</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Frontend */}
           <div className="space-y-3">
             <h3 className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono m-0">Frontend Client Layer</h3>
@@ -365,31 +365,31 @@ export default function AboutPage() {
       <ApiDocumentationSection />
 
       {/* ── PostgreSQL Setup ── */}
-      <div className="glass-panel rounded-xl p-6 border border-emerald-500/20 space-y-4">
-        <h2 className="text-lg font-bold text-white flex items-center gap-2 m-0">
+      <div className="glass-panel rounded-xl p-4 sm:p-6 border border-emerald-500/20 space-y-4">
+        <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 m-0">
           <Database className="w-5 h-5 text-emerald-400" />
           Local PostgreSQL Setup Guide
         </h2>
         <p className="text-xs text-slate-300 leading-relaxed m-0">
           To connect SecureCipher to a local PostgreSQL instance on Windows, run the following SQL commands and configure the <code className="text-emerald-400 bg-[#030a04] px-1 rounded">backend/.env</code> file:
         </p>
-        <div className="bg-[#030a04] p-4 rounded-lg border border-emerald-500/20 space-y-3 font-mono text-xs">
+        <div className="bg-[#030a04] p-3.5 sm:p-4 rounded-lg border border-emerald-500/20 space-y-3 font-mono text-xs overflow-hidden">
           <div className="text-slate-400"># 1. Open psql as the postgres administrator</div>
-          <div className="text-emerald-300 bg-black/60 p-2 rounded">psql -U postgres</div>
+          <div className="text-emerald-300 bg-black/60 p-2 rounded overflow-x-auto">psql -U postgres</div>
           <div className="text-slate-400"># 2. Execute SQL setup script</div>
-          <div className="text-emerald-300 bg-black/60 p-2.5 rounded space-y-1">
+          <div className="text-emerald-300 bg-black/60 p-2.5 rounded space-y-1 overflow-x-auto text-[11px] sm:text-xs">
             <div>CREATE USER securecipher_user WITH PASSWORD 'YourStrongPasswordHere';</div>
             <div>CREATE DATABASE securecipher_db OWNER securecipher_user;</div>
             <div>GRANT ALL PRIVILEGES ON DATABASE securecipher_db TO securecipher_user;</div>
           </div>
           <div className="text-slate-400"># 3. Add to backend/.env</div>
-          <div className="text-teal-300 bg-black/60 p-2 rounded break-all">
+          <div className="text-teal-300 bg-black/60 p-2 rounded break-all text-[11px] sm:text-xs">
             DATABASE_URL="postgresql+psycopg://securecipher_user:YourStrongPasswordHere@localhost:5432/securecipher_db"
           </div>
           <div className="text-slate-400"># 4. Initialize database tables</div>
-          <div className="text-emerald-300 bg-black/60 p-2 rounded">python -m app.db.init_db</div>
+          <div className="text-emerald-300 bg-black/60 p-2 rounded overflow-x-auto text-[11px] sm:text-xs">python -m app.db.init_db</div>
           <div className="text-slate-400"># 5. Start the backend server</div>
-          <div className="text-emerald-300 bg-black/60 p-2 rounded">uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload</div>
+          <div className="text-emerald-300 bg-black/60 p-2 rounded overflow-x-auto text-[11px] sm:text-xs">uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload</div>
         </div>
       </div>
 

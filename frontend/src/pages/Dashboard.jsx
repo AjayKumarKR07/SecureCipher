@@ -111,7 +111,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
       {/* ============================================================== */}
       {/* 1. WELCOME HERO & TELEMETRY BANNER                             */}
       {/* ============================================================== */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#06180a] via-[#041006] to-[#020904] border border-emerald-500/25 p-6 sm:p-8 lg:p-10 shadow-2xl shadow-black/80">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#06180a] via-[#041006] to-[#020904] border border-emerald-500/25 p-4 sm:p-8 lg:p-10 shadow-2xl shadow-black/80">
         {/* Ambient Glow & Grid Accents */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-emerald-700/10 rounded-full blur-2xl pointer-events-none" />
@@ -119,28 +119,28 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="max-w-3xl">
             {/* Project / Session Tag */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-4 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>SecureCipher Cryptographic Control Center</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-4 shadow-sm flex-wrap">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span>SecureCipher Control Center</span>
               <span className="text-emerald-500/60">•</span>
-              <span className="text-emerald-400/90">B.Tech ISE Capstone</span>
+              <span className="text-emerald-400/90">B.Tech Capstone</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
               Welcome back,{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-green-300">
                 {user?.full_name ? user.full_name : 'Security Analyst'}
               </span>
             </h1>
 
-            <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+            <p className="mt-2 text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl">
               All six cryptographic engines are compiled and operational. Execute authenticated symmetric ciphers, public-key transformations, key agreement handshakes, and verifiable audit logging with zero-knowledge data retention.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
               <Link
                 to="/algorithm/aes"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/40 transition-all cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs sm:text-sm font-bold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/40 transition-all cursor-pointer min-h-[42px]"
               >
                 <Shield className="w-4 h-4 text-slate-950" />
                 <span>Launch AES-GCM Workbench</span>
@@ -149,7 +149,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
 
               <Link
                 to="/history"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#06180a] hover:bg-[#09240f] text-emerald-300 hover:text-white text-xs sm:text-sm font-medium border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#06180a] hover:bg-[#09240f] text-emerald-300 hover:text-white text-xs sm:text-sm font-medium border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer min-h-[42px]"
               >
                 <History className="w-4 h-4 text-emerald-400" />
                 <span>Audit History & PDF Reports</span>
@@ -157,7 +157,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
 
               <Link
                 to="/analytics"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 hover:text-white text-xs sm:text-sm font-medium border border-emerald-500/40 hover:border-emerald-400 transition-all cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 text-emerald-300 hover:text-white text-xs sm:text-sm font-medium border border-emerald-500/40 hover:border-emerald-400 transition-all cursor-pointer min-h-[42px]"
               >
                 <Activity className="w-4 h-4 text-emerald-400" />
                 <span>Security & Analytics</span>
@@ -165,7 +165,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
 
               <Link
                 to="/profile"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white text-xs sm:text-sm font-medium border border-slate-700/60 transition-all cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white text-xs sm:text-sm font-medium border border-slate-700/60 transition-all cursor-pointer min-h-[42px]"
               >
                 <User className="w-4 h-4 text-emerald-400" />
                 <span>Profile & Settings</span>
@@ -576,7 +576,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
       {/* ============================================================== */}
       {/* 4. RECENT OPERATION AUDIT TRAIL TABLE                          */}
       {/* ============================================================== */}
-      <div className="p-6 rounded-3xl bg-[#040e06] border border-emerald-500/20 shadow-xl">
+      <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#040e06] border border-emerald-500/20 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -617,7 +617,7 @@ export default function Dashboard({ backendHealth, dbHealth, onRefresh }) {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[620px] text-left text-xs">
               <thead className="bg-[#061408] text-slate-300 font-mono border-b border-emerald-500/20">
                 <tr>
                   <th className="py-3 px-3">ID</th>
